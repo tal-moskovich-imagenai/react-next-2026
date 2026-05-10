@@ -977,11 +977,35 @@ const DeployDashboard = () => {
 
 > "I want to show you something uncomfortable. This is the kind of thing most library talks skip. But it matters — because it shows you exactly what React's abstraction boundary means in practice, and what you can do when the defaults aren't enough."
 
-> **Source note (speaker):** The Gatsby/`<Static>` claim comes directly from Ink's official README. The Claude Code internals come from [*Claude Code from Source*](https://claude-code-from-source.com/ch13-terminal-ui/) — a community reverse-engineering of Claude Code's source maps, not official Anthropic documentation. The code examples below are reconstructions based on that analysis. Anthropic has not published their renderer code. Treat the specific implementation details as "almost certainly how it works" rather than "we read the source." The performance *outcome* (60fps streaming) is observable and real.
+> **Source note (speaker):** The Gatsby/`<Static>` pattern comes from Ink's official README. The Claude Code story is backed by multiple sources at different levels of authority — be explicit about which is which on stage.
+>
+> **Primary sources (Anthropic employees, on the record):**
+> - **Boris, Claude Code team, Hacker News (2025):** *"We started by using Ink, and at this point it's our own framework due to the number of changes we've made to it over the months."* [link](https://news.ycombinator.com/item?id=45901918)
+> - **Thariq, Anthropic engineer, quoted by Peter Steinberger (Dec 2025):** *"Ink didn't support the kind of fine-grained incremental updates needed for a long-running interactive UI [...] so they rewrote the renderer from scratch — while still keeping React as the component model."* [link](https://steipete.me/posts/2025/signature-flicker)
+> - **Official Anthropic Claude Code docs** (`code.claude.com/docs/en/fullscreen`): confirms the rendering rewrite, virtual rendering of only visible messages, flat memory usage in long sessions, and the flickering problem they were solving.
+>
+> **Secondary source (community reverse-engineering):**
+> - [*Claude Code from Source*](https://claude-code-from-source.com/ch13-terminal-ui/) — decompiled Claude Code's source maps. The specific internals (Int32Array, exact blit algorithm) come from here, not Anthropic directly.
+>
+> **What to say on stage:** Lead with the Thariq and Boris quotes — those are the bedrock. Then frame the Int32Array/double-buffer code as *"from the community reverse-engineering of the source maps, consistent with what Anthropic described."*
 
 Claude Code is an LLM agent. When it responds, tokens arrive at ~60fps. The conversation grows to hundreds of messages. The user scrolls while new tokens arrive. All of this happens simultaneously, in a 200-column terminal.
 
-Let's look at what **stock Ink does**, why it breaks here, and what **Anthropic replaced it with** — optimization by optimization.
+We don't have to guess about what happened. Two Anthropic engineers said it publicly.
+
+Boris, from the Claude Code team, on Hacker News:
+
+> *"We started by using Ink, and at this point it's our own framework due to the number of changes we've made to it over the months."*
+
+Thariq, an Anthropic engineer:
+
+> *"Ink didn't support the kind of fine-grained incremental updates needed for a long-running interactive UI. We needed tighter control, so we rewrote the renderer from scratch — while still keeping React as the component model."*
+
+So: **React stays. The renderer was rewritten.**
+
+That's the story. And thanks to a community project that decompiled Claude Code's source maps — [*Claude Code from Source*](https://claude-code-from-source.com/ch13-terminal-ui/) — we have a detailed picture of *how* they did it.
+
+Let's look at what **stock Ink does**, why it breaks here, and what the rewrite replaced — optimization by optimization.
 
 ---
 
@@ -1345,6 +1369,8 @@ Achievable fps       ~30 (GC bound)    60+ (compute bound)
 ```
 
 ---
+
+**This is also visible in Anthropic's official docs.** They shipped a fullscreen rendering mode (`CLAUDE_CODE_NO_FLICKER=1`, v2.1.89+) that the docs describe as: *"only renders messages that are currently visible [...] reduces the amount of data sent to your terminal on each update"* — which is virtual rendering, the direct consequence of the dirty-tracking and blit work above.
 
 **The critical point — the components didn't change:**
 
