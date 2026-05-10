@@ -977,6 +977,8 @@ const DeployDashboard = () => {
 
 > "I want to show you something uncomfortable. This is the kind of thing most library talks skip. But it matters — because it shows you exactly what React's abstraction boundary means in practice, and what you can do when the defaults aren't enough."
 
+> **Source note (speaker):** The Gatsby/`<Static>` claim comes directly from Ink's official README. The Claude Code internals come from [*Claude Code from Source*](https://claude-code-from-source.com/ch13-terminal-ui/) — a community reverse-engineering of Claude Code's source maps, not official Anthropic documentation. The code examples below are reconstructions based on that analysis. Anthropic has not published their renderer code. Treat the specific implementation details as "almost certainly how it works" rather than "we read the source." The performance *outcome* (60fps streaming) is observable and real.
+
 Claude Code is an LLM agent. When it responds, tokens arrive at ~60fps. The conversation grows to hundreds of messages. The user scrolls while new tokens arrive. All of this happens simultaneously, in a 200-column terminal.
 
 Let's look at what **stock Ink does**, why it breaks here, and what **Anthropic replaced it with** — optimization by optimization.
