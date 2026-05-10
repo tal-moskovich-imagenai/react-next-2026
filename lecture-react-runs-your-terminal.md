@@ -322,7 +322,10 @@ import React from 'react';
 import { render } from 'ink';
 import { App } from './App.js';
 
-render(<App />);
+// concurrent: true — enables React 19 concurrent features in Ink v7:
+// Suspense boundaries work with async data, useTransition is fully
+// functional, and updates can be interrupted for higher-priority work.
+render(<App />, { concurrent: true });
 ```
 
 `src/App.tsx`:
@@ -532,10 +535,10 @@ export const Spinner = ({ label }: { label?: string }) => {
 };
 ```
 
-Update `App.tsx`:
+Update `App.tsx` — now with two React 19 features: `useOptimistic` and `useTransition`:
 
 ```tsx
-import React, { useState } from 'react';
+import React, { useState, useOptimistic, useTransition } from 'react';
 import { Box, Text, useInput, useApp } from 'ink';
 import { TextInput } from './TextInput.js';
 import { Spinner } from './Spinner.js';
@@ -544,28 +547,44 @@ import { useStreamingResponse } from './useStreamingResponse.js';
 interface Message {
   role: 'user' | 'assistant';
   content: string;
+  pending?: boolean; // only on optimistic entries
 }
 
 export const App = () => {
   const { exit } = useApp();
   const [messages, setMessages] = useState<Message[]>([]);
   const { content, isStreaming, error, stream } = useStreamingResponse();
+  const [isPending, startTransition] = useTransition();
+
+  // useOptimistic — React 19
+  // While the async stream is in flight, optimisticMessages includes the
+  // user's message immediately (with pending: true). The moment the
+  // transition completes and setMessages commits, the optimistic entry
+  // is replaced by the real state automatically.
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (current, newMessage: Message) => [...current, { ...newMessage, pending: true }],
+  );
 
   useInput((input, key) => {
-    if (input === 'q' && !isStreaming) {
-      exit();
-    }
+    if (input === 'q' && !isPending) exit();
   });
 
-  const handleSubmit = async (value: string) => {
-    if (!value.trim() || isStreaming) return;
+  const handleSubmit = (value: string) => {
+    if (!value.trim() || isPending) return;
 
-    setMessages(prev => [...prev, { role: 'user', content: value }]);
-    await stream(value);
-    setMessages(prev => [
-      ...prev,
-      { role: 'assistant', content },
-    ]);
+    // startTransition marks this as a non-urgent update.
+    // Inside a transition, useOptimistic updates are allowed and will
+    // revert automatically if the transition fails.
+    startTransition(async () => {
+      addOptimisticMessage({ role: 'user', content: value });
+      await stream(value);
+      setMessages(prev => [
+        ...prev,
+        { role: 'user', content: value },
+        { role: 'assistant', content },
+      ]);
+    });
   };
 
   return (
@@ -576,14 +595,16 @@ export const App = () => {
         <Text dimColor>(q to quit)</Text>
       </Box>
 
-      {/* Message history */}
-      {messages.map((msg, i) => (
+      {/* Message history — reads from optimisticMessages, not messages.
+          The user's prompt appears instantly on submit, dimmed while pending. */}
+      {optimisticMessages.map((msg, i) => (
         <Box key={i} marginBottom={1} flexDirection="column">
           <Text color={msg.role === 'user' ? 'yellow' : 'green'} bold>
             {msg.role === 'user' ? 'You' : 'AI'}
+            {msg.pending && <Text dimColor> (sending…)</Text>}
           </Text>
           <Box paddingLeft={2}>
-            <Text>{msg.content}</Text>
+            <Text dimColor={msg.pending}>{msg.content}</Text>
           </Box>
         </Box>
       ))}
@@ -593,81 +614,87 @@ export const App = () => {
         <Box flexDirection="column" marginBottom={1}>
           <Text color="green" bold>AI</Text>
           <Box paddingLeft={2}>
-            {content ? (
-              <Text>{content}</Text>
-            ) : (
-              <Spinner />
-            )}
+            {content ? <Text>{content}</Text> : <Spinner />}
           </Box>
         </Box>
       )}
 
-      {/* Error */}
-      {error && (
-        <Text color="red">Error: {error}</Text>
-      )}
+      {error && <Text color="red">Error: {error}</Text>}
 
-      {/* Input */}
-      {!isStreaming && (
-        <TextInput onSubmit={handleSubmit} />
-      )}
+      {!isPending && <TextInput onSubmit={handleSubmit} />}
     </Box>
   );
 };
 ```
 
-**What just happened:**
+**What changed from the traditional version:**
 
-- `useState` manages message history — same as a web chat app
-- `useEffect` inside the custom hook drives streaming — same pattern as fetching in a browser
-- Every token that arrives updates state, which triggers a re-render, which writes new ANSI bytes to stdout
-- The spinner is a `setInterval` inside `useEffect` — nothing special about the terminal
+| Before | After (React 19) |
+|---|---|
+| `setMessages` immediately | `useOptimistic` — message appears instantly, auto-reverts on error |
+| `isStreaming` boolean | `isPending` from `useTransition` — React owns the pending state |
+| Manual guard `if (isStreaming) return` | `!isPending` — same intent, React's scheduler handles priority |
 
-**The mental model is identical.** The rendering target is different. That's it.
+The user's prompt appears in the terminal the moment they press Enter — before a single byte arrives from the API. If the request fails, React rolls the optimistic entry back automatically. **No manual rollback code.**
 
 ---
 
-### Step 5 — Keyboard Navigation (3 min)
+### Step 5 — Keyboard Navigation + React 19 `use()` (3 min)
 
-Add a menu to select AI models:
+Add a menu to select AI models. This time, the model list is fetched from the API — and we use React 19's `use()` hook instead of `useEffect` + `useState`.
+
+`src/fetchModels.ts`:
+
+```ts
+interface Model {
+  id: string;
+  label: string;
+}
+
+// Create the promise ONCE, outside the component.
+// React's use() reads the same promise instance on every render —
+// it only fetches once, not once per render.
+export const modelsPromise: Promise<Model[]> = fetch(
+  'https://api.openai.com/v1/models',
+  { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } },
+)
+  .then(r => r.json())
+  .then(data =>
+    (data.models as { id: string }[])
+      .filter(m => m.id.startsWith('gpt') || m.id.startsWith('o'))
+      .map(m => ({ id: m.id, label: m.id }))
+      .slice(0, 6),
+  );
+```
 
 `src/ModelSelect.tsx`:
 
 ```tsx
-import React, { useState } from 'react';
+import React, { useState, use, Suspense } from 'react';
 import { Box, Text, useInput } from 'ink';
-
-const MODELS = [
-  { id: 'gpt-4o-mini', label: 'GPT-4o Mini (fast)' },
-  { id: 'gpt-4o', label: 'GPT-4o (smart)' },
-  { id: 'o1-mini', label: 'o1 Mini (reasoning)' },
-];
+import { modelsPromise } from './fetchModels.js';
+import { Spinner } from './Spinner.js';
 
 interface Props {
   onSelect: (modelId: string) => void;
 }
 
-export const ModelSelect = ({ onSelect }: Props) => {
+// Inner component — use() suspends this until modelsPromise resolves.
+// No useEffect. No isLoading state. No empty array on first render.
+const ModelList = ({ onSelect }: Props) => {
+  const models = use(modelsPromise); // ← React 19
   const [cursor, setCursor] = useState(0);
 
   useInput((input, key) => {
-    if (key.upArrow) {
-      setCursor(prev => Math.max(0, prev - 1));
-    }
-
-    if (key.downArrow) {
-      setCursor(prev => Math.min(MODELS.length - 1, prev + 1));
-    }
-
-    if (key.return) {
-      onSelect(MODELS[cursor].id);
-    }
+    if (key.upArrow)   setCursor(prev => Math.max(0, prev - 1));
+    if (key.downArrow) setCursor(prev => Math.min(models.length - 1, prev + 1));
+    if (key.return)    onSelect(models[cursor].id);
   });
 
   return (
     <Box flexDirection="column" borderStyle="round" borderColor="yellow" padding={1}>
-      <Text bold color="yellow" marginBottom={1}>Select a model:</Text>
-      {MODELS.map((model, i) => (
+      <Text bold color="yellow">Select a model:</Text>
+      {models.map((model, i) => (
         <Box key={model.id}>
           <Text color={i === cursor ? 'green' : undefined}>
             {i === cursor ? '❯ ' : '  '}
@@ -679,9 +706,85 @@ export const ModelSelect = ({ onSelect }: Props) => {
     </Box>
   );
 };
+
+// Outer component — wraps with Suspense so the spinner shows while
+// the promise is pending. ModelList never renders with empty data.
+export const ModelSelect = ({ onSelect }: Props) => (
+  <Suspense fallback={<Spinner label="Loading models…" />}>
+    <ModelList onSelect={onSelect} />
+  </Suspense>
+);
 ```
 
-This is a fully interactive select menu in ~40 lines. No library. No framework. Pure React + `useInput`.
+**What `use()` does here — compared to the traditional approach:**
+
+```tsx
+// ❌ Traditional — useEffect + useState
+const ModelList = ({ onSelect }) => {
+  const [models, setModels] = useState([]);       // empty on first render
+  const [loading, setLoading] = useState(true);  // manual loading flag
+
+  useEffect(() => {
+    fetchModels().then(data => {
+      setModels(data);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) return <Spinner />;   // manual guard
+  // ...
+};
+
+// ✅ React 19 use() — Suspense handles the loading state
+const ModelList = ({ onSelect }) => {
+  const models = use(modelsPromise); // never undefined — component only
+  // renders after the promise resolves. Suspense shows the fallback instead.
+  // ...
+};
+```
+
+The key difference: `use()` can be called **conditionally**, unlike `useEffect`. If you only want to load models when the user opens the selector, you can:
+
+```tsx
+const ModelList = ({ visible, onSelect }: Props) => {
+  // Legal in React 19 — hooks can be conditional with use()
+  if (!visible) return null;
+  const models = use(modelsPromise); // only suspends when visible is true
+  // ...
+};
+```
+
+This is a fully interactive, async-loaded select menu. **No `isLoading`. No empty-array flash. No cleanup.** Pure `use()` + `Suspense`.
+
+---
+
+### Aside: `<Activity>` — Keep State Alive While Hidden
+
+> This is one to watch. It's not stable yet in React 19, but it's coming — and it's the right mental model for multi-screen CLIs.
+
+`<Activity>` (previously called `<Offscreen>`) keeps a component tree mounted and its state alive while visually hidden. In a CLI with multiple screens — model selector, chat, settings — switching between them today means unmounting and remounting, which resets all local state:
+
+```tsx
+// ❌ Today — switching screens destroys and recreates state
+{screen === 'chat'   && <ChatScreen />}
+{screen === 'models' && <ModelSelect onSelect={setModel} />}
+```
+
+With `<Activity>` (when it lands):
+
+```tsx
+// ✅ Future — state preserved across screen switches
+<Activity mode={screen === 'chat' ? 'visible' : 'hidden'}>
+  <ChatScreen />
+</Activity>
+<Activity mode={screen === 'models' ? 'visible' : 'hidden'}>
+  <ModelSelect onSelect={setModel} />
+</Activity>
+```
+
+The hidden subtree stays mounted, keeps its scroll position, its focused element, its in-flight requests — but produces no output. When you switch back, it resumes instantly. This is exactly how `vim` handles split buffers or how a browser keeps background tabs alive.
+
+> **Speaker note:** Don't promise this for production today. Mark it as "this is where React is going" — it's a useful signal about the design direction, and it's a natural landing pad after showing `use()` and `Suspense`.
 
 ---
 
