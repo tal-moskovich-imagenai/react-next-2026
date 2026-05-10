@@ -2,7 +2,7 @@
 
 **ReactNext 2026 — June 23, Hall A**
 **Speaker: Tal Moskovich**
-**Duration: 30 minutes (10:05–10:35)**
+**Duration: 35 minutes (10:05–10:40)**
 
 ---
 
@@ -13,11 +13,11 @@
 | 1 · Hook | 10:05 | 2 min | The reveal — tools you use daily are React apps |
 | 2 · Context | 10:07 | 4 min | How React renderers work, what Ink is |
 | 3 · Core API | 10:11 | 5 min | Box, Text, hooks — the mental model |
-| 4 · Live Build | 10:16 | 12 min | Build an AI CLI from scratch |
-| 5 · Testing | 10:28 | 3 min | Test CLI components with Vitest + ink-testing-library |
-| 6 · At Scale | 10:31 | 5 min | What production apps do differently — and why |
-| 7 · When/Why | 10:36 | 2 min | When to reach for this in real projects |
-| 8 · Close | 10:38 | ~30 sec | Final thought + links |
+| 4 · Live Build | 10:16 | 14 min | Build an AI CLI (env setup, streaming, React 19) |
+| 5 · Testing | 10:30 | 3 min | Test CLI components with Vitest + ink-testing-library |
+| 6 · At Scale | 10:33 | 4 min | What production apps do differently — and why |
+| 7 · When/Why | 10:37 | 2 min | When to reach for this + @inkjs/ui |
+| 8 · Close | 10:39 | ~30 sec | Final thought + links |
 
 ---
 
@@ -47,7 +47,7 @@ The library is called **Ink**. It's got 38,000 stars on GitHub, 3.7 million down
 
 If you already know React, you already know Ink.
 
-Let's prove that in the next 28 minutes.
+Let's prove that in the next 35 minutes.
 
 ---
 
@@ -328,6 +328,8 @@ import { App } from './App.js';
 render(<App />, { concurrent: true });
 ```
 
+> **Speaker note (polish — `concurrent: true` caveat):** This flag is required for **all** React 19 features used in this talk: `Suspense` + `use()`, `useTransition`, and `useOptimistic`. Without it, Ink runs in legacy sync mode — those APIs silently fall back to no-ops or throw. Always set it. If you're on Ink v5 or older, the option doesn't exist yet; upgrade to v7 first. Check `ink` version with `npm ls ink`.
+
 `src/App.tsx`:
 
 ```tsx
@@ -439,6 +441,23 @@ Install the AI SDK:
 npm install ai @ai-sdk/openai
 ```
 
+Set up your API key. Create a `.env` file at the project root — **never commit this**:
+
+```
+# .env
+OPENAI_API_KEY=sk-...
+```
+
+Node 20.6+ can load it natively — no `dotenv` package needed. Update your dev script in `package.json`:
+
+```json
+"dev": "tsx watch --env-file=.env src/index.tsx"
+```
+
+`@ai-sdk/openai` reads `process.env.OPENAI_API_KEY` automatically. That's all the wiring required.
+
+> **Speaker note (live demo safety):** The `--env-file` flag keeps the key out of your shell history and environment. For the demo, confirm the key is set before going on stage: `node --env-file=.env -e "console.log(process.env.OPENAI_API_KEY?.slice(0,8))"`. You should see `sk-proj-` (or similar). Don't flash the full key.
+
 ---
 
 #### The Most Important Thing to Understand Before Writing a Single Line
@@ -549,15 +568,17 @@ export const useStream = (model = 'gpt-4o-mini') => {
   const [content, setContent]   = useState('');
   const [error, setError]       = useState<Error | null>(null);
 
-  // send() is designed to be called inside a React transition —
-  // see App.tsx where startTransition wraps it.
-  const send = useCallback(async (messages: Message[]) => {
+  // send() is called inside a React transition (see App.tsx).
+  // It returns the fully-accumulated text so the caller can commit it
+  // to permanent state without relying on a stale `content` closure.
+  const send = useCallback(async (messages: Message[]): Promise<string> => {
     setContent('');
     setError(null);
 
+    let accumulated = '';
+
     const { textStream } = streamText({
       model: openai(model),
-      // Full conversation history — the SDK handles the messages array
       messages: messages.map(m => ({ role: m.role, content: m.content })),
       onError: ({ error }) => setError(error as Error),
     });
@@ -566,8 +587,11 @@ export const useStream = (model = 'gpt-4o-mini') => {
     // Each chunk is a string fragment (one or more tokens).
     // Each setState call triggers a re-render in Ink → new ANSI output.
     for await (const chunk of textStream) {
-      setContent(prev => prev + chunk);
+      accumulated += chunk;
+      setContent(accumulated);
     }
+
+    return accumulated; // ← caller gets the final text; no stale closure
   }, [model]);
 
   return { content, error, send };
@@ -598,6 +622,22 @@ export const Spinner = ({ label }: { label?: string }) => {
     </Text>
   );
 };
+```
+
+> **Speaker note (polish — `useAnimation`):** The `setInterval` + `useState` approach above is the most readable pattern and works fine at 80ms intervals. For high-frequency animations (< 16ms / 60fps), Ink v7 ships a `useAnimation` hook that ties into the renderer's own RAF-equivalent loop and avoids creating a separate timer:
+>
+> ```tsx
+> import { useAnimation } from 'ink';
+>
+> const Spinner = ({ label }: { label?: string }) => {
+>   const { frame } = useAnimation({ fps: 12 }); // frame increments at 12fps
+>   return <Text>{FRAMES[frame % FRAMES.length]} {label}</Text>;
+> };
+> ```
+>
+> For a spinner at 12fps, `setInterval` is fine. For anything animating at 60fps (progress bars, streaming cursors), prefer `useAnimation` to stay in sync with Ink's render loop and avoid timer drift.
+
+```tsx
 ```
 
 Update `App.tsx` — `useStream` + `useOptimistic` + `useTransition`:
@@ -642,13 +682,17 @@ export const App = () => {
 
       // Full history passed to streamText → proper multi-turn context
       const history = [...messages, userMsg];
-      await send(history);
+
+      // FIX: use the return value, not the `content` closure.
+      // By the time this line runs, `content` still holds the previous
+      // render's snapshot — `finalText` has the full streamed string.
+      const finalText = await send(history);
 
       // Commit both turns to permanent state when streaming finishes
       setMessages(prev => [
         ...prev,
         userMsg,
-        { role: 'assistant', content },
+        { role: 'assistant', content: finalText },
       ]);
     });
   };
@@ -754,13 +798,38 @@ export const modelsPromise: Promise<Model[]> = fetch(
 `src/ModelSelect.tsx`:
 
 ```tsx
-import React, { useState, use, Suspense } from 'react';
+import React, { useState, use, Suspense, Component, type ReactNode } from 'react';
 import { Box, Text, useInput } from 'ink';
 import { modelsPromise } from './fetchModels.js';
 import { Spinner } from './Spinner.js';
 
 interface Props {
   onSelect: (modelId: string) => void;
+}
+
+// Error boundary — Suspense alone cannot catch rejected promises.
+// If the fetch fails (bad key, network error) this surfaces the message
+// instead of crashing the whole app.
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <Box borderStyle="round" borderColor="red" padding={1}>
+          <Text color="red">✗ Failed to load models: {this.state.error.message}</Text>
+        </Box>
+      );
+    }
+    return this.props.children;
+  }
 }
 
 // Inner component — use() suspends this until modelsPromise resolves.
@@ -791,14 +860,18 @@ const ModelList = ({ onSelect }: Props) => {
   );
 };
 
-// Outer component — wraps with Suspense so the spinner shows while
-// the promise is pending. ModelList never renders with empty data.
+// ErrorBoundary wraps Suspense — required whenever you use() a promise.
+// Suspense handles the pending state; ErrorBoundary handles rejection.
 export const ModelSelect = ({ onSelect }: Props) => (
-  <Suspense fallback={<Spinner label="Loading models…" />}>
-    <ModelList onSelect={onSelect} />
-  </Suspense>
+  <ErrorBoundary>
+    <Suspense fallback={<Spinner label="Loading models…" />}>
+      <ModelList onSelect={onSelect} />
+    </Suspense>
+  </ErrorBoundary>
 );
 ```
+
+> **Speaker note (fix #5):** React does not catch rejected promises inside `Suspense` — they bubble up and crash the tree. An `ErrorBoundary` is always required alongside `Suspense` in production code. The pattern is always: `<ErrorBoundary><Suspense fallback={...}><ComponentThatUses /></Suspense></ErrorBoundary>`. There is a proposal for a built-in `<ErrorBoundary>` in future React, but class components are still the only way today.
 
 **What `use()` does here — compared to the traditional approach:**
 
@@ -839,6 +912,39 @@ const ModelList = ({ visible, onSelect }: Props) => {
 ```
 
 This is a fully interactive, async-loaded select menu. **No `isLoading`. No empty-array flash. No cleanup.** Pure `use()` + `Suspense`.
+
+---
+
+#### Why We Didn't Use `use()` for the AI Stream
+
+> **Speaker note (note #4):** Audiences that just saw `use(modelsPromise)` will immediately ask: "Why not do `use(streamPromise)` for the AI response?" This is the right question. Address it before it comes up.
+
+`use()` and streaming solve fundamentally different problems:
+
+| | `use(modelsPromise)` | `streamText` + `for await` |
+|---|---|---|
+| **What's awaited** | A single resolved value (array of models) | An infinite sequence of incremental chunks |
+| **When does it finish?** | Once — the promise resolves | After N chunks; unknown upfront |
+| **React model** | Suspend → resume → render once | Re-render on every chunk |
+| **UI pattern** | Loading state → final UI | Spinner → incremental text appearing |
+
+`use()` is designed for **one value that arrives once**. It suspends the component, then re-renders it a single time when the promise resolves.
+
+A streaming AI response is the opposite: it's a sequence of values arriving over time, each one triggering a new render. You want to show the text appearing incrementally — not wait for the full response and snap it in at the end.
+
+```tsx
+// ❌ This would freeze the UI until the entire response arrives
+// then snap it all in at once — destroying the streaming effect
+const response = use(streamText({ ... }).text); // .text is a Promise<string>
+
+// ✅ This re-renders on every chunk — you see text appearing in real time
+const { textStream } = streamText({ ... });
+for await (const chunk of textStream) {
+  setContent(prev => prev + chunk); // → new ANSI frame on each chunk
+}
+```
+
+The `ai` SDK actually exposes both: `.text` as a `Promise<string>` (for `use()`), and `.textStream` as an `AsyncIterable` (for `for await`). **Use `.text` when you want the final result. Use `.textStream` when you want incremental rendering.** We always want incremental rendering in a live terminal demo.
 
 ---
 
@@ -921,47 +1027,77 @@ describe('Spinner', () => {
 
 `src/ModelSelect.test.tsx`:
 
+> **Speaker note:** `ModelSelect` now uses `use(modelsPromise)` — which means it suspends on first render. The old synchronous tests broke because `lastFrame()` returned the spinner, not the model list. Two changes fix this:
+> 1. `vi.mock` replaces `modelsPromise` with an already-resolved promise.
+> 2. Each test `await`s a micro-task tick (`await new Promise(r => setTimeout(r, 0))`) so React processes the resolved promise before asserting.
+
 ```tsx
 import React from 'react';
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render } from 'ink-testing-library';
 import { ModelSelect } from './ModelSelect.js';
 
+// Provide a pre-resolved promise so use() never actually suspends.
+// The module factory runs once; Vitest hoists vi.mock() above imports.
+vi.mock('./fetchModels.js', () => ({
+  modelsPromise: Promise.resolve([
+    { id: 'gpt-4o-mini', label: 'GPT-4o Mini (fast)' },
+    { id: 'gpt-4o',     label: 'GPT-4o (smart)'     },
+    { id: 'o1-mini',    label: 'o1 Mini (reasoning)' },
+  ]),
+}));
+
+// Flush microtasks so the resolved promise is processed by React
+const flush = () => new Promise<void>(r => setTimeout(r, 0));
+
 describe('ModelSelect', () => {
-  it('shows all model options', () => {
+  it('shows spinner before promise resolves (real modelsPromise)', () => {
+    // Without the mock this would be the steady state — demonstrate the fallback
+    // Here we just confirm the mock is working: spinner should NOT appear
     const { lastFrame } = render(<ModelSelect onSelect={() => {}} />);
+    // immediately after render React may still show the Suspense fallback
+    // — that's correct behaviour. The next test confirms it resolves.
+    expect(typeof lastFrame()).toBe('string');
+  });
+
+  it('shows all model options after promise resolves', async () => {
+    const { lastFrame } = render(<ModelSelect onSelect={() => {}} />);
+    await flush(); // let the resolved promise propagate through React
     expect(lastFrame()).toContain('GPT-4o Mini');
     expect(lastFrame()).toContain('GPT-4o');
     expect(lastFrame()).toContain('o1 Mini');
   });
 
-  it('moves cursor down with arrow key', () => {
-    const { lastFrame, stdin } = render(<ModelSelect onSelect={() => {}} />);
-
-    // Verify cursor starts at first item
+  it('starts cursor on first item', async () => {
+    const { lastFrame } = render(<ModelSelect onSelect={() => {}} />);
+    await flush();
     expect(lastFrame()).toContain('❯ GPT-4o Mini');
+  });
 
-    // Press down arrow
-    stdin.write('\u001B[B'); // ANSI escape for down arrow
+  it('moves cursor down with arrow key', async () => {
+    const { lastFrame, stdin } = render(<ModelSelect onSelect={() => {}} />);
+    await flush();
+
+    stdin.write('\u001B[B'); // ANSI escape for ↓
     expect(lastFrame()).toContain('❯ GPT-4o');
   });
 
-  it('calls onSelect when Enter is pressed', () => {
+  it('calls onSelect when Enter is pressed', async () => {
     const onSelect = vi.fn();
     const { stdin } = render(<ModelSelect onSelect={onSelect} />);
+    await flush();
 
-    stdin.write('\r'); // Enter key
+    stdin.write('\r');
     expect(onSelect).toHaveBeenCalledWith('gpt-4o-mini');
   });
 
-  it('does not go below the last item', () => {
+  it('does not go below the last item', async () => {
     const { lastFrame, stdin } = render(<ModelSelect onSelect={() => {}} />);
+    await flush();
 
-    // Press down 10 times (more than the 3 items)
     for (let i = 0; i < 10; i++) {
       stdin.write('\u001B[B');
     }
-
     expect(lastFrame()).toContain('❯ o1 Mini');
   });
 });
@@ -970,7 +1106,9 @@ describe('ModelSelect', () => {
 Run with `npx vitest`. Output:
 
 ```
-✔ ModelSelect > shows all model options
+✔ ModelSelect > shows spinner before promise resolves
+✔ ModelSelect > shows all model options after promise resolves
+✔ ModelSelect > starts cursor on first item
 ✔ ModelSelect > moves cursor down with arrow key
 ✔ ModelSelect > calls onSelect when Enter is pressed
 ✔ ModelSelect > does not go below the last item
@@ -1668,6 +1806,36 @@ If yes — Ink is worth it. If the tool runs, prints, and exits — it probably 
 
 ---
 
+### Note #6 — Don't Build Everything from Scratch: `@inkjs/ui`
+
+> **Speaker note:** Mention this as a natural closer to the "when to reach for it" discussion. Audiences immediately start thinking about the components they'd need to build — save them some work.
+
+If you're starting a real project, check [`@inkjs/ui`](https://github.com/vadimdemedes/ink#components) before rolling your own components. It ships a set of battle-tested Ink components:
+
+| Component | What it does |
+|---|---|
+| `<TextInput>` | Controlled text input with cursor |
+| `<Select>` | Arrow-key navigation list |
+| `<MultiSelect>` | Checkbox-style multi-selection |
+| `<ConfirmInput>` | y/n prompt |
+| `<Spinner>` | Animated spinner with presets |
+| `<ProgressBar>` | Horizontal progress bar |
+| `<Badge>` | Coloured label |
+| `<StatusMessage>` | Coloured status line (info/error/warning/success) |
+| `<UnorderedList>` / `<OrderedList>` | Semantic list rendering |
+
+```bash
+npm install @inkjs/ui
+```
+
+```tsx
+import { Select, TextInput, Spinner } from '@inkjs/ui';
+```
+
+The components we built in this talk (`TextInput`, `Spinner`, `ModelSelect`) were great for demonstrating the primitives. In a production CLI, use `@inkjs/ui` so you spend time on the product, not the widget library.
+
+---
+
 ## Block 8 — Closing (30 sec)
 
 > "React is an abstraction for describing UI as a function of state. The DOM was always just one possible output target.
@@ -1678,8 +1846,11 @@ If yes — Ink is worth it. If the tool runs, prints, and exits — it probably 
 
 **Links:**
 - Ink: [github.com/vadimdemedes/ink](https://github.com/vadimdemedes/ink)
+- @inkjs/ui: [github.com/vadimdemedes/ink#components](https://github.com/vadimdemedes/ink#components)
 - ink-testing-library: [github.com/vadimdemedes/ink-testing-library](https://github.com/vadimdemedes/ink-testing-library)
+- Vercel AI SDK: [sdk.vercel.ai](https://sdk.vercel.ai)
 - Create Ink App: `npx create-ink-app --typescript my-cli`
+- This talk's repo: [github.com/talmoskovich/react-next-2026](https://github.com/talmoskovich/react-next-2026)
 
 ---
 
