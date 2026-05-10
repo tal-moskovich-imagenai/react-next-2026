@@ -439,11 +439,99 @@ Install the AI SDK:
 npm install ai @ai-sdk/openai
 ```
 
-> **`useChat` vs `streamText` — which one?**
->
-> The AI SDK has two layers. `useChat` from `@ai-sdk/react` is built for browser React apps that talk to a **backend HTTP endpoint** — think Next.js route handlers. It handles transport, reconnect, and request serialization over the wire.
->
-> In a CLI there's no browser, no HTTP round-trip. You're **already in Node.js** — right next to the model call. The right tool is `streamText` from `ai`, which gives you a native async iterable stream you can consume token-by-token inside a React transition. Same provider system, same model IDs, same options. Just without the network hop.
+---
+
+#### The Most Important Thing to Understand Before Writing a Single Line
+
+> **Speaker note:** Pause here. Draw this on the whiteboard or switch to the diagram. This is the conceptual moment of the step — the code comes after.
+
+Most React developers know the Vercel AI SDK. They've used `useChat`. And the first instinct when building this app is:
+
+```tsx
+// Every React dev's first instinct for AI streaming:
+import { useChat } from '@ai-sdk/react';
+const { messages, sendMessage } = useChat({ ... });
+```
+
+**Don't do this in a CLI. Here's why.**
+
+`useChat` assumes a specific architecture:
+
+```
+  Browser                              Server
+┌──────────────────────┐         ┌──────────────────────┐
+│  React component     │  HTTP   │  Next.js API route   │
+│  useChat()  ─────────┼────────▶│  POST /api/chat      │
+│             ◀────────┼─── SSE ─│  streamText(model)   │
+│  renders tokens      │         │  → toUIMessageStream │
+└──────────────────────┘         └──────────────────────┘
+```
+
+`useChat` handles transport — serialising messages, opening the SSE connection, parsing the delta stream, reconnecting on drops. It's doing real work, but that work is about **crossing a network boundary** between a browser and a server.
+
+**In a CLI, that boundary doesn't exist.**
+
+```
+  Terminal process (Node.js)
+┌─────────────────────────────────────────────┐
+│  React component (Ink)                      │
+│  + OpenAI API                               │
+│  — everything runs in the same process —    │
+└─────────────────────────────────────────────┘
+```
+
+Your Ink component and the AI model call are in the same Node.js process. There is no browser. There is no HTTP server. If you used `useChat`, you'd have to spin up an HTTP server inside your CLI just so your CLI could make an HTTP request to itself — to call the same model you could have called directly.
+
+```
+What useChat would require in a CLI:
+
+ Ink component
+      │
+      │  HTTP POST (to yourself)
+      ▼
+ Express server   ← you'd have to write this
+      │
+      │  streamText(model)
+      ▼
+ OpenAI API
+
+This is absurd. You're in Node.js. Just call the model.
+```
+
+**The right tool is `streamText` from `ai`.**
+
+```tsx
+// What you actually want — call the model directly, no HTTP hop:
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
+
+const { textStream } = streamText({
+  model: openai('gpt-4o-mini'),
+  messages,
+});
+
+for await (const chunk of textStream) {
+  // chunk is a string fragment — one or more tokens
+  // setContent triggers a re-render in Ink → new ANSI bytes → terminal updates
+  setContent(prev => prev + chunk);
+}
+```
+
+`textStream` is both a `ReadableStream` and an `AsyncIterable`. You `for await` over it inside a React transition. Each chunk calls `setContent`, which triggers a re-render, which writes new ANSI escape sequences to stdout. That's the entire streaming pipeline — no transport layer, no SSE parser, no reconnect logic. The SDK handles all of that internally.
+
+**The mental model, side by side:**
+
+```
+useChat (@ai-sdk/react)          streamText (ai)
+─────────────────────────        ──────────────────────────
+Browser → HTTP → Server          Node.js → Model API directly
+Handles transport + SSE          Returns AsyncIterable<string>
+Right for: Next.js chatbots      Right for: CLI, scripts, agents
+```
+
+Same provider system. Same model IDs. Same `@ai-sdk/openai`, `@ai-sdk/anthropic` imports. Just a different entry point depending on where you're running.
+
+---
 
 `src/useStream.ts`:
 
