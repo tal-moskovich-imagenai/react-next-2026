@@ -281,7 +281,7 @@ This is the core of the talk. Type every line. Narrate as you go. Have the final
 ```bash
 mkdir react-terminal-demo && cd react-terminal-demo
 npm init -y
-npm install ink react
+npm install ink react ai @ai-sdk/openai
 npm install -D typescript tsx @types/react @types/node
 ```
 
@@ -431,81 +431,58 @@ Type into the terminal. State updates. UI re-renders. **This is React in your te
 
 ---
 
-### Step 4 — Streaming AI Response (5 min)
+### Step 4 — Streaming AI Response with the Vercel AI SDK (5 min)
 
-Now connect to a real AI API. We'll stream tokens using the Fetch API and `ReadableStream`.
+Install the AI SDK:
 
-`src/useStreamingResponse.ts`:
+```bash
+npm install ai @ai-sdk/openai
+```
+
+> **`useChat` vs `streamText` — which one?**
+>
+> The AI SDK has two layers. `useChat` from `@ai-sdk/react` is built for browser React apps that talk to a **backend HTTP endpoint** — think Next.js route handlers. It handles transport, reconnect, and request serialization over the wire.
+>
+> In a CLI there's no browser, no HTTP round-trip. You're **already in Node.js** — right next to the model call. The right tool is `streamText` from `ai`, which gives you a native async iterable stream you can consume token-by-token inside a React transition. Same provider system, same model IDs, same options. Just without the network hop.
+
+`src/useStream.ts`:
 
 ```tsx
 import { useState, useCallback } from 'react';
+import { streamText } from 'ai';
+import { openai } from '@ai-sdk/openai';
 
-interface StreamState {
+interface Message {
+  role: 'user' | 'assistant';
   content: string;
-  isStreaming: boolean;
-  error: string | null;
 }
 
-export const useStreamingResponse = () => {
-  const [state, setState] = useState<StreamState>({
-    content: '',
-    isStreaming: false,
-    error: null,
-  });
+export const useStream = (model = 'gpt-4o-mini') => {
+  const [content, setContent]   = useState('');
+  const [error, setError]       = useState<Error | null>(null);
 
-  const stream = useCallback(async (prompt: string) => {
-    setState({ content: '', isStreaming: true, error: null });
+  // send() is designed to be called inside a React transition —
+  // see App.tsx where startTransition wraps it.
+  const send = useCallback(async (messages: Message[]) => {
+    setContent('');
+    setError(null);
 
-    try {
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          stream: true,
-          messages: [{ role: 'user', content: prompt }],
-        }),
-      });
+    const { textStream } = streamText({
+      model: openai(model),
+      // Full conversation history — the SDK handles the messages array
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
+      onError: ({ error }) => setError(error as Error),
+    });
 
-      const reader = response.body!.getReader();
-      const decoder = new TextDecoder();
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n').filter(l => l.startsWith('data: '));
-
-        for (const line of lines) {
-          const data = line.slice(6);
-          if (data === '[DONE]') break;
-
-          try {
-            const parsed = JSON.parse(data);
-            const delta = parsed.choices[0]?.delta?.content;
-            if (delta) {
-              setState(prev => ({ ...prev, content: prev.content + delta }));
-            }
-          } catch {
-            // Skip malformed chunks
-          }
-        }
-      }
-    } catch (err) {
-      setState(prev => ({
-        ...prev,
-        error: err instanceof Error ? err.message : 'Unknown error',
-      }));
-    } finally {
-      setState(prev => ({ ...prev, isStreaming: false }));
+    // textStream is an AsyncIterable — iterate it directly.
+    // Each chunk is a string fragment (one or more tokens).
+    // Each setState call triggers a re-render in Ink → new ANSI output.
+    for await (const chunk of textStream) {
+      setContent(prev => prev + chunk);
     }
-  }, []);
+  }, [model]);
 
-  return { ...state, stream };
+  return { content, error, send };
 };
 ```
 
@@ -535,32 +512,28 @@ export const Spinner = ({ label }: { label?: string }) => {
 };
 ```
 
-Update `App.tsx` — now with two React 19 features: `useOptimistic` and `useTransition`:
+Update `App.tsx` — `useStream` + `useOptimistic` + `useTransition`:
 
 ```tsx
 import React, { useState, useOptimistic, useTransition } from 'react';
 import { Box, Text, useInput, useApp } from 'ink';
 import { TextInput } from './TextInput.js';
 import { Spinner } from './Spinner.js';
-import { useStreamingResponse } from './useStreamingResponse.js';
+import { useStream } from './useStream.js';
 
 interface Message {
   role: 'user' | 'assistant';
   content: string;
-  pending?: boolean; // only on optimistic entries
+  pending?: boolean;
 }
 
 export const App = () => {
   const { exit } = useApp();
+  const [model, setModel]       = useState('gpt-4o-mini');
   const [messages, setMessages] = useState<Message[]>([]);
-  const { content, isStreaming, error, stream } = useStreamingResponse();
+  const { content, error, send } = useStream(model);
   const [isPending, startTransition] = useTransition();
 
-  // useOptimistic — React 19
-  // While the async stream is in flight, optimisticMessages includes the
-  // user's message immediately (with pending: true). The moment the
-  // transition completes and setMessages commits, the optimistic entry
-  // is replaced by the real state automatically.
   const [optimisticMessages, addOptimisticMessage] = useOptimistic(
     messages,
     (current, newMessage: Message) => [...current, { ...newMessage, pending: true }],
@@ -573,15 +546,20 @@ export const App = () => {
   const handleSubmit = (value: string) => {
     if (!value.trim() || isPending) return;
 
-    // startTransition marks this as a non-urgent update.
-    // Inside a transition, useOptimistic updates are allowed and will
-    // revert automatically if the transition fails.
     startTransition(async () => {
-      addOptimisticMessage({ role: 'user', content: value });
-      await stream(value);
+      const userMsg: Message = { role: 'user', content: value };
+
+      // Appears immediately — before the API responds
+      addOptimisticMessage(userMsg);
+
+      // Full history passed to streamText → proper multi-turn context
+      const history = [...messages, userMsg];
+      await send(history);
+
+      // Commit both turns to permanent state when streaming finishes
       setMessages(prev => [
         ...prev,
-        { role: 'user', content: value },
+        userMsg,
         { role: 'assistant', content },
       ]);
     });
@@ -589,19 +567,16 @@ export const App = () => {
 
   return (
     <Box flexDirection="column" padding={1}>
-      {/* Header */}
       <Box borderStyle="round" borderColor="cyan" paddingX={2} marginBottom={1}>
-        <Text bold color="cyan">AI Terminal  </Text>
-        <Text dimColor>(q to quit)</Text>
+        <Text bold color="cyan">AI Terminal </Text>
+        <Text dimColor>model: {model}  (q to quit)</Text>
       </Box>
 
-      {/* Message history — reads from optimisticMessages, not messages.
-          The user's prompt appears instantly on submit, dimmed while pending. */}
       {optimisticMessages.map((msg, i) => (
         <Box key={i} marginBottom={1} flexDirection="column">
           <Text color={msg.role === 'user' ? 'yellow' : 'green'} bold>
             {msg.role === 'user' ? 'You' : 'AI'}
-            {msg.pending && <Text dimColor> (sending…)</Text>}
+            {msg.pending && <Text dimColor>  sending…</Text>}
           </Text>
           <Box paddingLeft={2}>
             <Text dimColor={msg.pending}>{msg.content}</Text>
@@ -609,8 +584,7 @@ export const App = () => {
         </Box>
       ))}
 
-      {/* Live streaming output */}
-      {isStreaming && (
+      {isPending && (
         <Box flexDirection="column" marginBottom={1}>
           <Text color="green" bold>AI</Text>
           <Box paddingLeft={2}>
@@ -619,12 +593,34 @@ export const App = () => {
         </Box>
       )}
 
-      {error && <Text color="red">Error: {error}</Text>}
+      {error && (
+        <Box>
+          <Text color="red">Error: {error.message}</Text>
+        </Box>
+      )}
 
       {!isPending && <TextInput onSubmit={handleSubmit} />}
     </Box>
   );
 };
+```
+
+**What the AI SDK buys us vs the raw `fetch` version:**
+
+| | Raw fetch (before) | `streamText` from `ai` |
+|---|---|---|
+| SSE parsing | Manual — split lines, parse JSON, check `[DONE]` | Gone — SDK handles it |
+| Provider switch | Rewrite the entire fetch call | Change one import: `openai(...)` → `anthropic(...)` |
+| Error handling | Manual try/catch around reader loop | `onError` callback |
+| Multi-turn history | Manually serialize `messages` array | Pass it directly — SDK owns the format |
+| Token streaming | `setState` on every parsed delta | `for await` on `textStream` — same result, less code |
+
+To switch from OpenAI to Anthropic Claude:
+
+```tsx
+// Change two lines — everything else stays identical
+import { anthropic } from '@ai-sdk/anthropic';
+const { textStream } = streamText({ model: anthropic('claude-opus-4-5'), ... });
 ```
 
 **What changed from the traditional version:**
@@ -1606,14 +1602,15 @@ The complete project built during this talk:
 ```
 react-terminal-demo/
 ├── src/
-│   ├── index.tsx           ← Entry point, calls render()
-│   ├── App.tsx             ← Root component, orchestrates state
-│   ├── TextInput.tsx       ← Controlled text input using useInput
-│   ├── Spinner.tsx         ← Animated spinner using useEffect + setInterval
-│   ├── ModelSelect.tsx     ← Arrow-key menu using useInput
-│   ├── useStreamingResponse.ts  ← Custom hook for streaming AI responses
-│   └── *.test.tsx          ← Vitest + ink-testing-library tests
-├── package.json
+│   ├── index.tsx        ← Entry point: render(<App />, { concurrent: true })
+│   ├── App.tsx          ← Root: useOptimistic + useTransition + useStream
+│   ├── TextInput.tsx    ← Controlled input via useInput
+│   ├── Spinner.tsx      ← Animated frames via useEffect + setInterval
+│   ├── ModelSelect.tsx  ← use(modelsPromise) + Suspense + arrow-key nav
+│   ├── fetchModels.ts   ← Promise created once, consumed by use()
+│   ├── useStream.ts     ← streamText from ai, for await over textStream
+│   └── *.test.tsx       ← Vitest + ink-testing-library tests
+├── package.json         ← deps: ink react ai @ai-sdk/openai
 └── tsconfig.json
 ```
 
