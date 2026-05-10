@@ -95,6 +95,35 @@ Ink handles all of that. You write React. Ink writes ANSI.
 
 ---
 
+**One concrete render cycle — what actually happens when state changes:**
+
+```
+1. You call setState()
+   └─ React schedules a re-render
+
+2. React runs your components → produces a new virtual tree
+
+3. The reconciler diffs the new tree against the previous one
+   └─ "Box at row 2 col 5: text changed from 'Hello' to 'Counter: 1'"
+
+4. Ink walks the diff and calls Yoga
+   └─ Yoga re-runs the flexbox algorithm → returns (row, col) for every node
+
+5. Ink compares the new cell grid to the previous one
+   └─ Only the cells that changed get written
+
+6. Ink writes the minimal ANSI to stdout:
+   \x1b[2;5H       ← move cursor to row 2, col 5
+   Counter: 1      ← overwrite that region
+   (nothing else — unchanged cells are never touched)
+```
+
+This is the same mental model as React's DOM reconciliation — produce a diff, apply only what changed — but the "DOM" is a 2D array of terminal cells, and "patching the DOM" means writing ANSI escape sequences to stdout.
+
+**Why this matters for performance:** If your component renders 80×24 = 1,920 cells but only one word changed, Ink writes ~10 bytes. If you re-render the whole screen naively every frame (clearing with `\x1b[2J` and reprinting), you write thousands of bytes and the terminal flickers. Ink's cell-level diffing is what makes smooth, flicker-free terminal UIs possible — and it's the same property Claude Code had to preserve and optimize when pushing to 60fps.
+
+---
+
 **The key insight:**
 
 > Every `<Box>` is a flexbox container — like a `<div style={{display: 'flex'}}>`.
@@ -259,6 +288,46 @@ For items that render once and never change (log lines, completed steps):
 ```
 
 `Static` renders items directly to stdout and never re-renders them. This is how Gatsby, tap, and similar tools display thousands of completed steps without flickering.
+
+---
+
+### `useWindowSize` — Responsive Terminal Layouts
+
+Unlike a browser, the terminal can be resized at any moment. Ink gives you `useWindowSize()` to respond to it — same model as a CSS media query, but in React:
+
+```tsx
+import { useWindowSize } from 'ink';
+
+const Layout = () => {
+  const { columns, rows } = useWindowSize();
+
+  // Narrow terminal — stack vertically
+  if (columns < 80) {
+    return (
+      <Box flexDirection="column">
+        <Sidebar />
+        <Main />
+      </Box>
+    );
+  }
+
+  // Wide terminal — side by side
+  return (
+    <Box>
+      <Box width={24} flexShrink={0}>
+        <Sidebar />
+      </Box>
+      <Box flexGrow={1}>
+        <Main />
+      </Box>
+    </Box>
+  );
+};
+```
+
+`columns` and `rows` update in real time as the user resizes — React re-renders, Yoga recalculates, Ink writes the diff. The component is reactive to the viewport exactly like `useMediaQuery` in the browser.
+
+> **Practical use:** Truncate long paths to `columns - 4` characters. Cap list heights to `rows - 6` to leave room for the header and input. Claude Code uses `columns` to decide whether to show inline diffs or full-file diffs.
 
 ---
 
@@ -736,6 +805,99 @@ export const App = () => {
   );
 };
 ```
+
+---
+
+#### Terminal-Specific: Conditional Rendering and Layout Shift
+
+> **Speaker note:** This is the first real "gotcha" that every web developer hits when they write their second Ink component. Mention it now so the audience's mental model is right from the start.
+
+In the browser, hiding a component with conditional rendering doesn't move anything:
+
+```tsx
+// Browser — <Panel> is display:none; nothing shifts
+{showPanel && <Panel />}
+```
+
+In a terminal, **there is no display:none by default.** The terminal is a document flow. Removing a `<Box>` from the tree makes everything below it shift up. If you toggle `isPending` rapidly, the input field jumps every time:
+
+```tsx
+// ❌ Causes layout jump in the terminal — TextInput shifts up when Spinner appears
+{isPending && <Spinner />}
+<TextInput onSubmit={handleSubmit} />
+```
+
+Two ways to fix it:
+
+```tsx
+// ✅ Option 1: display prop — reserves space, renders nothing
+<Box display={isPending ? 'flex' : 'none'}>
+  <Spinner />
+</Box>
+<TextInput onSubmit={handleSubmit} />
+
+// ✅ Option 2: always render both, control visibility via opacity/dimColor
+{isPending ? <Spinner /> : <Box height={1} />}  {/* placeholder holds height */}
+<TextInput onSubmit={handleSubmit} />
+```
+
+---
+
+#### Production Upgrade: `<Static>` for Completed Messages
+
+The current `App.tsx` renders all messages with `optimisticMessages.map(...)` — a dynamic list that Ink re-renders on every state change. For a quick demo this is fine, but it has a real cost at scale: if you have 50 exchanges, Ink diffs all 50 message boxes every time a new token arrives.
+
+The production pattern — what Claude Code actually does — splits the render into two regions:
+
+```tsx
+import { Static } from 'ink';
+
+return (
+  <Box flexDirection="column" padding={1}>
+    {/* Header */}
+    <Box borderStyle="round" borderColor="cyan" paddingX={2} marginBottom={1}>
+      <Text bold color="cyan">AI Terminal </Text>
+      <Text dimColor>model: {model}  (q to quit)</Text>
+    </Box>
+
+    {/* Committed messages — written to stdout once, never re-rendered.
+        Ink renders Static items directly to stdout as they arrive,
+        then forgets them. The cell-diff loop never touches these lines again. */}
+    <Static items={messages}>
+      {(msg, i) => (
+        <Box key={i} marginBottom={1} flexDirection="column">
+          <Text color={msg.role === 'user' ? 'yellow' : 'green'} bold>
+            {msg.role === 'user' ? 'You' : 'AI'}
+          </Text>
+          <Box paddingLeft={2}>
+            <Text>{msg.content}</Text>
+          </Box>
+        </Box>
+      )}
+    </Static>
+
+    {/* Live region — only the current in-progress stream updates every token.
+        This is the only area Ink's diff loop has to process at 60fps. */}
+    {isPending && (
+      <Box flexDirection="column" marginBottom={1}>
+        <Text color="green" bold>AI</Text>
+        <Box paddingLeft={2}>
+          {content ? <Text>{content}</Text> : <Spinner />}
+        </Box>
+      </Box>
+    )}
+
+    {error && <Text color="red">Error: {error.message}</Text>}
+    {!isPending && <TextInput onSubmit={handleSubmit} />}
+  </Box>
+);
+```
+
+**Why this matters:** Without `<Static>`, a 100-message conversation means Ink's diff loop touches ~100 × (average message height) cells on every token. With `<Static>`, it touches exactly one region — the current streaming response. The longer the session, the more dramatic the difference. This is one of the structural decisions that lets Claude Code stay smooth in long conversations.
+
+> **Speaker note:** You don't have to live-code the `<Static>` upgrade — the demo already works without it. Show this as a "here's how you'd take this to production" slide moment. The `<Static>` conceptual explanation was in Block 3 — this is the payoff.
+
+---
 
 **What the AI SDK buys us vs the raw `fetch` version:**
 
@@ -1844,13 +2006,31 @@ The components we built in this talk (`TextInput`, `Spinner`, `ModelSelect`) wer
 >
 > The tools you use every day — Claude Code, GitHub Copilot CLI, Prisma — are React apps. The next tool you build could be one too."
 
+---
+
+> **Speaker note — the last thing on screen:** Don't end on a link list. End with the terminal open and the repo URL large. The last frame the audience sees should be this:
+>
+> ```
+> ╭──────────────────────────────────────────────────────────╮
+> │  Everything built today is in this repo. Fork it.        │
+> │                                                          │
+> │  github.com/talmoskovich/react-next-2026                 │
+> │                                                          │
+> │  • Working AI CLI — tests pass, runs out of the box      │
+> │  • All React 19 patterns from this talk                  │
+> │  • .env.example included                                 │
+> ╰──────────────────────────────────────────────────────────╯
+> ```
+>
+> Say: *"The tests pass. It runs out of the box. Add your API key and you have a working AI CLI in two minutes. Fork it."* Then close the laptop.
+
 **Links:**
+- **Start here → fork the repo:** [github.com/talmoskovich/react-next-2026](https://github.com/talmoskovich/react-next-2026)
 - Ink: [github.com/vadimdemedes/ink](https://github.com/vadimdemedes/ink)
 - @inkjs/ui: [github.com/vadimdemedes/ink#components](https://github.com/vadimdemedes/ink#components)
 - ink-testing-library: [github.com/vadimdemedes/ink-testing-library](https://github.com/vadimdemedes/ink-testing-library)
 - Vercel AI SDK: [sdk.vercel.ai](https://sdk.vercel.ai)
 - Create Ink App: `npx create-ink-app --typescript my-cli`
-- This talk's repo: [github.com/talmoskovich/react-next-2026](https://github.com/talmoskovich/react-next-2026)
 
 ---
 
@@ -1865,10 +2045,11 @@ react-terminal-demo/
 │   ├── App.tsx          ← Root: useOptimistic + useTransition + useStream
 │   ├── TextInput.tsx    ← Controlled input via useInput
 │   ├── Spinner.tsx      ← Animated frames via useEffect + setInterval
-│   ├── ModelSelect.tsx  ← use(modelsPromise) + Suspense + arrow-key nav
+│   ├── ModelSelect.tsx  ← use(modelsPromise) + Suspense + ErrorBoundary + arrow-key nav
 │   ├── fetchModels.ts   ← Promise created once, consumed by use()
 │   ├── useStream.ts     ← streamText from ai, for await over textStream
 │   └── *.test.tsx       ← Vitest + ink-testing-library tests
+├── .env.example         ← OPENAI_API_KEY=sk-...  (copy to .env, never commit)
 ├── package.json         ← deps: ink react ai @ai-sdk/openai
 └── tsconfig.json
 ```
