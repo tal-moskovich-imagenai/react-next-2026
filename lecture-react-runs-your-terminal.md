@@ -973,99 +973,424 @@ const DeployDashboard = () => {
 
 ---
 
-### Pattern 4: Where Stock Ink Hits Its Ceiling (Claude Code, Gemini CLI)
+### Pattern 4: Where Stock Ink Hits Its Ceiling — The Claude Code Story
 
-Claude Code is an LLM agent. When it responds, tokens arrive at ~60fps. The conversation grows to hundreds of messages. The user scrolls while new tokens arrive. All of this happens simultaneously.
+> "I want to show you something uncomfortable. This is the kind of thing most library talks skip. But it matters — because it shows you exactly what React's abstraction boundary means in practice, and what you can do when the defaults aren't enough."
 
-**Here's the math that broke stock Ink:**
+Claude Code is an LLM agent. When it responds, tokens arrive at ~60fps. The conversation grows to hundreds of messages. The user scrolls while new tokens arrive. All of this happens simultaneously, in a 200-column terminal.
 
-```
-Terminal size:    200 columns × 120 rows
-Cells per frame:  24,000
-Objects per cell: 1 JavaScript object (stock Ink)
-Objects per frame: 24,000
-Frame rate:       60fps
-Objects/second:   1,440,000 JS objects created and GC'd every second
-```
-
-That's 1.4 million short-lived objects per second. The garbage collector starts pausing. Frames drop. The stream stutters.
-
-**What Anthropic did:**
-
-Instead of one object per cell, they switched to packed typed arrays — two `Int32` words per cell (one for the character codepoint, one for the style ID):
-
-```
-// Stock Ink (conceptual)
-interface Cell {
-  char: string;
-  fg: string;
-  bg: string;
-  bold: boolean;
-  italic: boolean;
-  // ... more style fields
-}
-const screen: Cell[][] = new Array(rows).fill(null).map(() => new Array(cols));
-// → 24,000 Cell objects per frame, GC'd every 16ms
-
-// Claude Code's approach (conceptual)
-// Two Int32 words per cell: [charCode | styleId]
-const screen = new Int32Array(rows * cols * 2);
-// → One TypedArray reused every frame. Zero per-frame allocation.
-```
-
-**Double-buffered rendering:**
-
-```
-// Stock Ink: allocates a new screen buffer every frame
-const newScreen = buildScreen(domTree); // allocation
-diff(previousScreen, newScreen);         // comparison
-previousScreen = newScreen;             // old one gets GC'd
-
-// Claude Code: swap two pre-allocated buffers
-renderInto(backBuffer, domTree);   // write into back buffer (no allocation)
-diff(frontBuffer, backBuffer);     // compare
-[frontBuffer, backBuffer] = [backBuffer, frontBuffer]; // pointer swap
-```
-
-**Blit optimization:**
-
-For unchanged subtrees, skip re-rendering entirely and copy cells from the previous frame:
-
-```tsx
-// If a node isn't dirty and its position hasn't changed,
-// copy its cells from the previous frame instead of re-rendering.
-// On a typical streaming frame: spinner ticks (3 cells changed),
-// everything else blits from the previous frame.
-// Result: the renderer touches ~0.01% of cells per frame.
-```
-
-**The outcome:** 60fps on a 200-column terminal while streaming tokens. The component model — `useState`, `useEffect`, `useContext`, JSX — is identical to stock Ink. The optimization is entirely in the renderer layer, invisible to application code.
+Let's look at what **stock Ink does**, why it breaks here, and what **Anthropic replaced it with** — optimization by optimization.
 
 ---
 
-### The Principle
+#### ❌ BEFORE: Stock Ink's Rendering Model
 
-> "React's abstraction has layers. Your components sit on top. The renderer sits below. You can swap the renderer — or optimize it — without touching a single component."
+**Step 1: How stock Ink represents a screen cell**
 
-This is exactly what Anthropic did. The `<MessageList>`, `<PermissionDialog>`, `<StreamingResponse>` components in Claude Code look like ordinary React components. They use `useState`. They use `useEffect`. The team that works on message streaming doesn't need to know about `Int32Array` or blit optimization. That's the value of the abstraction.
+Every character position on the terminal is a JavaScript object. Here's the shape Ink uses internally:
+
+```ts
+// Stock Ink — one object per terminal cell
+interface OutputEntry {
+  char: string;           // The character at this position ("A", "█", " ")
+  foregroundColor?: string; // "green", "#005cc5", "rgb(0,255,0)"
+  backgroundColor?: string;
+  bold?: boolean;
+  italic?: boolean;
+  underline?: boolean;
+  strikethrough?: boolean;
+  inverse?: boolean;
+  dimColor?: boolean;
+}
+
+// The full screen is an array of arrays of these objects
+type Screen = OutputEntry[][];
+
+function buildScreen(rows: number, cols: number): Screen {
+  return Array.from({ length: rows }, () =>
+    Array.from({ length: cols }, () => ({ char: ' ' }))
+  );
+}
+```
+
+**Step 2: How stock Ink renders a frame**
+
+Every 16ms (at 60fps), it builds a brand new screen:
+
+```ts
+// Stock Ink render loop — simplified
+function render(domTree: DOMNode): void {
+  // ❌ Allocates a fresh Screen object every single frame
+  const newScreen: Screen = buildScreen(terminalRows, terminalCols);
+
+  // Walk the DOM, write OutputEntry objects into newScreen
+  renderNode(domTree, newScreen, x=0, y=0);
+
+  // Diff the new screen against the previous one
+  const patches = diff(previousScreen, newScreen);
+
+  // Write changed cells to stdout
+  for (const patch of patches) {
+    process.stdout.write(patch.ansi);
+  }
+
+  // ❌ The old screen becomes garbage — GC will collect it later
+  previousScreen = newScreen;
+}
+```
+
+**Step 3: The math — why this breaks at 60fps**
+
+```
+Terminal:         200 columns × 120 rows
+Cells per screen: 24,000
+Objects per cell: 1 OutputEntry JS object
+
+Per frame:        24,000 OutputEntry objects created
+                  24,000 OutputEntry objects from last frame become garbage
+
+At 60fps:         24,000 × 60 = 1,440,000 objects created/second
+                  1,440,000 objects handed to GC every second
+
+GC behavior:      V8's minor GC (scavenger) runs when the nursery fills.
+                  At 1.4M short-lived objects/sec, the nursery fills
+                  every ~10–15ms — right in the middle of your 16ms budget.
+
+Symptom:          GC pause mid-frame → frame takes 25ms instead of 16ms
+                  → dropped frame → visible stutter in the token stream
+```
+
+You can reproduce this locally and **watch it happen**:
+
+```ts
+// Run with: node --expose-gc profile-ink.mjs
+import { render, Text, Box } from 'ink';
+import React, { useState, useEffect } from 'react';
+
+// Simulate a streaming AI response: 1 token every 16ms
+const StreamingDemo = () => {
+  const [tokens, setTokens] = useState<string[]>([]);
+
+  useEffect(() => {
+    const id = setInterval(() => {
+      setTokens(prev => [...prev, 'token ']);
+    }, 16);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <Box flexDirection="column" width={200} height={120}>
+      {/* 200-column wide box forces Ink to allocate 24,000 cells per frame */}
+      <Text>{tokens.join('')}</Text>
+    </Box>
+  );
+};
+
+// Measure GC pauses
+let lastFrame = performance.now();
+setInterval(() => {
+  const now = performance.now();
+  const delta = now - lastFrame;
+  if (delta > 20) {
+    // Frame took more than 20ms — likely a GC pause
+    console.error(`Frame spike: ${delta.toFixed(1)}ms`);
+  }
+  lastFrame = now;
+}, 16);
+
+render(<StreamingDemo />);
+```
+
+On a large terminal you'll see output like:
+
+```
+Frame spike: 24.3ms
+Frame spike: 31.7ms   ← GC paused during frame render
+Frame spike: 22.1ms
+Frame spike: 28.4ms
+```
+
+The token stream stutters. Users notice.
+
+---
+
+#### ✅ AFTER: What Claude Code Does Instead
+
+Anthropic forked Ink and replaced the rendering internals with three targeted optimizations. **The component code — JSX, hooks, state — is unchanged.** Only the renderer below changed.
+
+---
+
+**Optimization 1: Packed TypedArrays — kill the per-cell object**
+
+Instead of one JS object per cell, pack everything into two 32-bit integers:
+
+```ts
+// Claude Code's approach — no per-cell object allocation
+// Each cell = 2 x Int32 words in a flat typed array
+
+//  Word 0: character codepoint (the actual Unicode character)
+//  Word 1: style ID (index into a shared style pool)
+
+const WORDS_PER_CELL = 2;
+const CHAR_WORD  = 0;
+const STYLE_WORD = 1;
+
+class Screen {
+  private buffer: Int32Array;
+  readonly rows: number;
+  readonly cols: number;
+
+  constructor(rows: number, cols: number) {
+    this.rows = rows;
+    this.cols = cols;
+    // ✅ One allocation for the whole screen — reused every frame
+    this.buffer = new Int32Array(rows * cols * WORDS_PER_CELL);
+  }
+
+  setCell(row: number, col: number, char: string, styleId: number): void {
+    const offset = (row * this.cols + col) * WORDS_PER_CELL;
+    this.buffer[offset + CHAR_WORD]  = char.codePointAt(0) ?? 32;
+    this.buffer[offset + STYLE_WORD] = styleId;
+  }
+
+  getCharCode(row: number, col: number): number {
+    return this.buffer[(row * this.cols + col) * WORDS_PER_CELL + CHAR_WORD];
+  }
+
+  getStyleId(row: number, col: number): number {
+    return this.buffer[(row * this.cols + col) * WORDS_PER_CELL + STYLE_WORD];
+  }
+
+  // ✅ Diff is now two integer comparisons per cell — no object property access
+  cellEquals(other: Screen, row: number, col: number): boolean {
+    const offset = (row * this.cols + col) * WORDS_PER_CELL;
+    return (
+      this.buffer[offset]     === other.buffer[offset] &&
+      this.buffer[offset + 1] === other.buffer[offset + 1]
+    );
+  }
+}
+
+// Style pool: styles are interned — "bold green on black" = styleId 42
+// The same style object is reused across all cells that share that style
+class StylePool {
+  private pool = new Map<string, number>();
+  private styles: StyleEntry[] = [];
+
+  intern(style: StyleEntry): number {
+    const key = styleKey(style); // e.g. "fg:green;bold:1"
+    let id = this.pool.get(key);
+    if (id === undefined) {
+      id = this.styles.length;
+      this.styles.push(style);
+      this.pool.set(key, id);
+    }
+    return id; // return the integer ID, not the object
+  }
+
+  get(id: number): StyleEntry {
+    return this.styles[id];
+  }
+}
+```
+
+**Result:** Zero per-frame object allocation. The typed array is one contiguous block of memory, allocated once when Ink starts, reused every frame.
+
+---
+
+**Optimization 2: Double buffering — kill the per-frame array allocation**
+
+```ts
+// ❌ Stock Ink: allocates a new Screen every frame
+class StockInkRenderer {
+  private previous: Screen | null = null;
+
+  render(dom: DOMNode, rows: number, cols: number): void {
+    const next = new Screen(rows, cols); // ❌ fresh allocation every 16ms
+    this.renderNode(dom, next);
+    const patches = this.diff(this.previous, next);
+    this.flush(patches);
+    this.previous = next; // previous becomes garbage
+  }
+}
+
+// ✅ Claude Code: two pre-allocated buffers, swapped every frame
+class OptimizedRenderer {
+  private front: Screen; // currently displayed on the terminal
+  private back:  Screen; // being rendered into right now
+
+  constructor(rows: number, cols: number) {
+    // ✅ Two allocations — ever. Not per frame.
+    this.front = new Screen(rows, cols);
+    this.back  = new Screen(rows, cols);
+  }
+
+  render(dom: DOMNode): void {
+    // Render the next frame into the back buffer (no allocation)
+    this.back.clear();
+    this.renderNode(dom, this.back);
+
+    // Diff back vs front — only changed cells produce output
+    const patches = this.diff(this.front, this.back);
+    this.flush(patches);
+
+    // ✅ Swap: back becomes front, front becomes the next back
+    // This is a pointer reassignment — no memory freed, no GC triggered
+    [this.front, this.back] = [this.back, this.front];
+  }
+}
+```
+
+**Result:** The GC never sees a discarded screen buffer. Ever. The same two `Int32Array` instances live for the entire process lifetime.
+
+---
+
+**Optimization 3: Dirty tracking + blit — skip unchanged subtrees entirely**
+
+This is the biggest win. On a typical streaming frame, only a handful of cells actually change — the new token characters. Everything else is identical to the previous frame.
+
+```ts
+// Every DOM node tracks whether it needs re-rendering
+interface DOMNode {
+  dirty: boolean;           // did this node's content change?
+  cachedPosition: Position; // where did Yoga place this last frame?
+  children: DOMNode[];
+}
+
+// When a component's state changes, React's reconciler calls markDirty()
+function markDirty(node: DOMNode): void {
+  node.dirty = true;
+  // Walk up the tree — parents also need to know something changed below
+  if (node.parent) markDirty(node.parent);
+}
+
+// The render loop uses this to skip unchanged subtrees
+function renderNode(
+  node: DOMNode,
+  back: Screen,
+  front: Screen, // ← we now pass the previous frame too
+): void {
+  const currentPos = getYogaPosition(node);
+
+  if (
+    !node.dirty &&
+    positionEquals(currentPos, node.cachedPosition)
+  ) {
+    // ✅ BLIT: this subtree is identical to last frame
+    // Copy cells directly from front buffer — no re-rendering
+    blitRegion(front, back, currentPos);
+    return; // skip the entire subtree
+  }
+
+  // Node is dirty or moved — render it properly
+  for (const child of node.children) {
+    renderNode(child, back, front);
+  }
+
+  node.dirty = false;
+  node.cachedPosition = currentPos;
+}
+
+function blitRegion(src: Screen, dst: Screen, region: Rect): void {
+  // TypedArray.copyWithin is a single CPU instruction for contiguous memory
+  // This copies an entire row in one call instead of cell-by-cell
+  for (let row = region.top; row < region.bottom; row++) {
+    const srcOffset = (row * src.cols + region.left) * WORDS_PER_CELL;
+    const dstOffset = (row * dst.cols + region.left) * WORDS_PER_CELL;
+    dst.buffer.copyWithin(dstOffset, srcOffset, srcOffset + region.width * WORDS_PER_CELL);
+  }
+}
+```
+
+**On a typical streaming frame — one new token appears:**
+
+```
+Frame #1247
+  Token arrives: "React"
+  
+  Dirty nodes:    <StreamingText> (the message being typed)
+  Clean nodes:    <Header>, <MessageList> (all previous messages),
+                  <InputBox>, <Sidebar> — everything else
+
+  renderNode(<App>)          → dirty (parent of dirty child) → recurse
+  renderNode(<MessageList>)  → dirty → recurse
+  renderNode(<StreamingText>)→ dirty → render 5 new chars
+  renderNode(<Header>)       → ✅ BLIT  (copies ~200 cells from front)
+  renderNode(<InputBox>)     → ✅ BLIT  (copies ~200 cells from front)
+  renderNode(<Sidebar>)      → ✅ BLIT  (copies ~2,400 cells from front)
+
+  Cells re-rendered: 5   (the new token characters)
+  Cells blitted:     23,995
+  Cells touched:     24,000
+  % actually rendered: 0.02%
+```
+
+The diff then finds only the 5 changed cells, writes 5 ANSI sequences to stdout. Everything else stays.
+
+---
+
+**The numbers, before and after:**
+
+```
+                     STOCK INK          CLAUDE CODE'S INK
+                     ──────────────     ─────────────────
+Objects/frame        24,000             0
+Objects/sec          1,440,000          0
+GC pauses (16ms budget) frequent       none
+Cells re-rendered/frame  24,000        ~5 (only what changed)
+Bytes written/frame  ~50KB+ ANSI       ~20 bytes (5 cells)
+Achievable fps       ~30 (GC bound)    60+ (compute bound)
+```
+
+---
+
+**The critical point — the components didn't change:**
+
+```tsx
+// This is what a Claude Code developer writes.
+// It looks exactly like a web React component.
+// It has no idea what Int32Array or blit optimization means.
+
+const StreamingMessage = ({ content, isStreaming }: Props) => {
+  return (
+    <Box flexDirection="column" borderStyle="round" padding={1}>
+      <Text color="green" bold>Claude</Text>
+      <Text>{content}</Text>
+      {isStreaming && <Spinner />}
+    </Box>
+  );
+};
+
+// useState, useEffect, useContext — all standard React.
+// The 60fps rendering is invisible to this component.
+// That's the entire value of the abstraction boundary.
+```
+
+The Anthropic engineers who work on token streaming, context management, and tool calls write ordinary React. The engineers who work on the renderer write typed arrays. Neither team needs to know what the other does.
+
+---
+
+#### The Principle
+
+> "React's abstraction has two sides: the component model you write, and the renderer that executes it. Claude Code proves you can replace the renderer entirely — making it 100× faster — without touching a single component. That's not a coincidence. It's the design."
 
 **The progression for your own projects:**
 
 ```
-Stage 1 → Write your CLI with stock Ink.
-           It will be fast enough.
+Stage 1 → Write your CLI with stock Ink. It will be fast enough.
+           (Most CLIs run at 1–5fps — wizard prompts, build output)
 
-Stage 2 → If you hit performance problems,
-           profile first. (useWindowSize, console.time, React DevTools)
+Stage 2 → Hit a performance problem? Profile first:
+           console.time(), React DevTools, --inspect + Chrome profiler
 
-Stage 3 → Apply targeted Ink-native optimizations:
-           <Static> for completed items
-           useMemo for expensive computations
-           Key stability for lists
+Stage 3 → Apply Ink-native optimizations (no forking required):
+           → <Static> for completed items (free)
+           → useMemo for expensive list filtering
+           → Stable keys so React can reuse fiber nodes
 
-Stage 4 → If you're streaming at 60fps to 10,000+ terminal cells
-           and none of that helps — then you're in Claude Code territory.
-           You'll know. It's not the first problem you solve.
+Stage 4 → Streaming at 60fps with 10,000+ cells changing per second?
+           You're in Claude Code territory.
+           You'll know. The GC pauses will tell you.
 ```
 
 ---
@@ -1076,7 +1401,7 @@ Even without forking anything, you can apply `useMemo` exactly as you would in a
 
 ```tsx
 const FileTree = ({ files, filter }: Props) => {
-  // files might be 5,000 entries — filter only when files or filter changes
+  // files might be 5,000 entries — filter only when inputs change
   const visible = useMemo(
     () => files.filter(f => f.path.includes(filter)).slice(0, 50),
     [files, filter]
