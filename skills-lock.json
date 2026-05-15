@@ -283,6 +283,12 @@
       "skillPath": "skills/site-architecture/SKILL.md",
       "computedHash": "4cdfd1ba49925184462a7524586a5ec0b127668498e7bf2972ef0d4c112e9585"
     },
+    "slidev": {
+      "source": "slidevjs/slidev",
+      "sourceType": "github",
+      "skillPath": "skills/slidev/SKILL.md",
+      "computedHash": "a495cfada5d3b29c66c2fbbccb4ef9887d6b12bd7e440d100deea89e529c1a7b"
+    },
     "social-content": {
       "source": "coreyhaines31/marketingskills",
       "sourceType": "github",

@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 440" width="900" height="440">
+  <defs>
+    <marker id="arr-teal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#00FF9C"/>
+    </marker>
+    <marker id="arr-gray" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#6E7681"/>
+    </marker>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="440" fill="#0D1117"/>
+
+  <text x="450" y="36" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" fill="#F3EFF5" font-weight="bold">Double Buffering</text>
+  <text x="450" y="58" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">Two pre-allocated typed arrays swapped every frame, never re-allocated</text>
+
+  <!-- BEFORE label: X icon drawn, not emoji -->
+  <g transform="translate(30, 82)">
+    <line x1="0" y1="0" x2="10" y2="10" stroke="#FE4A49" stroke-width="2"/>
+    <line x1="10" y1="0" x2="0" y2="10" stroke="#FE4A49" stroke-width="2"/>
+  </g>
+  <text x="50" y="95" font-family="'SF Mono', 'Fira Code', monospace" font-size="14" fill="#FE4A49" font-weight="bold">Stock Ink</text>
+
+  <!-- Stock: alloc per frame -->
+  <g transform="translate(30, 110)">
+    <rect width="300" height="56" rx="8" fill="#1A0D0D" stroke="#FE4A49" stroke-width="1.5"/>
+    <text x="150" y="24" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#FE4A49">Frame N-1: allocate Screen</text>
+    <text x="150" y="44" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">24,000 OutputEntry objects -&gt; GC</text>
+  </g>
+  <line x1="180" y1="166" x2="180" y2="188" stroke="#FE4A49" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+  <g transform="translate(30, 190)">
+    <rect width="300" height="56" rx="8" fill="#1A0D0D" stroke="#FE4A49" stroke-width="1.5"/>
+    <text x="150" y="24" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#FE4A49">Frame N: allocate new Screen</text>
+    <text x="150" y="44" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">24,000 more objects -&gt; GC fills up</text>
+  </g>
+  <line x1="180" y1="246" x2="180" y2="268" stroke="#FE4A49" stroke-width="1.5" marker-end="url(#arr-gray)"/>
+
+  <!-- GC box -->
+  <g transform="translate(30, 270)">
+    <rect width="300" height="46" rx="8" fill="#2A0A0A" stroke="#FE4A49" stroke-width="1.5"/>
+    <text x="150" y="20" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#FE4A49">GC pause: 10-20ms</text>
+    <text x="150" y="38" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">nursery fills -&gt; scavenger runs</text>
+  </g>
+
+  <text x="180" y="348" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#FE4A49">~30fps -- visible stutter</text>
+
+  <!-- AFTER label: checkmark drawn, not emoji -->
+  <g transform="translate(515, 82)">
+    <polyline points="0,5 4,10 12,0" fill="none" stroke="#00FF9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="534" y="95" font-family="'SF Mono', 'Fira Code', monospace" font-size="14" fill="#00FF9C" font-weight="bold">Claude Code's Ink</text>
+
+  <!-- front buffer -->
+  <g transform="translate(520, 110)">
+    <rect width="150" height="70" rx="8" fill="#0D2218" stroke="#00FF9C" stroke-width="2" filter="url(#glow)"/>
+    <text x="75" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" font-weight="bold">front</text>
+    <text x="75" y="48" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">Int32Array</text>
+    <text x="75" y="64" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#6E7681">displayed</text>
+  </g>
+
+  <!-- back buffer -->
+  <g transform="translate(700, 110)">
+    <rect width="150" height="70" rx="8" fill="#0D1A28" stroke="#00D4FF" stroke-width="2"/>
+    <text x="75" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00D4FF" font-weight="bold">back</text>
+    <text x="75" y="48" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">Int32Array</text>
+    <text x="75" y="64" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#6E7681">rendering into</text>
+  </g>
+
+  <!-- Swap arrows -->
+  <path d="M 670 130 C 690 110 690 130 710 130" stroke="#00FF9C" stroke-width="2" fill="none" marker-end="url(#arr-teal)"/>
+  <path d="M 700 160 C 680 180 680 160 660 160" stroke="#00FF9C" stroke-width="2" fill="none" marker-end="url(#arr-teal)"/>
+  <text x="680" y="105" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">swap</text>
+
+  <!-- Zero alloc badge -->
+  <g transform="translate(540, 205)">
+    <rect width="280" height="36" rx="6" fill="#0D2218" stroke="#00FF9C" stroke-width="1.5"/>
+    <text x="140" y="23" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C">0 allocations per frame</text>
+  </g>
+
+  <!-- Code snippet -->
+  <g transform="translate(520, 260)">
+    <rect width="350" height="90" rx="6" fill="#0A0E17" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">// pointer swap -- no memory freed</text>
+    <text x="12" y="44" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">[this.front, this.back] =</text>
+    <text x="12" y="66" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">  [this.back, this.front]</text>
+    <text x="12" y="84" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">// GC never triggered</text>
+  </g>
+
+  <text x="680" y="378" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C">60fps -- smooth streaming</text>
+
+  <!-- Divider -->
+  <line x1="455" y1="90" x2="455" y2="400" stroke="#1E2733" stroke-width="1" stroke-dasharray="5,4"/>
+
+  <!-- Footnote -->
+  <text x="450" y="420" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Component code unchanged -- only the renderer below changed</text>
+</svg>

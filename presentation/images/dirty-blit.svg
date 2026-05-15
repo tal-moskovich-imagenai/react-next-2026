@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 460" width="900" height="460">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="460" fill="#0D1117"/>
+
+  <text x="450" y="36" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" fill="#F3EFF5" font-weight="bold">Dirty Tracking + Blit</text>
+  <text x="450" y="58" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">One new token arrives. How many cells need re-rendering?</text>
+
+  <!-- Cell grid: 24 cols x 10 rows -->
+  <g transform="translate(90, 75)">
+    <!-- Row labels -->
+    <text x="-28" y="11"  font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r0</text>
+    <text x="-28" y="33"  font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r1</text>
+    <text x="-28" y="55"  font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r2</text>
+    <text x="-28" y="77"  font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r3</text>
+    <text x="-28" y="99"  font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r4</text>
+    <text x="-28" y="121" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r5</text>
+    <text x="-28" y="143" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#6E7681" text-anchor="middle" font-weight="bold">r6</text>
+    <text x="-28" y="165" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r7</text>
+    <text x="-28" y="187" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r8</text>
+    <text x="-28" y="209" font-family="'SF Mono', 'Fira Code', monospace" font-size="9" fill="#3E4752" text-anchor="middle">r9</text>
+
+    <!-- Clean cells: rows 0-5 (all 144 cells) -->
+    <g fill="#1A2233" stroke="#1E2733" stroke-width="0.5">
+      <rect x="0"   y="0"   width="29" height="21"/> <rect x="30"  y="0"   width="29" height="21"/>
+      <rect x="60"  y="0"   width="29" height="21"/> <rect x="90"  y="0"   width="29" height="21"/>
+      <rect x="120" y="0"   width="29" height="21"/> <rect x="150" y="0"   width="29" height="21"/>
+      <rect x="180" y="0"   width="29" height="21"/> <rect x="210" y="0"   width="29" height="21"/>
+      <rect x="240" y="0"   width="29" height="21"/> <rect x="270" y="0"   width="29" height="21"/>
+      <rect x="300" y="0"   width="29" height="21"/> <rect x="330" y="0"   width="29" height="21"/>
+      <rect x="360" y="0"   width="29" height="21"/> <rect x="390" y="0"   width="29" height="21"/>
+      <rect x="420" y="0"   width="29" height="21"/> <rect x="450" y="0"   width="29" height="21"/>
+      <rect x="480" y="0"   width="29" height="21"/> <rect x="510" y="0"   width="29" height="21"/>
+      <rect x="540" y="0"   width="29" height="21"/> <rect x="570" y="0"   width="29" height="21"/>
+      <rect x="600" y="0"   width="29" height="21"/> <rect x="630" y="0"   width="29" height="21"/>
+      <rect x="660" y="0"   width="29" height="21"/> <rect x="690" y="0"   width="29" height="21"/>
+
+      <rect x="0"   y="22"  width="29" height="21"/> <rect x="30"  y="22"  width="29" height="21"/>
+      <rect x="60"  y="22"  width="29" height="21"/> <rect x="90"  y="22"  width="29" height="21"/>
+      <rect x="120" y="22"  width="29" height="21"/> <rect x="150" y="22"  width="29" height="21"/>
+      <rect x="180" y="22"  width="29" height="21"/> <rect x="210" y="22"  width="29" height="21"/>
+      <rect x="240" y="22"  width="29" height="21"/> <rect x="270" y="22"  width="29" height="21"/>
+      <rect x="300" y="22"  width="29" height="21"/> <rect x="330" y="22"  width="29" height="21"/>
+      <rect x="360" y="22"  width="29" height="21"/> <rect x="390" y="22"  width="29" height="21"/>
+      <rect x="420" y="22"  width="29" height="21"/> <rect x="450" y="22"  width="29" height="21"/>
+      <rect x="480" y="22"  width="29" height="21"/> <rect x="510" y="22"  width="29" height="21"/>
+      <rect x="540" y="22"  width="29" height="21"/> <rect x="570" y="22"  width="29" height="21"/>
+      <rect x="600" y="22"  width="29" height="21"/> <rect x="630" y="22"  width="29" height="21"/>
+      <rect x="660" y="22"  width="29" height="21"/> <rect x="690" y="22"  width="29" height="21"/>
+
+      <rect x="0"   y="44"  width="29" height="21"/> <rect x="30"  y="44"  width="29" height="21"/>
+      <rect x="60"  y="44"  width="29" height="21"/> <rect x="90"  y="44"  width="29" height="21"/>
+      <rect x="120" y="44"  width="29" height="21"/> <rect x="150" y="44"  width="29" height="21"/>
+      <rect x="180" y="44"  width="29" height="21"/> <rect x="210" y="44"  width="29" height="21"/>
+      <rect x="240" y="44"  width="29" height="21"/> <rect x="270" y="44"  width="29" height="21"/>
+      <rect x="300" y="44"  width="29" height="21"/> <rect x="330" y="44"  width="29" height="21"/>
+      <rect x="360" y="44"  width="29" height="21"/> <rect x="390" y="44"  width="29" height="21"/>
+      <rect x="420" y="44"  width="29" height="21"/> <rect x="450" y="44"  width="29" height="21"/>
+      <rect x="480" y="44"  width="29" height="21"/> <rect x="510" y="44"  width="29" height="21"/>
+      <rect x="540" y="44"  width="29" height="21"/> <rect x="570" y="44"  width="29" height="21"/>
+      <rect x="600" y="44"  width="29" height="21"/> <rect x="630" y="44"  width="29" height="21"/>
+      <rect x="660" y="44"  width="29" height="21"/> <rect x="690" y="44"  width="29" height="21"/>
+
+      <rect x="0"   y="66"  width="29" height="21"/> <rect x="30"  y="66"  width="29" height="21"/>
+      <rect x="60"  y="66"  width="29" height="21"/> <rect x="90"  y="66"  width="29" height="21"/>
+      <rect x="120" y="66"  width="29" height="21"/> <rect x="150" y="66"  width="29" height="21"/>
+      <rect x="180" y="66"  width="29" height="21"/> <rect x="210" y="66"  width="29" height="21"/>
+      <rect x="240" y="66"  width="29" height="21"/> <rect x="270" y="66"  width="29" height="21"/>
+      <rect x="300" y="66"  width="29" height="21"/> <rect x="330" y="66"  width="29" height="21"/>
+      <rect x="360" y="66"  width="29" height="21"/> <rect x="390" y="66"  width="29" height="21"/>
+      <rect x="420" y="66"  width="29" height="21"/> <rect x="450" y="66"  width="29" height="21"/>
+      <rect x="480" y="66"  width="29" height="21"/> <rect x="510" y="66"  width="29" height="21"/>
+      <rect x="540" y="66"  width="29" height="21"/> <rect x="570" y="66"  width="29" height="21"/>
+      <rect x="600" y="66"  width="29" height="21"/> <rect x="630" y="66"  width="29" height="21"/>
+      <rect x="660" y="66"  width="29" height="21"/> <rect x="690" y="66"  width="29" height="21"/>
+
+      <rect x="0"   y="88"  width="29" height="21"/> <rect x="30"  y="88"  width="29" height="21"/>
+      <rect x="60"  y="88"  width="29" height="21"/> <rect x="90"  y="88"  width="29" height="21"/>
+      <rect x="120" y="88"  width="29" height="21"/> <rect x="150" y="88"  width="29" height="21"/>
+      <rect x="180" y="88"  width="29" height="21"/> <rect x="210" y="88"  width="29" height="21"/>
+      <rect x="240" y="88"  width="29" height="21"/> <rect x="270" y="88"  width="29" height="21"/>
+      <rect x="300" y="88"  width="29" height="21"/> <rect x="330" y="88"  width="29" height="21"/>
+      <rect x="360" y="88"  width="29" height="21"/> <rect x="390" y="88"  width="29" height="21"/>
+      <rect x="420" y="88"  width="29" height="21"/> <rect x="450" y="88"  width="29" height="21"/>
+      <rect x="480" y="88"  width="29" height="21"/> <rect x="510" y="88"  width="29" height="21"/>
+      <rect x="540" y="88"  width="29" height="21"/> <rect x="570" y="88"  width="29" height="21"/>
+      <rect x="600" y="88"  width="29" height="21"/> <rect x="630" y="88"  width="29" height="21"/>
+      <rect x="660" y="88"  width="29" height="21"/> <rect x="690" y="88"  width="29" height="21"/>
+
+      <rect x="0"   y="110" width="29" height="21"/> <rect x="30"  y="110" width="29" height="21"/>
+      <rect x="60"  y="110" width="29" height="21"/> <rect x="90"  y="110" width="29" height="21"/>
+      <rect x="120" y="110" width="29" height="21"/> <rect x="150" y="110" width="29" height="21"/>
+      <rect x="180" y="110" width="29" height="21"/> <rect x="210" y="110" width="29" height="21"/>
+      <rect x="240" y="110" width="29" height="21"/> <rect x="270" y="110" width="29" height="21"/>
+      <rect x="300" y="110" width="29" height="21"/> <rect x="330" y="110" width="29" height="21"/>
+      <rect x="360" y="110" width="29" height="21"/> <rect x="390" y="110" width="29" height="21"/>
+      <rect x="420" y="110" width="29" height="21"/> <rect x="450" y="110" width="29" height="21"/>
+      <rect x="480" y="110" width="29" height="21"/> <rect x="510" y="110" width="29" height="21"/>
+      <rect x="540" y="110" width="29" height="21"/> <rect x="570" y="110" width="29" height="21"/>
+      <rect x="600" y="110" width="29" height="21"/> <rect x="630" y="110" width="29" height="21"/>
+      <rect x="660" y="110" width="29" height="21"/> <rect x="690" y="110" width="29" height="21"/>
+
+      <!-- Row 6: cols 0-17 clean -->
+      <rect x="0"   y="132" width="29" height="21"/>
+      <rect x="30"  y="132" width="29" height="21"/>
+      <rect x="60"  y="132" width="29" height="21"/>
+      <rect x="90"  y="132" width="29" height="21"/>
+      <rect x="120" y="132" width="29" height="21"/>
+      <rect x="150" y="132" width="29" height="21"/>
+      <rect x="180" y="132" width="29" height="21"/>
+      <rect x="210" y="132" width="29" height="21"/>
+      <rect x="240" y="132" width="29" height="21"/>
+      <rect x="270" y="132" width="29" height="21"/>
+      <rect x="300" y="132" width="29" height="21"/>
+      <rect x="330" y="132" width="29" height="21"/>
+      <rect x="360" y="132" width="29" height="21"/>
+      <rect x="390" y="132" width="29" height="21"/>
+      <rect x="420" y="132" width="29" height="21"/>
+      <rect x="450" y="132" width="29" height="21"/>
+      <rect x="480" y="132" width="29" height="21"/>
+      <rect x="510" y="132" width="29" height="21"/>
+      <!-- col 23 clean -->
+      <rect x="690" y="132" width="29" height="21"/>
+
+      <!-- Rows 7-9 -->
+      <rect x="0"   y="154" width="29" height="21"/> <rect x="30"  y="154" width="29" height="21"/>
+      <rect x="60"  y="154" width="29" height="21"/> <rect x="90"  y="154" width="29" height="21"/>
+      <rect x="120" y="154" width="29" height="21"/> <rect x="150" y="154" width="29" height="21"/>
+      <rect x="180" y="154" width="29" height="21"/> <rect x="210" y="154" width="29" height="21"/>
+      <rect x="240" y="154" width="29" height="21"/> <rect x="270" y="154" width="29" height="21"/>
+      <rect x="300" y="154" width="29" height="21"/> <rect x="330" y="154" width="29" height="21"/>
+      <rect x="360" y="154" width="29" height="21"/> <rect x="390" y="154" width="29" height="21"/>
+      <rect x="420" y="154" width="29" height="21"/> <rect x="450" y="154" width="29" height="21"/>
+      <rect x="480" y="154" width="29" height="21"/> <rect x="510" y="154" width="29" height="21"/>
+      <rect x="540" y="154" width="29" height="21"/> <rect x="570" y="154" width="29" height="21"/>
+      <rect x="600" y="154" width="29" height="21"/> <rect x="630" y="154" width="29" height="21"/>
+      <rect x="660" y="154" width="29" height="21"/> <rect x="690" y="154" width="29" height="21"/>
+
+      <rect x="0"   y="176" width="29" height="21"/> <rect x="30"  y="176" width="29" height="21"/>
+      <rect x="60"  y="176" width="29" height="21"/> <rect x="90"  y="176" width="29" height="21"/>
+      <rect x="120" y="176" width="29" height="21"/> <rect x="150" y="176" width="29" height="21"/>
+      <rect x="180" y="176" width="29" height="21"/> <rect x="210" y="176" width="29" height="21"/>
+      <rect x="240" y="176" width="29" height="21"/> <rect x="270" y="176" width="29" height="21"/>
+      <rect x="300" y="176" width="29" height="21"/> <rect x="330" y="176" width="29" height="21"/>
+      <rect x="360" y="176" width="29" height="21"/> <rect x="390" y="176" width="29" height="21"/>
+      <rect x="420" y="176" width="29" height="21"/> <rect x="450" y="176" width="29" height="21"/>
+      <rect x="480" y="176" width="29" height="21"/> <rect x="510" y="176" width="29" height="21"/>
+      <rect x="540" y="176" width="29" height="21"/> <rect x="570" y="176" width="29" height="21"/>
+      <rect x="600" y="176" width="29" height="21"/> <rect x="630" y="176" width="29" height="21"/>
+      <rect x="660" y="176" width="29" height="21"/> <rect x="690" y="176" width="29" height="21"/>
+
+      <rect x="0"   y="198" width="29" height="21"/> <rect x="30"  y="198" width="29" height="21"/>
+      <rect x="60"  y="198" width="29" height="21"/> <rect x="90"  y="198" width="29" height="21"/>
+      <rect x="120" y="198" width="29" height="21"/> <rect x="150" y="198" width="29" height="21"/>
+      <rect x="180" y="198" width="29" height="21"/> <rect x="210" y="198" width="29" height="21"/>
+      <rect x="240" y="198" width="29" height="21"/> <rect x="270" y="198" width="29" height="21"/>
+      <rect x="300" y="198" width="29" height="21"/> <rect x="330" y="198" width="29" height="21"/>
+      <rect x="360" y="198" width="29" height="21"/> <rect x="390" y="198" width="29" height="21"/>
+      <rect x="420" y="198" width="29" height="21"/> <rect x="450" y="198" width="29" height="21"/>
+      <rect x="480" y="198" width="29" height="21"/> <rect x="510" y="198" width="29" height="21"/>
+      <rect x="540" y="198" width="29" height="21"/> <rect x="570" y="198" width="29" height="21"/>
+      <rect x="600" y="198" width="29" height="21"/> <rect x="630" y="198" width="29" height="21"/>
+      <rect x="660" y="198" width="29" height="21"/> <rect x="690" y="198" width="29" height="21"/>
+    </g>
+
+    <!-- Dirty cells: row 6, cols 18-22 (5 cells = "React" token) -->
+    <g fill="#00FF9C" stroke="#00FF9C" stroke-width="1" filter="url(#glow)">
+      <rect x="540" y="132" width="29" height="21" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+      <rect x="570" y="132" width="29" height="21" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+      <rect x="600" y="132" width="29" height="21" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+      <rect x="630" y="132" width="29" height="21" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+      <rect x="660" y="132" width="29" height="21" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+      <text x="554" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">R</text>
+      <text x="584" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">e</text>
+      <text x="614" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">a</text>
+      <text x="644" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">c</text>
+      <text x="674" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">t</text>
+    </g>
+
+    <!-- Blit label on clean region -->
+    <text x="240" y="147" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#3E4752">BLIT: 23,995</text>
+  </g>
+
+  <!-- Stats bar -->
+  <g transform="translate(90, 310)">
+    <rect width="720" height="50" rx="8" fill="#0A0E17" stroke="#1E2733" stroke-width="1"/>
+    <text x="20" y="22"  font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">Cells re-rendered:</text>
+    <text x="185" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" font-weight="bold" filter="url(#glow)">5</text>
+    <text x="220" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">   Cells blitted:</text>
+    <text x="380" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#5EADF2">23,995</text>
+    <text x="460" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">   ANSI bytes written:</text>
+    <text x="640" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" filter="url(#glow)">~20 bytes</text>
+    <text x="20" y="42"  font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#3E4752">% actually re-rendered: 0.02%   the longer the session, the more dramatic this gets</text>
+  </g>
+
+  <!-- Footer -->
+  <text x="450" y="395" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">Token arrives -&gt; 5 dirty cells -&gt; diff finds 5 -&gt; writes ~20 bytes to stdout</text>
+
+  <!-- Legend -->
+  <g transform="translate(280, 415)">
+    <rect x="0" y="0" width="16" height="14" fill="#1A2233" stroke="#1E2733" stroke-width="0.5"/>
+    <text x="22" y="12" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">clean: blitted from front buffer</text>
+    <rect x="290" y="0" width="16" height="14" fill="#00FF9C" fill-opacity="0.3" stroke="#00FF9C"/>
+    <text x="312" y="12" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#00FF9C">dirty: re-rendered</text>
+  </g>
+</svg>

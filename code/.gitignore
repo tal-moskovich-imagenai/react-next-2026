@@ -1,0 +1,21 @@
+# ── Node (applies to all step-* and final/ subdirs) ──
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Secrets — never commit real keys ──────────────
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ── TypeScript build cache ─────────────────────────
+*.tsbuildinfo
+dist/
+
+# ── Test coverage ──────────────────────────────────
+coverage/
+
+# ── Vitest UI cache ───────────────────────────────
+.vitest-cache/

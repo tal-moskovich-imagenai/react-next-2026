@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520">
+  <defs>
+    <linearGradient id="layer1-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1A2744"/>
+      <stop offset="100%" style="stop-color:#162240"/>
+    </linearGradient>
+    <linearGradient id="layer2-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1C2A1A"/>
+      <stop offset="100%" style="stop-color:#172517"/>
+    </linearGradient>
+    <linearGradient id="renderer-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2A1A30"/>
+      <stop offset="100%" style="stop-color:#221528"/>
+    </linearGradient>
+    <filter id="glow-sm">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#5EADF2"/>
+    </marker>
+    <marker id="arrowhead-teal" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#00FF9C"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="520" fill="#0D1117"/>
+
+  <!-- Title -->
+  <text x="450" y="36" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="18" fill="#F3EFF5" font-weight="bold">React has three layers</text>
+
+  <!-- Layer 1: Your Components -->
+  <g transform="translate(200, 60)">
+    <rect width="500" height="80" rx="8" fill="url(#layer1-grad)" stroke="#5EADF2" stroke-width="1.5"/>
+    <text x="250" y="30" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#5EADF2" font-weight="bold">LAYER 1</text>
+    <text x="250" y="52" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#F3EFF5" font-weight="bold">Your Components</text>
+    <text x="250" y="72" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">JSX  |  hooks  |  useState  |  useEffect  |  props</text>
+  </g>
+
+  <!-- Arrow 1 to 2 -->
+  <g>
+    <line x1="450" y1="140" x2="450" y2="178" stroke="#5EADF2" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <text x="460" y="165" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">what changed?</text>
+  </g>
+
+  <!-- Layer 2: Reconciler -->
+  <g transform="translate(200, 180)">
+    <rect width="500" height="80" rx="8" fill="url(#layer2-grad)" stroke="#00FF9C" stroke-width="1.5"/>
+    <text x="250" y="30" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" font-weight="bold">LAYER 2</text>
+    <text x="250" y="52" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#F3EFF5" font-weight="bold">The Reconciler</text>
+    <text x="250" y="72" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">react-reconciler  |  virtual tree diff  |  fiber</text>
+  </g>
+
+  <!-- Pluggable label (drawn as badge, no emoji) -->
+  <g transform="translate(720, 215)">
+    <rect width="148" height="36" rx="6" fill="#1A2730" stroke="#00FF9C" stroke-width="1" stroke-dasharray="4,3"/>
+    <!-- plug symbol drawn with rects -->
+    <rect x="8" y="11" width="6" height="14" rx="1" fill="#00FF9C"/>
+    <rect x="10" y="7" width="2" height="5" rx="1" fill="#00FF9C"/>
+    <rect x="14" y="7" width="2" height="5" rx="1" fill="#00FF9C"/>
+    <rect x="14" y="11" width="12" height="4" rx="1" fill="#00FF9C"/>
+    <text x="78" y="23" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#00FF9C">pluggable</text>
+  </g>
+  <line x1="700" y1="228" x2="720" y2="233" stroke="#00FF9C" stroke-width="1" stroke-dasharray="3,2"/>
+
+  <!-- Arrow 2 to 3 -->
+  <line x1="450" y1="260" x2="450" y2="298" stroke="#5EADF2" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <text x="460" y="285" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">how to apply it</text>
+
+  <!-- Layer 3: react-dom -->
+  <g transform="translate(60, 300)">
+    <rect width="220" height="90" rx="8" fill="url(#renderer-grad)" stroke="#B39DDB" stroke-width="1.5"/>
+    <text x="110" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#B39DDB" font-weight="bold">react-dom</text>
+    <text x="110" y="50" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">Browser DOM</text>
+    <text x="110" y="68" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">your web app</text>
+    <!-- Browser icon: rectangle with address bar -->
+    <rect x="88" y="74" width="44" height="12" rx="2" fill="none" stroke="#B39DDB" stroke-width="1"/>
+    <line x1="88" y1="78" x2="132" y2="78" stroke="#B39DDB" stroke-width="1"/>
+    <circle cx="93" cy="76" r="1.5" fill="#B39DDB"/>
+    <circle cx="98" cy="76" r="1.5" fill="#B39DDB"/>
+    <circle cx="103" cy="76" r="1.5" fill="#B39DDB"/>
+  </g>
+
+  <!-- Layer 3: react-native -->
+  <g transform="translate(340, 300)">
+    <rect width="220" height="90" rx="8" fill="url(#renderer-grad)" stroke="#B39DDB" stroke-width="1.5"/>
+    <text x="110" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#B39DDB" font-weight="bold">react-native</text>
+    <text x="110" y="50" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">Native widgets</text>
+    <text x="110" y="68" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">iOS / Android</text>
+    <!-- Phone icon drawn with rects -->
+    <rect x="103" y="72" width="14" height="16" rx="2" fill="none" stroke="#B39DDB" stroke-width="1"/>
+    <line x1="107" y1="85" x2="113" y2="85" stroke="#B39DDB" stroke-width="1"/>
+  </g>
+
+  <!-- Layer 3: ink (highlighted) -->
+  <g transform="translate(620, 295)">
+    <rect width="220" height="100" rx="8" fill="#0D2218" stroke="#00FF9C" stroke-width="2.5" filter="url(#glow-sm)"/>
+    <text x="110" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" font-weight="bold">ink</text>
+    <text x="110" y="50" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">Terminal output</text>
+    <text x="110" y="68" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">ANSI  |  stdout</text>
+    <!-- Terminal icon drawn with rects -->
+    <rect x="89" y="73" width="42" height="18" rx="2" fill="none" stroke="#00FF9C" stroke-width="1"/>
+    <text x="100" y="86" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">&gt;_</text>
+    <!-- "today" badge -->
+    <rect x="68" y="92" width="84" height="20" rx="4" fill="#00FF9C"/>
+    <text x="110" y="106" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#0A0E17" font-weight="bold">TODAY</text>
+  </g>
+
+  <!-- Connector: reconciler to react-dom -->
+  <line x1="310" y1="260" x2="170" y2="300" stroke="#5EADF2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowhead)"/>
+  <!-- Connector: reconciler to react-native -->
+  <line x1="420" y1="260" x2="450" y2="300" stroke="#5EADF2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowhead)"/>
+  <!-- Connector: reconciler to ink (bold) -->
+  <line x1="580" y1="260" x2="730" y2="295" stroke="#00FF9C" stroke-width="2" marker-end="url(#arrowhead-teal)"/>
+
+  <!-- Bottom note -->
+  <text x="450" y="468" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">Same component model. Same hooks. Different output target.</text>
+
+  <!-- Stats badge -->
+  <g transform="translate(300, 485)">
+    <rect width="300" height="28" rx="6" fill="#0F1E14" stroke="#00FF9C" stroke-width="1"/>
+    <text x="150" y="19" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#00FF9C">38k stars  |  3.7M downloads/week</text>
+  </g>
+</svg>

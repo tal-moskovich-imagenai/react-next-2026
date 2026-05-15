@@ -1,0 +1,49 @@
+# ── OS ────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+desktop.ini
+
+# ── Editor / IDE ──────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ── Node ──────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+
+# ── Env / Secrets ────────────────────────────────
+.env
+.env.local
+.env.*.local
+# keep .env.example committed
+!.env.example
+
+# ── Build outputs ────────────────────────────────
+dist/
+build/
+out/
+.output/
+
+# ── TypeScript ───────────────────────────────────
+*.tsbuildinfo
+
+# ── Test / Coverage ──────────────────────────────
+coverage/
+.nyc_output/
+
+# ── Misc ─────────────────────────────────────────
+*.log
+.cache/
+tmp/
+temp/

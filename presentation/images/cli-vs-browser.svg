@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" width="960" height="500">
+  <defs>
+    <marker id="arr-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#5EADF2"/>
+    </marker>
+    <marker id="arr-teal" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#00FF9C"/>
+    </marker>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="960" height="500" fill="#0D1117"/>
+
+  <!-- Divider -->
+  <line x1="480" y1="30" x2="480" y2="470" stroke="#1E2733" stroke-width="1.5" stroke-dasharray="6,4"/>
+
+  <!-- LEFT: useChat (wrong) -->
+  <text x="240" y="36" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" fill="#FE4A49" font-weight="bold">useChat(@ai-sdk/react)</text>
+  <!-- X badge (drawn, no emoji) -->
+  <g transform="translate(28, 46)">
+    <circle cx="9" cy="9" r="9" fill="#FE4A49" fill-opacity="0.15" stroke="#FE4A49" stroke-width="1.5"/>
+    <line x1="5" y1="5" x2="13" y2="13" stroke="#FE4A49" stroke-width="2"/>
+    <line x1="13" y1="5" x2="5" y2="13" stroke="#FE4A49" stroke-width="2"/>
+  </g>
+  <text x="46" y="58" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Wrong for a CLI</text>
+
+  <!-- Browser box -->
+  <g transform="translate(40, 75)">
+    <rect width="160" height="60" rx="8" fill="#1A1A2E" stroke="#5EADF2" stroke-width="1.5"/>
+    <text x="80" y="26" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#5EADF2">Browser</text>
+    <text x="80" y="46" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">useChat()</text>
+  </g>
+
+  <!-- HTTP arrow -->
+  <line x1="200" y1="105" x2="260" y2="105" stroke="#5EADF2" stroke-width="2" marker-end="url(#arr-blue)"/>
+  <text x="225" y="98" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#5EADF2">HTTP</text>
+
+  <!-- Server box -->
+  <g transform="translate(262, 75)">
+    <rect width="160" height="60" rx="8" fill="#1A1A2E" stroke="#5EADF2" stroke-width="1.5"/>
+    <text x="80" y="26" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#5EADF2">Server</text>
+    <text x="80" y="46" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">POST /api/chat</text>
+  </g>
+
+  <!-- SSE back -->
+  <line x1="262" y1="125" x2="200" y2="125" stroke="#5EADF2" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arr-blue)"/>
+  <text x="230" y="143" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#5EADF2">SSE stream</text>
+
+  <!-- Server to OpenAI -->
+  <line x1="342" y1="135" x2="342" y2="175" stroke="#5EADF2" stroke-width="1.5" marker-end="url(#arr-blue)"/>
+
+  <!-- OpenAI box (left) -->
+  <g transform="translate(262, 177)">
+    <rect width="160" height="50" rx="8" fill="#1A1A2E" stroke="#5EADF2" stroke-width="1.5"/>
+    <text x="80" y="22" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#5EADF2">OpenAI API</text>
+    <text x="80" y="40" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">gpt-4o-mini</text>
+  </g>
+
+  <!-- Absurd callout -->
+  <g transform="translate(30, 250)">
+    <rect width="420" height="70" rx="8" fill="#2A0A0A" stroke="#FE4A49" stroke-width="1.5"/>
+    <text x="16" y="24" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#FE4A49">You'd spin up an HTTP server</text>
+    <text x="16" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#FE4A49">just to call yourself.</text>
+    <text x="16" y="62" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">No browser. No server needed. It's absurd.</text>
+  </g>
+
+  <!-- Code snippet left -->
+  <g transform="translate(30, 340)">
+    <rect width="420" height="80" rx="6" fill="#0A0E17" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="24" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">// your first instinct</text>
+    <text x="12" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">import</text>
+    <text x="72" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5"> { useChat } </text>
+    <text x="168" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">from</text>
+    <text x="210" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#00D4FF"> '@ai-sdk/react'</text>
+    <text x="12" y="68" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">// [x] needs a server -- you have no server</text>
+  </g>
+
+  <!-- Big X drawn as SVG shape -->
+  <g transform="translate(210, 430)" opacity="0.35">
+    <line x1="0" y1="0" x2="60" y2="60" stroke="#FE4A49" stroke-width="8" stroke-linecap="round"/>
+    <line x1="60" y1="0" x2="0" y2="60" stroke="#FE4A49" stroke-width="8" stroke-linecap="round"/>
+  </g>
+
+  <!-- RIGHT: streamText (correct) -->
+  <text x="720" y="36" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="16" fill="#00FF9C" font-weight="bold">streamText(ai)</text>
+  <!-- Checkmark badge (drawn, no emoji) -->
+  <g transform="translate(509, 44)">
+    <circle cx="9" cy="9" r="9" fill="#00FF9C" fill-opacity="0.15" stroke="#00FF9C" stroke-width="1.5"/>
+    <polyline points="4,9 8,13 15,4" fill="none" stroke="#00FF9C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <text x="527" y="58" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Right for a CLI</text>
+
+  <!-- Node.js process box (contains everything) -->
+  <g transform="translate(510, 75)">
+    <rect width="420" height="120" rx="8" fill="#0D2218" stroke="#00FF9C" stroke-width="2" filter="url(#glow)"/>
+    <text x="210" y="28" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#00FF9C" font-weight="bold">Node.js process</text>
+    <text x="210" y="50" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">everything in the same process</text>
+
+    <!-- Ink component inner box -->
+    <rect x="20" y="62" width="160" height="44" rx="6" fill="#0D1117" stroke="#5EADF2" stroke-width="1"/>
+    <text x="100" y="82" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#5EADF2">Ink component</text>
+    <text x="100" y="98" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">streamText()</text>
+
+    <!-- Direct arrow -->
+    <line x1="180" y1="84" x2="235" y2="84" stroke="#00FF9C" stroke-width="2" marker-end="url(#arr-teal)"/>
+    <text x="205" y="78" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="10" fill="#00FF9C">direct</text>
+
+    <!-- OpenAI inner box -->
+    <rect x="238" y="62" width="160" height="44" rx="6" fill="#0D1117" stroke="#00FF9C" stroke-width="1"/>
+    <text x="318" y="82" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#00FF9C">OpenAI API</text>
+    <text x="318" y="98" text-anchor="middle" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#F3EFF5">gpt-4o-mini</text>
+  </g>
+
+  <!-- AsyncIterable code -->
+  <g transform="translate(510, 218)">
+    <rect width="420" height="60" rx="6" fill="#0A0E17" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">for await </text>
+    <text x="95" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">(const chunk </text>
+    <text x="215" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">of</text>
+    <text x="234" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5"> textStream) {</text>
+    <text x="12" y="46"  font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#00FF9C">  setContent</text>
+    <text x="116" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#F3EFF5">(prev + chunk)  </text>
+    <text x="288" y="46" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">// -&gt; ANSI frame</text>
+  </g>
+
+  <!-- Comparison table -->
+  <g transform="translate(510, 300)">
+    <rect width="420" height="130" rx="8" fill="#0A0E17" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="22" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">vs. useChat</text>
+    <line x1="0" y1="30" x2="420" y2="30" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="52" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#FE4A49">useChat</text>
+    <text x="110" y="52" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Browser -&gt; HTTP -&gt; Server</text>
+    <text x="12" y="74" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Handles transport + SSE</text>
+    <text x="12" y="96" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#6E7681">Right for: Next.js chatbots</text>
+    <line x1="0" y1="104" x2="420" y2="104" stroke="#1E2733" stroke-width="1"/>
+    <text x="12" y="122" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#00FF9C">streamText: Node.js -&gt; Model directly</text>
+  </g>
+
+  <!-- Big checkmark drawn as SVG shape -->
+  <g transform="translate(690, 428)" opacity="0.35">
+    <polyline points="0,30 20,55 65,0" fill="none" stroke="#00FF9C" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
