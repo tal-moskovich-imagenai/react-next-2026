@@ -5,26 +5,16 @@ name: Tal Moskovich
 imageSrc: ./images/tal.png
 position: left
 job: Committing Code & Pushing Personal Boundaries
-line1: "🧑‍💻 Senior Frontend Engineer @ "
+line1: "🧑‍💻 Senior Frontend Engineer @ ImagenAI"
 line2: "🎧 Podcaster @ Lo-Techi"
 social1: lotechni.dev
 social2: linkedin.com/in/tmosko
+social3: "@talmosko"
 ---
 
-<script setup>
-import { onMounted } from 'vue'
-
-onMounted(() => {
-  const line1Element = document.querySelector('.line-1')
-  if (line1Element) {
-    line1Element.classList.add('relative', 'pt-6')
-    const logoImg = document.createElement('img')
-    logoImg.src = '/images/imagen-logo.svg'
-    logoImg.className = 'w-20 h-auto absolute -bottom-7 left-86'
-    line1Element.appendChild(logoImg)
-  }
-})
-</script>
+<div class="logo-overlay">
+  <img src="/images/imagen-logo.svg" alt="Imagen" class="imagen-logo" />
+</div>
 
 <style>
 .about-me {
@@ -39,6 +29,17 @@ onMounted(() => {
 }
 .about-me .aboutme-details {
   margin-top: 0.5rem !important;
+}
+.logo-overlay {
+  position: absolute;
+  bottom: 28px;
+  right: 28px;
+  z-index: 10;
+}
+.imagen-logo {
+  height: 32px;
+  width: auto;
+  opacity: 0.9;
 }
 </style>
 
