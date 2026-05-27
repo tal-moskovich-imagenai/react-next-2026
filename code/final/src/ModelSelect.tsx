@@ -1,6 +1,7 @@
 import React, {
   useState,
   use,
+  memo,
   Suspense,
   Component,
   type ReactNode,
@@ -37,14 +38,13 @@ class ErrorBoundary extends Component<
   }
 }
 
-const ModelList = ({ onSelect }: Props) => {
+const ModelList = memo(({ onSelect }: Props) => {
   const models = use(modelsPromise);
   const [cursor, setCursor] = useState(0);
 
   useInput((input, key) => {
     if (key.upArrow) setCursor((prev) => Math.max(0, prev - 1));
-    if (key.downArrow)
-      setCursor((prev) => Math.min(models.length - 1, prev + 1));
+    if (key.downArrow) setCursor((prev) => Math.min(models.length - 1, prev + 1));
     if (key.return) onSelect(models[cursor].id);
   });
 
@@ -66,12 +66,12 @@ const ModelList = ({ onSelect }: Props) => {
           </Text>
         </Box>
       ))}
-      <Text dimColor marginTop={1}>
-        ↑/↓ navigate, Enter to confirm
-      </Text>
+      <Box marginTop={1}>
+        <Text dimColor>↑/↓ navigate · Enter to confirm</Text>
+      </Box>
     </Box>
   );
-};
+});
 
 export const ModelSelect = ({ onSelect }: Props) => (
   <ErrorBoundary>

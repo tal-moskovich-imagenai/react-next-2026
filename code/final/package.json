@@ -3,22 +3,23 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch --env-file=.env src/index.tsx",
+    "dev": "tsx --env-file=.env src/index.tsx",
+    "dev:watch": "tsx watch --env-file=.env src/index.tsx",
     "test": "vitest run",
     "test:watch": "vitest"
   },
   "dependencies": {
-    "ink": "^5.0.1",
-    "react": "^19.0.0",
+    "@ai-sdk/openai": "^1.0.0",
     "ai": "^4.0.0",
-    "@ai-sdk/openai": "^1.0.0"
+    "ink": "7.0.3",
+    "react": "19.2.6"
   },
   "devDependencies": {
-    "typescript": "^5.4.0",
-    "tsx": "^4.7.0",
-    "@types/react": "^19.0.0",
     "@types/node": "^22.0.0",
-    "vitest": "^2.0.0",
-    "ink-testing-library": "^4.0.0"
+    "@types/react": "19.2.14",
+    "ink-testing-library": "^4.0.0",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0",
+    "vitest": "^2.0.0"
   }
 }
