@@ -2,11 +2,12 @@ import React, { useState, useTransition, useCallback } from "react";
 import { Box, Text, Static, useInput, useApp } from "ink";
 import { TextInput } from "./TextInput.js";
 import { Spinner } from "./Spinner.js";
-import { useStream } from "./useStream.js";
+import { useStream } from "../hooks/useStream.js";
 
 interface Message {
   role: "user" | "assistant";
-  content: string;
+  content: string;     // sent to the AI (may include <file> XML)
+  display?: string;    // shown in terminal history (clean, no file dumps)
 }
 
 interface Props {
@@ -24,10 +25,18 @@ export const Chat = ({ model }: Props) => {
   });
 
   const handleSubmit = useCallback(
-    (value: string) => {
+    (value: string, attachments: Record<string, string>) => {
       if (!value.trim() || isPending) return;
 
-      const userMsg: Message = { role: "user", content: value };
+      const fileContext = Object.entries(attachments)
+        .map(([name, content]) => `<file name="${name}">\n${content}\n</file>`)
+        .join("\n");
+
+      const userMsg: Message = {
+        role: "user",
+        content: fileContext ? `${fileContext}\n\n${value}` : value,
+        display: value,  // terminal history shows only what the user typed
+      };
       const nextMessages = [...messages, userMsg];
       setMessages(nextMessages);
 
@@ -58,7 +67,7 @@ export const Chat = ({ model }: Props) => {
               {msg.role === "user" ? "You" : "AI"}
             </Text>
             <Box paddingLeft={2}>
-              <Text>{msg.content}</Text>
+              <Text>{msg.display ?? msg.content}</Text>
             </Box>
           </Box>
         )}

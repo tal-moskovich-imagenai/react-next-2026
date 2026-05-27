@@ -7,7 +7,7 @@ import React, {
   type ReactNode,
 } from "react";
 import { Box, Text, useInput } from "ink";
-import { modelsPromise } from "./fetchModels.js";
+import { modelsPromise } from "../api/fetchModels.js";
 import { Spinner } from "./Spinner.js";
 
 interface Props {

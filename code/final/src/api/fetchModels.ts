@@ -3,9 +3,6 @@ interface Model {
   label: string;
 }
 
-// Create the promise ONCE, outside the component.
-// React's use() reads the same promise instance on every render —
-// it only fetches once, not once per render.
 export const modelsPromise: Promise<Model[]> = fetch(
   "https://api.openai.com/v1/models",
   { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` } },
