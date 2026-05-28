@@ -12,9 +12,6 @@ export const useStream = (model = "gpt-4o-mini") => {
   const [error, setError] = useState<Error | null>(null);
 
   const send = async (messages: Message[]): Promise<string> => {
-    setContent("");
-    setError(null);
-
     let accumulated = "";
 
     const { textStream } = streamText({
@@ -27,7 +24,8 @@ export const useStream = (model = "gpt-4o-mini") => {
       accumulated += chunk;
       setContent(accumulated);
     }
-
+    setContent("");
+    setError(null);
     return accumulated;
   };
 
