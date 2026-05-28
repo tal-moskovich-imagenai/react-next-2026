@@ -1,18 +1,24 @@
 import { readdir, stat } from "fs/promises";
 
-const cache = new Map<string, Promise<string[]>>();
+// Replaces the trailing @tag in the input string.
+// replaceAtTag(v)           → strips it entirely   (Escape)
+// replaceAtTag(v, "@dir/")  → swaps to directory   (drill)
+// replaceAtTag(v, "@file ") → swaps to filename    (confirm)
+export const replaceAtTag = (v: string, replacement = "") => v.replace(/@\S*$/, replacement);
+
+const promisesCache = new Map<string, Promise<string[]>>();
 
 export const resolvedFiles: Record<string, string[]> = {};
 
 export function listFiles(query: string): Promise<string[]> {
-  if (!cache.has(query)) {
+  if (!promisesCache.has(query)) {
     const promise = fetchFiles(query);
     promise.then((files) => {
       resolvedFiles[query] = files;
     });
-    cache.set(query, promise);
+    promisesCache.set(query, promise);
   }
-  return cache.get(query)!;
+  return promisesCache.get(query)!;
 }
 
 async function fetchFiles(query: string): Promise<string[]> {

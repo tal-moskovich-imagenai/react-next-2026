@@ -1,7 +1,7 @@
 import { useState, useReducer, useTransition } from "react";
 import { useInput } from "ink";
 import { readFile } from "fs/promises";
-import { resolvedFiles } from "../utils/fileList.js";
+import { resolvedFiles, replaceAtTag } from "../utils/fileList.js";
 import { CLOSED, filePickerReducer } from "../state/filePickerReducer.js";
 
 export type Attachments = Record<string, string>;
@@ -27,7 +27,7 @@ export const useFilePicker = (value: string, setValue: SetValue) => {
       }
 
       if (key.escape) {
-        setValue((v) => v.replace(/@\S*$/, "")); // strip @query from input
+        setValue((v) => replaceAtTag(v));
         dispatch({ type: "close" });
         return;
       }
@@ -36,7 +36,7 @@ export const useFilePicker = (value: string, setValue: SetValue) => {
         const file = resolvedFiles[filePicker.query]?.[filePicker.cursor];
         if (!file) return;
         if (file.endsWith("/")) {
-          setValue((v) => v.replace(/@\S*$/, `@${file}`)); // update @path in input
+          setValue((v) => replaceAtTag(v, `@${file}`));
           dispatch({ type: "drill", path: file });
           return;
         }
@@ -44,7 +44,7 @@ export const useFilePicker = (value: string, setValue: SetValue) => {
         startReading(async () => {
           const content = await readFile(file, "utf-8");
           setAttachments((prev) => ({ ...prev, [file]: content }));
-          setValue((v) => v.replace(/@\S*$/, `@${file} `)); // replace @query with @filename
+          setValue((v) => replaceAtTag(v, `@${file} `));
           dispatch({ type: "close" });
         });
         return;
