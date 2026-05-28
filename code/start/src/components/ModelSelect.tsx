@@ -9,7 +9,7 @@ interface Props {
 }
 
 const ModelList = ({ onSelect }: Props) => {
-  const models = use(fetchModels());
+  const models = use(fetchModels);
   return <Spinner />;
 };
 
