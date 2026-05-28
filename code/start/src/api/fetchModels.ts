@@ -3,7 +3,7 @@ interface Model {
   label: string;
 }
 
-export async function fetchModels(): Promise<Model[]> {
+export async function fetchModelsFn(): Promise<Model[]> {
   const res = await fetch("https://api.openai.com/v1/models", {
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
   });
@@ -15,3 +15,4 @@ export async function fetchModels(): Promise<Model[]> {
     .slice(0, 6);
 }
 
+export const fetchModels = fetchModelsFn();
