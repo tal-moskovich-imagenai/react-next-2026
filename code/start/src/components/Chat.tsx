@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Text, useApp } from "ink";
-import { Spinner } from "./Spinner.js";
 import { useStream } from "../hooks/useStream.js";
+import { TextInput } from "./TextInput.js";
 
 interface Message {
   role: "user" | "assistant";
@@ -46,5 +46,5 @@ export const Chat = ({ model }: Props) => {
 
   const handleSubmit = (value: string) => {};
 
-  return <Spinner />;
+  return <TextInput onSubmit={handleSubmit} />;
 };
