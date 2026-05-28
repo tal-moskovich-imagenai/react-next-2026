@@ -10,7 +10,8 @@ export type FilePickerAction =
   | { type: "up" }
   | { type: "down" }
   | { type: "type"; char: string }
-  | { type: "backspace" };
+  | { type: "backspace" }
+  | { type: "drill"; path: string }; // user pressed Enter on a directory
 
 export const CLOSED: FilePickerState = { active: false, query: "", cursor: 0 };
 
@@ -33,5 +34,7 @@ export const filePickerReducer = (
       return state.query.length > 0
         ? { ...state, query: state.query.slice(0, -1) }
         : CLOSED;
+    case "drill":
+      return { ...state, query: action.path, cursor: 0 };
   }
 };

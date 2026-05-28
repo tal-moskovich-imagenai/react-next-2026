@@ -1,6 +1,8 @@
-import { useState, use, Suspense } from "react";
+import React, { useState, use, Suspense } from "react";
 import { Box, Text, useInput } from "ink";
-import { modelsPromise } from "../api/fetchModels.js";
+import { fetchModels } from "../api/fetchModels.js";
+
+const modelsPromise = fetchModels(); // called once — stable Promise for use()
 import { Spinner } from "./Spinner.js";
 
 interface Props {
@@ -12,27 +14,18 @@ const ModelList = ({ onSelect }: Props) => {
   const [cursor, setCursor] = useState(0);
 
   useInput((_input, key) => {
-    if (key.upArrow) setCursor((prev) => Math.max(0, prev - 1));
-    if (key.downArrow)
-      setCursor((prev) => Math.min(models.length - 1, prev + 1));
-    if (key.return) onSelect(models[cursor].id);
+    if (key.upArrow)   setCursor((prev) => Math.max(0, prev - 1));
+    if (key.downArrow) setCursor((prev) => Math.min(models.length - 1, prev + 1));
+    if (key.return)    onSelect(models[cursor].id);
   });
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor="yellow"
-      padding={1}
-    >
-      <Text bold color="yellow">
-        Select a model:
-      </Text>
+    <Box flexDirection="column" borderStyle="round" borderColor="yellow" padding={1}>
+      <Text bold color="yellow">Select a model:</Text>
       {models.map((model, i) => (
         <Box key={model.id}>
           <Text color={i === cursor ? "green" : undefined}>
-            {i === cursor ? "❯ " : "  "}
-            {model.label}
+            {i === cursor ? "❯ " : "  "}{model.label}
           </Text>
         </Box>
       ))}

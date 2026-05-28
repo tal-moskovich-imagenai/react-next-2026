@@ -1,4 +1,4 @@
-import React, { useState, useTransition, useCallback } from "react";
+import React, { useState, useTransition } from "react";
 import { Box, Text, Static, useInput, useApp } from "ink";
 import { TextInput } from "./TextInput.js";
 import { Spinner } from "./Spinner.js";
@@ -6,9 +6,35 @@ import { useStream } from "../hooks/useStream.js";
 
 interface Message {
   role: "user" | "assistant";
-  content: string; // sent to the AI (may include <file> XML)
-  display?: string; // shown in terminal history (clean, no file dumps)
+  content: string;
+  displayText?: string;
 }
+
+type StaticItem = { kind: "header" } | { kind: "message"; msg: Message };
+
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+const Header = ({ model }: { model: string }) => (
+  <Box borderStyle="round" borderColor="cyan" paddingX={2} marginBottom={1}>
+    <Text bold color="cyan">
+      AI Terminal{" "}
+    </Text>
+    <Text dimColor>model: {model} · q to quit</Text>
+  </Box>
+);
+
+const MessageRow = ({ msg }: { msg: Message }) => (
+  <Box marginBottom={1} flexDirection="column">
+    <Text color={msg.role === "user" ? "yellow" : "green"} bold>
+      {msg.role === "user" ? "You" : "AI"}
+    </Text>
+    <Box paddingLeft={2}>
+      <Text>{msg.displayText ?? msg.content}</Text>
+    </Box>
+  </Box>
+);
+
+// ── Main component ────────────────────────────────────────────────────────────
 
 interface Props {
   model: string;
@@ -34,8 +60,9 @@ export const Chat = ({ model }: Props) => {
     const userMsg: Message = {
       role: "user",
       content: fileContext ? `${fileContext}\n\n${value}` : value,
-      display: value,
+      displayText: value,
     };
+
     const nextMessages = [...messages, userMsg];
     setMessages(nextMessages);
 
@@ -50,24 +77,18 @@ export const Chat = ({ model }: Props) => {
 
   return (
     <Box flexDirection="column" padding={1}>
-      <Box borderStyle="round" borderColor="cyan" paddingX={2} marginBottom={1}>
-        <Text bold color="cyan">
-          AI Terminal{" "}
-        </Text>
-        <Text dimColor>model: {model} (q to quit)</Text>
-      </Box>
-
-      <Static items={messages}>
-        {(msg, i) => (
-          <Box key={i} marginBottom={1} flexDirection="column">
-            <Text color={msg.role === "user" ? "yellow" : "green"} bold>
-              {msg.role === "user" ? "You" : "AI"}
-            </Text>
-            <Box paddingLeft={2}>
-              <Text>{msg.display ?? msg.content}</Text>
-            </Box>
-          </Box>
-        )}
+      <Static
+        items={
+          [
+            { kind: "header" },
+            ...messages.map((msg) => ({ kind: "message" as const, msg })),
+          ] satisfies StaticItem[]
+        }
+      >
+        {(item, i) => {
+          if (item.kind === "header") return <Header key={i} model={model} />;
+          return <MessageRow key={i} msg={item.msg} />;
+        }}
       </Static>
 
       {isPending && (

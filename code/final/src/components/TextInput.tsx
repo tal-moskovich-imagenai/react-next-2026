@@ -2,7 +2,7 @@ import React, { useState, useReducer, useTransition } from "react";
 import { Box, Text, useInput } from "ink";
 import { readFile } from "fs/promises";
 import { FilePicker } from "./FilePicker.js";
-import { fileListCache } from "../utils/fileList.js";
+import { resolvedFiles } from "../utils/fileList.js";
 import { CLOSED, filePickerReducer } from "../state/filePickerReducer.js";
 
 interface Props {
@@ -15,9 +15,8 @@ export const TextInput = ({ onSubmit }: Props) => {
   const [filePicker, dispatch] = useReducer(filePickerReducer, CLOSED);
   const [isReading, startReading] = useTransition();
 
-  useInput(async (input, key) => {
+  useInput((input, key) => {
     if (isReading) return;
-
     if (filePicker.active) {
       if (key.upArrow) {
         dispatch({ type: "up" });
@@ -27,6 +26,7 @@ export const TextInput = ({ onSubmit }: Props) => {
         dispatch({ type: "down" });
         return;
       }
+
       if (key.escape) {
         setValue((v) => v.replace(/@\S*$/, ""));
         dispatch({ type: "close" });
@@ -34,10 +34,15 @@ export const TextInput = ({ onSubmit }: Props) => {
       }
 
       if (key.return) {
-        const file = (await fileListCache.get(filePicker.query))?.[
-          filePicker.cursor
-        ];
+        const file =
+          resolvedFiles[filePicker.query]?.[filePicker.cursor];
         if (!file) return;
+
+        if (file.endsWith("/")) {
+          setValue((v) => v.replace(/@\S*$/, `@${file}`));
+          dispatch({ type: "drill", path: file });
+          return;
+        }
 
         startReading(async () => {
           const content = await readFile(file, "utf-8");
@@ -52,9 +57,8 @@ export const TextInput = ({ onSubmit }: Props) => {
         dispatch({ type: "backspace" });
         return;
       }
-      if (input && !key.ctrl && !key.meta) {
+      if (input && !key.ctrl && !key.meta)
         dispatch({ type: "type", char: input });
-      }
       return;
     }
 
@@ -64,6 +68,7 @@ export const TextInput = ({ onSubmit }: Props) => {
       setAttachments({});
       return;
     }
+
     if (key.backspace || key.delete) {
       const next = value.slice(0, -1);
       setValue(next);
@@ -74,6 +79,7 @@ export const TextInput = ({ onSubmit }: Props) => {
       );
       return;
     }
+
     if (input === "@") {
       setValue((v) => v + "@");
       dispatch({ type: "open" });
@@ -95,7 +101,10 @@ export const TextInput = ({ onSubmit }: Props) => {
       </Box>
 
       {filePicker.active && (
-        <FilePicker query={filePicker.query} cursor={filePicker.cursor} />
+        <FilePicker
+          query={filePicker.query}
+          cursor={filePicker.cursor}
+        />
       )}
     </Box>
   );
