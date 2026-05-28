@@ -1,8 +1,9 @@
 import React, { useState, useReducer, useTransition } from "react";
 import { Box, Text, useInput } from "ink";
 import { readFile } from "fs/promises";
-import { FilePicker, fileListCache } from "./FilePicker.js";
-import { CLOSED, pickerReducer } from "../state/pickerReducer.js";
+import { FilePicker } from "./FilePicker.js";
+import { fileListCache } from "../utils/fileList.js";
+import { CLOSED, filePickerReducer } from "../state/filePickerReducer.js";
 
 interface Props {
   onSubmit: (value: string, attachments: Record<string, string>) => void;
@@ -11,13 +12,13 @@ interface Props {
 export const TextInput = ({ onSubmit }: Props) => {
   const [value, setValue] = useState("");
   const [attachments, setAttachments] = useState<Record<string, string>>({});
-  const [picker, dispatch] = useReducer(pickerReducer, CLOSED);
+  const [filePicker, dispatch] = useReducer(filePickerReducer, CLOSED);
   const [isReading, startReading] = useTransition();
 
   useInput(async (input, key) => {
     if (isReading) return;
 
-    if (picker.active) {
+    if (filePicker.active) {
       if (key.upArrow) {
         dispatch({ type: "up" });
         return;
@@ -33,8 +34,11 @@ export const TextInput = ({ onSubmit }: Props) => {
       }
 
       if (key.return) {
-        const file = (await fileListCache.get(picker.query))?.[picker.cursor];
+        const file = (await fileListCache.get(filePicker.query))?.[
+          filePicker.cursor
+        ];
         if (!file) return;
+
         startReading(async () => {
           const content = await readFile(file, "utf-8");
           setAttachments((prev) => ({ ...prev, [file]: content }));
@@ -65,8 +69,8 @@ export const TextInput = ({ onSubmit }: Props) => {
       setValue(next);
       setAttachments((prev) =>
         Object.fromEntries(
-          Object.entries(prev).filter(([file]) => next.includes(`@${file}`))
-        )
+          Object.entries(prev).filter(([file]) => next.includes(`@${file}`)),
+        ),
       );
       return;
     }
@@ -90,8 +94,8 @@ export const TextInput = ({ onSubmit }: Props) => {
         <Text color="green">█</Text>
       </Box>
 
-      {picker.active && (
-        <FilePicker query={picker.query} cursor={picker.cursor} />
+      {filePicker.active && (
+        <FilePicker query={filePicker.query} cursor={filePicker.cursor} />
       )}
     </Box>
   );

@@ -1,10 +1,10 @@
-export interface PickerState {
+export interface FilePickerState {
   active: boolean;
   query: string;
   cursor: number;
 }
 
-export type PickerAction =
+export type FilePickerAction =
   | { type: "open" }
   | { type: "close" }
   | { type: "up" }
@@ -12,12 +12,12 @@ export type PickerAction =
   | { type: "type"; char: string }
   | { type: "backspace" };
 
-export const CLOSED: PickerState = { active: false, query: "", cursor: 0 };
+export const CLOSED: FilePickerState = { active: false, query: "", cursor: 0 };
 
-export const pickerReducer = (
-  state: PickerState,
-  action: PickerAction,
-): PickerState => {
+export const filePickerReducer = (
+  state: FilePickerState,
+  action: FilePickerAction,
+): FilePickerState => {
   switch (action.type) {
     case "open":
       return { active: true, query: "", cursor: 0 };

@@ -6,8 +6,8 @@ import { useStream } from "../hooks/useStream.js";
 
 interface Message {
   role: "user" | "assistant";
-  content: string;     // sent to the AI (may include <file> XML)
-  display?: string;    // shown in terminal history (clean, no file dumps)
+  content: string; // sent to the AI (may include <file> XML)
+  display?: string; // shown in terminal history (clean, no file dumps)
 }
 
 interface Props {
@@ -24,32 +24,29 @@ export const Chat = ({ model }: Props) => {
     if (input === "q" && !isPending) exit();
   });
 
-  const handleSubmit = useCallback(
-    (value: string, attachments: Record<string, string>) => {
-      if (!value.trim() || isPending) return;
+  const handleSubmit = (value: string, attachments: Record<string, string>) => {
+    if (!value.trim() || isPending) return;
 
-      const fileContext = Object.entries(attachments)
-        .map(([name, content]) => `<file name="${name}">\n${content}\n</file>`)
-        .join("\n");
+    const fileContext = Object.entries(attachments)
+      .map(([name, content]) => `<file name="${name}">\n${content}\n</file>`)
+      .join("\n");
 
-      const userMsg: Message = {
-        role: "user",
-        content: fileContext ? `${fileContext}\n\n${value}` : value,
-        display: value,  // terminal history shows only what the user typed
-      };
-      const nextMessages = [...messages, userMsg];
-      setMessages(nextMessages);
+    const userMsg: Message = {
+      role: "user",
+      content: fileContext ? `${fileContext}\n\n${value}` : value,
+      display: value,
+    };
+    const nextMessages = [...messages, userMsg];
+    setMessages(nextMessages);
 
-      startTransition(async () => {
-        const finalText = await send(nextMessages);
-        setMessages((prev) => [
-          ...prev,
-          { role: "assistant", content: finalText },
-        ]);
-      });
-    },
-    [isPending, messages, send],
-  );
+    startTransition(async () => {
+      const finalText = await send(nextMessages);
+      setMessages((prev) => [
+        ...prev,
+        { role: "assistant", content: finalText },
+      ]);
+    });
+  };
 
   return (
     <Box flexDirection="column" padding={1}>
