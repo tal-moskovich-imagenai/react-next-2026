@@ -4,7 +4,7 @@
     <!-- Layer 1: Your Components -->
     <Transition name="layer">
       <div v-if="step >= 1" class="layer layer-components">
-        <div class="layer-badge" style="color: #5EADF2">LAYER 1</div>
+        <div class="layer-badge" style="color: #3CFF7A">LAYER 1</div>
         <div class="layer-title">Your Components</div>
         <div class="chips">
           <!-- JSX chip -->
@@ -67,7 +67,7 @@
     <!-- Layer 2: Reconciler -->
     <Transition name="layer">
       <div v-if="step >= 2" class="layer layer-reconciler">
-        <div class="layer-badge" style="color: #00FF9C">LAYER 2</div>
+        <div class="layer-badge" style="color: #3CFF7A">LAYER 2</div>
         <div class="layer-title">The Reconciler</div>
         <div class="layer-sub">react-reconciler &middot; virtual tree diff &middot; fiber</div>
         <!-- Pluggable badge appears on click 3 -->
@@ -97,7 +97,7 @@
       <Transition name="layer">
         <div v-if="step >= 4" class="renderer renderer-dom">
           <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B39DDB" stroke-width="1.5" stroke-linecap="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D5940" stroke-width="1.5" stroke-linecap="round">
               <rect x="3" y="3" width="18" height="18" rx="2"/>
               <path d="M3 9h18M9 21V9"/>
             </svg>
@@ -111,7 +111,7 @@
       <Transition name="layer">
         <div v-if="step >= 5" class="renderer renderer-native">
           <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B39DDB" stroke-width="1.5" stroke-linecap="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D5940" stroke-width="1.5" stroke-linecap="round">
               <rect x="7" y="2" width="10" height="20" rx="2"/>
               <line x1="11" y1="18" x2="13" y2="18"/>
             </svg>
@@ -125,7 +125,7 @@
       <Transition name="layer">
         <div v-if="step >= 6" class="renderer renderer-ink highlight">
           <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00FF9C" stroke-width="1.5" stroke-linecap="round">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3CFF7A" stroke-width="1.5" stroke-linecap="round">
               <rect x="2" y="4" width="20" height="16" rx="2"/>
               <path d="M7 8l-2 4 2 4"/>
               <path d="M17 8l2 4-2 4"/>
@@ -162,7 +162,7 @@ const step = computed(() => props.step ?? 0)
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
   padding: 8px 0;
   min-height: 360px;
 }
@@ -175,12 +175,12 @@ const step = computed(() => props.step ?? 0)
   text-align: center;
 }
 .layer-components {
-  background: #1A2744;
-  border: 1.5px solid #5EADF2;
+  background: #0E1A12;
+  border: 1.5px solid #3CFF7A;
 }
 .layer-reconciler {
-  background: #1C2A1A;
-  border: 1.5px solid #00FF9C;
+  background: #0C150C;
+  border: 1.5px solid #3CFF7A;
   position: relative;
 }
 
@@ -193,12 +193,12 @@ const step = computed(() => props.step ?? 0)
 .layer-title {
   font-size: 20px;
   font-weight: bold;
-  color: #F3EFF5;
+  color: #C8DEC4;
   margin-bottom: 8px;
 }
 .layer-sub {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
 }
 
 /* ── Chips in Layer 1 ───────────────────────────── */
@@ -219,9 +219,9 @@ const step = computed(() => props.step ?? 0)
   font-weight: 600;
   border: 1px solid;
 }
-.chip-blue  { color: #5EADF2; border-color: #5EADF2; background: rgba(94,173,242,0.08); }
-.chip-teal  { color: #00FF9C; border-color: #00FF9C; background: rgba(0,255,156,0.08); }
-.chip-dim   { color: #6E7681; border-color: #3A4555; background: rgba(110,118,129,0.08); }
+.chip-blue  { color: #3CFF7A; border-color: #3CFF7A; background: rgba(60,255,122,0.06); }
+.chip-teal  { color: #00C4C4; border-color: #00C4C4; background: rgba(0,196,196,0.06); }
+.chip-dim   { color: #3D5940; border-color: #1E3320; background: transparent; }
 
 /* ── Pluggable badge ────────────────────────────── */
 .pluggable-badge {
@@ -229,9 +229,9 @@ const step = computed(() => props.step ?? 0)
   right: -130px;
   top: 50%;
   transform: translateY(-50%);
-  background: #1A2730;
-  border: 1px dashed #00FF9C;
-  color: #00FF9C;
+  background: #0C0F0C;
+  border: 1px dashed #3CFF7A;
+  color: #3CFF7A;
   font-size: 11px;
   padding: 5px 12px;
   border-radius: 6px;
@@ -251,7 +251,7 @@ const step = computed(() => props.step ?? 0)
 .arrow-line {
   width: 2px;
   height: 24px;
-  background: #5EADF2;
+  background: #3CFF7A;
   position: relative;
 }
 .arrow-line::after {
@@ -261,11 +261,11 @@ const step = computed(() => props.step ?? 0)
   left: -4px;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
-  border-top: 8px solid #5EADF2;
+  border-top: 8px solid #3CFF7A;
 }
 .arrow-label {
   font-size: 11px;
-  color: #6E7681;
+  color: #3D5940;
   margin-top: 8px;
 }
 
@@ -280,13 +280,13 @@ const step = computed(() => props.step ?? 0)
   padding: 14px 12px;
   border-radius: 8px;
   text-align: center;
-  background: #111827;
-  border: 1.5px solid #1E2733;
+  background: #0C0F0C;
+  border: 1.5px solid #1E3320;
 }
 .renderer-ink.highlight {
-  border: 2.5px solid #00FF9C;
-  background: #0D2218;
-  box-shadow: 0 0 20px rgba(0,255,156,0.18);
+  border: 2.5px solid #3CFF7A;
+  background: #0C150C;
+  box-shadow: 0 0 20px rgba(60,255,122,0.12);
 }
 .renderer-icon-wrap {
   display: flex;
@@ -296,24 +296,24 @@ const step = computed(() => props.step ?? 0)
 .renderer-name {
   font-size: 13px;
   font-weight: bold;
-  color: #6E7681;
+  color: #3D5940;
   margin-bottom: 3px;
 }
 .renderer-ink.highlight .renderer-name {
-  color: #00FF9C;
+  color: #3CFF7A;
   font-size: 15px;
 }
 .renderer-desc {
   font-size: 11px;
-  color: #3A4555;
+  color: #1E3320;
 }
 .renderer-ink.highlight .renderer-desc {
-  color: #6E7681;
+  color: #3D5940;
 }
 .today-badge {
   margin-top: 8px;
-  background: #00FF9C;
-  color: #0A0E17;
+  background: #3CFF7A;
+  color: #090B09;
   font-size: 10px;
   font-weight: bold;
   padding: 2px 10px;
@@ -325,7 +325,7 @@ const step = computed(() => props.step ?? 0)
 /* ── Stats ───────────────────────────────────────── */
 .stats {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
   text-align: center;
   margin-top: 4px;
 }

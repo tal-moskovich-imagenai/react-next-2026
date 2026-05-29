@@ -27,7 +27,7 @@
         <div class="bar-label">Optimized</div>
         <div class="bar-track">
           <div class="bar-fill bar-good" :style="{ width: '0.5%' }" />
-          <span class="bar-text" style="color: #00FF9C">0</span>
+          <span class="bar-text" style="color: #3CFF7A">0</span>
         </div>
       </div>
     </div>
@@ -78,9 +78,9 @@ onMounted(() => {
 
 <style scoped>
 .diff-counter {
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  background: #0A0E17;
-  border: 1.5px solid #1E2733;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  background: #0C0F0C;
+  border: 1.5px solid #1E3320;
   border-radius: 10px;
   padding: 20px 24px;
   display: flex;
@@ -96,7 +96,7 @@ onMounted(() => {
 }
 .label {
   font-size: 13px;
-  color: #6E7681;
+  color: #3D5940;
 }
 .value {
   display: flex;
@@ -110,10 +110,10 @@ onMounted(() => {
 .unit {
   font-size: 12px;
 }
-.bad .number  { color: #FE4A49; }
-.bad .unit    { color: #6E7681; }
-.good .number { color: #00FF9C; }
-.good .unit   { color: #6E7681; }
+.bad .number  { color: #FF4A4A; }
+.bad .unit    { color: #3D5940; }
+.good .number { color: #3CFF7A; }
+.good .unit   { color: #3D5940; }
 
 .bar-comparison {
   display: flex;
@@ -128,14 +128,14 @@ onMounted(() => {
 .bar-label {
   width: 72px;
   font-size: 11px;
-  color: #6E7681;
+  color: #3D5940;
   text-align: right;
   flex-shrink: 0;
 }
 .bar-track {
   flex: 1;
   height: 18px;
-  background: #1A2030;
+  background: #1E3320;
   border-radius: 4px;
   overflow: visible;
   position: relative;
@@ -145,20 +145,20 @@ onMounted(() => {
   border-radius: 4px;
   transition: width 0.05s linear;
 }
-.bar-bad  { background: #FE4A49; }
-.bar-good { background: #00FF9C; min-width: 3px; }
+.bar-bad  { background: #FF4A4A; }
+.bar-good { background: #3CFF7A; min-width: 3px; }
 .bar-text {
   position: absolute;
   right: -60px;
   top: 1px;
   font-size: 11px;
-  color: #FE4A49;
+  color: #FF4A4A;
   white-space: nowrap;
 }
 
 .reduction-badge {
-  background: #0D2218;
-  border: 1.5px solid #00FF9C;
+  background: #0C150C;
+  border: 1.5px solid #3CFF7A;
   border-radius: 8px;
   padding: 10px 16px;
   display: flex;
@@ -167,12 +167,12 @@ onMounted(() => {
   gap: 2px;
   font-size: 18px;
   font-weight: bold;
-  color: #00FF9C;
+  color: #3CFF7A;
   animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .reduction-badge .sub {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
   font-weight: normal;
 }
 

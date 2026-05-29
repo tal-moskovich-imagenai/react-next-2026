@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+
+/* ── Global font override ─────────────────────────────────── */
+.slidev-layout,
+.slidev-layout *,
+.slidev-code,
+pre, code, kbd {
+  font-family: 'JetBrains Mono', 'SF Mono', 'Fira Code', 'Cascadia Code', monospace !important;
+}
+
+/* ── Animations ───────────────────────────────────────────── */
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes type-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes draw-right {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+/* ── Cursor helper ────────────────────────────────────────── */
+.cursor-blink {
+  animation: cursor-blink 1s step-end infinite;
+  display: inline-block;
+}
+
+/* ── TUI list / autocomplete helpers ─────────────────────── */
+.tui-box {
+  border: 1px solid #3D5940;
+  font-family: 'JetBrains Mono', monospace;
+  background: #0C0F0C;
+}
+
+/* ── Slide-wide body text ─────────────────────────────────── */
+.slidev-layout p,
+.slidev-layout li {
+  color: #C8DEC4;
+  line-height: 1.6;
+}
+
+/* ── Code blocks ─────────────────────────────────────────── */
+.slidev-layout .shiki {
+  background: #0C0F0C !important;
+  border: 1px solid #1E3320;
+  border-radius: 6px;
+}
+
+/* ── Slide transition (already slide-left, reinforce) ──────── */
+.slidev-vclick-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ── Status bar clearance for all slides ─────────────────── */
+.slidev-layout {
+  padding-bottom: 36px !important;
+}
+
+/* But not on the cover */
+.slidev-layout.cover {
+  padding-bottom: 0 !important;
+}

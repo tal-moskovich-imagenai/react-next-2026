@@ -1,80 +1,17 @@
 ---
-layout: section
+layout: center
+clicks: 4
 ---
 
-# Block 6
-## At Scale
+## Ink in the wild — 4 patterns
+
+<PatternStack :step="$clicks" />
 
 <!--
-4 minutes. This is the "deeper than the docs" moment.
-Most talks stop at "here's how to use the library."
-Anchor on Claude Code — familiar to this audience.
+After the live demo, audience just built a Wizard-pattern app.
+Now: what are ALL the patterns?
+[click 1-4] Each tile reveals
 -->
-
----
-layout: two-cols
----
-
-## The spectrum of Ink usage
-
-<v-clicks>
-
-**Pattern 1: The Wizard** (Prisma, create-react-app)
-
-Runs once. Asks questions. Exits. Stock Ink, zero optimization needed.
-
-**Pattern 2: Progress Display** (Gatsby, Turborepo)
-
-Hundreds of items. Use `<Static>` — already shown.
-
-**Pattern 3: Live Dashboard** (Wrangler, Linear)
-
-Multiple panes updating simultaneously. Use `useWindowSize()` + split layout.
-
-</v-clicks>
-
-<v-click>
-
-**Pattern 4: Where stock Ink hits its ceiling...**
-
-</v-click>
-
-::right::
-
-<v-click>
-
-<TerminalFrame title="prisma init">
-  <div style="font-family: 'SF Mono', monospace; font-size: 13px; line-height: 1.8">
-    <div style="font-weight: bold; color: #F3EFF5">Which database?</div>
-    <div style="color: #00FF9C">❯ PostgreSQL</div>
-    <div style="color: #F3EFF5">&nbsp;&nbsp;MySQL</div>
-    <div style="color: #F3EFF5">&nbsp;&nbsp;SQLite</div>
-    <div style="color: #6E7681; margin-top: 8px">↑↓ navigate · Enter confirm</div>
-  </div>
-</TerminalFrame>
-
-</v-click>
-
----
-layout: quote
----
-
-> "This might sound weird, but the way we build this is we want people to **feel the model as raw as possible**.
-> Every time there's a new model release, we **delete a bunch of code**.
-> With the 4.0 models, we deleted around half the system prompt."
-
-<div class="mt-4 text-sm font-mono" style="color: #6E7681">
-  Boris Cherny, Pragmatic Engineer interview, Sep 2025
-</div>
-
-<v-click>
-
-<div class="mt-6 font-mono text-base" style="color: var(--slidev-theme-color)">
-  The complexity in Claude Code's renderer isn't there because they love complexity.<br/>
-  It's there because they <span style="color: var(--slidev-theme-accents-teal)">exhausted every simpler option first.</span>
-</div>
-
-</v-click>
 
 ---
 layout: two-cols
@@ -82,21 +19,36 @@ layout: two-cols
 
 ## Stock Ink at 60fps — the math
 
-<v-clicks>
-
-Terminal: 200 × 120 = **24,000 cells**
-
-Per frame: 24,000 `OutputEntry` JS objects created
-
-At 60 tokens/sec: **1,440,000 objects/second**
-
-V8's nursery fills every ~10ms → GC scavenger runs
-
-Budget: 16ms. GC pause: 10–20ms.
-
-**Result: frame spikes 25–30ms → visible stutter**
-
-</v-clicks>
+<div class="math-block">
+  <v-clicks>
+    <div class="math-line">
+      <span class="math-eq">200 × 120</span>
+      <span class="math-eq-sep">=</span>
+      <span class="math-val">24,000 cells/frame</span>
+    </div>
+    <div class="math-line">
+      <span class="math-eq">× 1 object/cell</span>
+      <span class="math-eq-sep">=</span>
+      <span class="math-val">24,000 JS objects</span>
+    </div>
+    <div class="math-line">
+      <span class="math-eq">× 60 frames/sec</span>
+      <span class="math-eq-sep">=</span>
+      <span class="math-val math-warn">1,440,000 objects/sec</span>
+    </div>
+    <div class="math-line">
+      <span class="math-eq">V8 nursery fills</span>
+      <span class="math-eq-sep">→</span>
+      <span class="math-val math-warn">GC every ~10ms</span>
+    </div>
+    <div class="math-divider">────────────────────────────</div>
+    <div class="math-result">
+      <div class="math-result-row">frame budget: <span class="math-neutral">16ms</span></div>
+      <div class="math-result-row">GC pause: <span class="math-warn">10–20ms</span></div>
+      <div class="math-result-row">result: <span class="math-red">STUTTER</span></div>
+    </div>
+  </v-clicks>
+</div>
 
 ::right::
 
@@ -109,7 +61,6 @@ interface OutputEntry {
   foregroundColor?: string;
   backgroundColor?: string;
   bold?: boolean;
-  italic?: boolean;
   // ... 4 more props
 }
 
@@ -133,6 +84,58 @@ Frame spike: 22.1ms
 ```
 
 </v-click>
+
+<style scoped>
+.math-block {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 16px;
+}
+
+.math-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 13px;
+  animation: fade-up 0.25s ease-out both;
+}
+
+.math-eq      { color: #3D5940; min-width: 160px; }
+.math-eq-sep  { color: #3D5940; }
+.math-val     { color: #C8DEC4; }
+.math-warn    { color: #FF4A4A; }
+
+.math-divider {
+  color: #1E3320;
+  font-size: 12px;
+  margin: 4px 0;
+}
+
+.math-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 12px;
+  background: #0C0F0C;
+  border: 1px solid #1E3320;
+  border-radius: 4px;
+}
+
+.math-result-row {
+  font-size: 13px;
+  color: #3D5940;
+}
+
+.math-neutral { color: #C8DEC4; }
+.math-red     { color: #FF4A4A; font-weight: 700; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 
 <!--
 You can reproduce this locally and watch it happen.
@@ -228,10 +231,12 @@ function renderNode(node, back, front) {
 
 <v-click>
 
-One new token arrives:
-- **Dirty nodes:** `<StreamingText>` (5 cells)
-- **Blitted:** everything else (23,995 cells)
-- **ANSI written:** ~20 bytes
+<div style="font-family:'JetBrains Mono',monospace; font-size:13px; margin-top:12px">
+  <div style="color:#3D5940">new token arrives ──►</div>
+  <div style="color:#C8DEC4; padding-left:16px">dirty:&nbsp;&nbsp;&nbsp;<span style="color:#3CFF7A">5 cells</span> rendered</div>
+  <div style="color:#C8DEC4; padding-left:16px">blitted: <span style="color:#3CFF7A">23,995 cells</span></div>
+  <div style="color:#C8DEC4; padding-left:16px">written: <span style="color:#3CFF7A">~20 bytes</span> ANSI</div>
+</div>
 
 </v-click>
 
@@ -247,21 +252,32 @@ layout: two-cols
 
 ## The result
 
-```
-                 STOCK INK     CLAUDE CODE
-Objects/frame    24,000        0
-GC pauses        frequent      none
-Cells/frame      24,000        ~5
-Bytes/frame      ~50KB ANSI    ~20 bytes
-fps              ~30           60+
-```
+<div class="result-table">
+  <div class="table-line border">╔═══════════════╦══════════════╦══════════════╗</div>
+  <div class="table-line header">║               ║  STOCK INK   ║ CLAUDE CODE  ║</div>
+  <div class="table-line border">╠═══════════════╬══════════════╬══════════════╣</div>
+  <div class="table-line">║ objects/frame ║ <span class="bad">   24,000    </span>║ <span class="good">      0      </span>║</div>
+  <div class="table-line">║ GC pauses     ║ <span class="bad">  frequent   </span>║ <span class="good">    none     </span>║</div>
+  <div class="table-line">║ cells/frame   ║ <span class="bad">   24,000    </span>║ <span class="good">     ~5      </span>║</div>
+  <div class="table-line">║ bytes/frame   ║ <span class="bad">   ~50KB     </span>║ <span class="good">  ~20 bytes  </span>║</div>
+  <div class="table-line">║ fps           ║ <span class="bad">    ~30      </span>║ <span class="good">    60+      </span>║</div>
+  <div class="table-line border">╚═══════════════╩══════════════╩══════════════╝</div>
+</div>
 
-<v-click>
-
-Boris Cherny, HN 2025:
-> "We started by using Ink, and at this point it's **our own framework** due to the number of changes we've made to it over the months."
-
-</v-click>
+<style scoped>
+.result-table {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+}
+.table-line { color: #3D5940; white-space: pre; line-height: 1.6; }
+.table-line.border { color: #1E3320; }
+.table-line.header { color: #C8DEC4; }
+.bad  { color: #FF4A4A; }
+.good { color: #3CFF7A; }
+</style>
 
 ::right::
 
@@ -270,8 +286,6 @@ Boris Cherny, HN 2025:
 ### The component still looks like this
 
 ```tsx
-// A Claude Code developer writes this.
-// No Int32Array. No blit. Just React.
 const StreamingMessage = ({ content, isStreaming }) => (
   <Box flexDirection="column"
        borderStyle="round" padding={1}>
@@ -286,9 +300,12 @@ const StreamingMessage = ({ content, isStreaming }) => (
 
 <v-click>
 
-**The 60fps rendering is invisible to this component.**
-
-That's the entire value of the abstraction boundary.
+<div style="font-family:'JetBrains Mono',monospace; font-size:13px; color:#3CFF7A; margin-top:16px; line-height:1.8">
+  React stays.<br/>
+  The renderer was rewritten.<br/>
+  The components didn't change.<br/>
+  <span style="color:#C8DEC4">That's the abstraction.</span>
+</div>
 
 </v-click>
 
@@ -298,22 +315,123 @@ layout: center
 
 ## Your progression
 
-```
-Stage 1 → Write with stock Ink. It will be fast enough.
-           (Most CLIs: 1–5fps — wizard prompts, build output)
+<div class="stages">
+  <v-click>
+    <div class="stage stage-1">
+      <div class="stage-label">Stage 1</div>
+      <div class="stage-box">
+        <div class="stage-title">Stock Ink</div>
+        <div class="stage-desc">1–5fps</div>
+        <div class="stage-note">most CLIs</div>
+      </div>
+    </div>
+  </v-click>
+  <div class="stage-arrow">→</div>
+  <v-click>
+    <div class="stage stage-2">
+      <div class="stage-label">Stage 2</div>
+      <div class="stage-box">
+        <div class="stage-title">Profile</div>
+        <div class="stage-desc">first</div>
+        <div class="stage-note">DevTools · --inspect</div>
+      </div>
+    </div>
+  </v-click>
+  <div class="stage-arrow">→</div>
+  <v-click>
+    <div class="stage stage-3">
+      <div class="stage-label">Stage 3</div>
+      <div class="stage-box">
+        <div class="stage-title">&lt;Static&gt;</div>
+        <div class="stage-desc">useMemo</div>
+        <div class="stage-note">common fix</div>
+      </div>
+    </div>
+  </v-click>
+  <div class="stage-arrow">→</div>
+  <v-click>
+    <div class="stage stage-4">
+      <div class="stage-label">Stage 4</div>
+      <div class="stage-box stage-warn-box">
+        <div class="stage-title">60fps</div>
+        <div class="stage-desc warn-text">⚠ rare</div>
+        <div class="stage-note warn-text">Claude Code terr.</div>
+      </div>
+    </div>
+  </v-click>
+</div>
 
-Stage 2 → Hit a problem? Profile first.
-           console.time() · React DevTools · --inspect
+<style scoped>
+.stages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  justify-content: center;
+  margin-top: 24px;
+}
 
-Stage 3 → Ink-native fixes (no fork required):
-           <Static> for completed items (free)
-           useMemo for expensive filtering
-           Stable keys for fiber reuse
+.stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  animation: fade-up 0.3s ease-out both;
+}
 
-Stage 4 → 60fps + 10,000 cells/sec?
-           You're in Claude Code territory.
-           You'll know. The GC pauses will tell you.
-```
+.stage-label {
+  font-size: 10px;
+  color: #3D5940;
+  letter-spacing: 0.04em;
+}
+
+.stage-box {
+  width: 120px;
+  padding: 12px 8px;
+  border: 1px solid #1E3320;
+  background: #0C0F0C;
+  border-radius: 6px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stage-warn-box {
+  border-color: #FF4A4A;
+  background: #0F0C0C;
+}
+
+.stage-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #C8DEC4;
+}
+
+.stage-desc {
+  font-size: 12px;
+  color: #3CFF7A;
+}
+
+.stage-note {
+  font-size: 10px;
+  color: #3D5940;
+}
+
+.warn-text { color: #FF4A4A !important; }
+
+.stage-arrow {
+  font-size: 18px;
+  color: #1E3320;
+  flex-shrink: 0;
+  padding-top: 20px;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 
 <!--
 "Apply optimizations progressively. Don't optimize upfront."

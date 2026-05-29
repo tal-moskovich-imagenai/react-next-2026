@@ -47,10 +47,10 @@
 
       <!-- 32 = green annotation -->
       <Transition name="ann">
-        <div v-if="step >= 2" class="ann ann-param">
+          <div v-if="step >= 2" class="ann ann-param">
           <div class="ann-arrow" />
           <div class="ann-label">
-            <span class="ann-code" style="color:#00FF9C">32 = green</span>
+            <span class="ann-code" style="color:#3CFF7A">32 = green</span>
             <span class="ann-desc">foreground<br/>color code</span>
           </div>
         </div>
@@ -61,7 +61,7 @@
         <div v-if="step >= 3" class="ann ann-m">
           <div class="ann-arrow" />
           <div class="ann-label">
-            <span class="ann-code" style="color:#F3EFF5;opacity:0.8">m = end</span>
+            <span class="ann-code" style="color:#C8DEC4;opacity:0.8">m = end</span>
             <span class="ann-desc">of sequence</span>
           </div>
         </div>
@@ -72,7 +72,7 @@
         <div v-if="step >= 4" class="ann ann-reset">
           <div class="ann-arrow" />
           <div class="ann-label">
-            <span class="ann-code" style="color:#B39DDB">0 = reset</span>
+            <span class="ann-code" style="color:#00C4C4">0 = reset</span>
             <span class="ann-desc">all styles</span>
           </div>
         </div>
@@ -93,13 +93,13 @@
     <!-- More examples -->
     <Transition name="result">
       <div v-if="step >= 6" class="examples">
-        <span class="ex-code" style="color:#FE4A49">\x1b[2J</span>
+        <span class="ex-code" style="color:#FF4A4A">\x1b[2J</span>
         <span class="ex-desc">= clear screen</span>
         <span class="ex-sep">&middot;</span>
-        <span class="ex-code" style="color:#00D4FF">\x1b[3;10H</span>
+        <span class="ex-code" style="color:#00C4C4">\x1b[3;10H</span>
         <span class="ex-desc">= move cursor to row 3, col 10</span>
         <span class="ex-sep">&middot;</span>
-        <span class="ex-code" style="color:#B39DDB">\x1b[1m</span>
+        <span class="ex-code" style="color:#3CFF7A">\x1b[1m</span>
         <span class="ex-desc">= bold</span>
       </div>
     </Transition>
@@ -123,26 +123,26 @@ const step = computed(() => props.step ?? 0)
 
 <style scoped>
 .ansi-explainer {
-  font-family: 'SF Mono', 'Fira Code', monospace;
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 18px;
-  padding: 32px 24px 24px;
+  gap: 12px;
+  padding: 12px 24px 16px;
   width: 100%;
 }
 
 /* ── Title ─────────────────────────────────────── */
 .title {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: bold;
-  color: #F3EFF5;
+  color: #C8DEC4;
   letter-spacing: -0.01em;
 }
 .subtitle {
-  font-size: 14px;
-  color: #6E7681;
-  margin-top: -12px;
+  font-size: 13px;
+  color: #3D5940;
+  margin-top: -8px;
 }
 
 /* ── Bytes row ─────────────────────────────────── */
@@ -150,29 +150,29 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   align-items: center;
   gap: 2px;
-  background: #0A0E17;
-  border: 1px solid #1E2733;
+  background: #0C0F0C;
+  border: 1px solid #1E3320;
   border-radius: 10px;
-  padding: 14px 24px;
+  padding: 12px 20px;
   width: 100%;
   max-width: 820px;
   flex-wrap: wrap;
 }
 .bytes-label {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
   margin-right: 12px;
   flex-shrink: 0;
 }
 .token { display: inline-flex; align-items: center; }
-.token-text { font-size: 20px; font-weight: bold; }
+.token-text { font-size: 18px; font-weight: bold; }
 
-.token.esc   .token-text { color: #FE4A49; }
-.token.param .token-text { color: #6E7681; transition: color 0.4s ease; }
-.token.param.lit .token-text { color: #00FF9C; }
-.token.content .token-text { color: #F3EFF5; }
-.token.reset .token-text { color: #6E7681; transition: color 0.4s ease; }
-.token.reset.lit .token-text { color: #B39DDB; }
+.token.esc   .token-text { color: #FF4A4A; }
+.token.param .token-text { color: #3D5940; transition: color 0.4s ease; }
+.token.param.lit .token-text { color: #3CFF7A; }
+.token.content .token-text { color: #C8DEC4; }
+.token.reset .token-text { color: #3D5940; transition: color 0.4s ease; }
+.token.reset.lit .token-text { color: #00C4C4; }
 
 /* ── Annotations ───────────────────────────────── */
 .annotations {
@@ -200,8 +200,8 @@ const step = computed(() => props.step ?? 0)
 
 .ann-arrow {
   width: 1.5px;
-  height: 18px;
-  background: #3A4555;
+  height: 14px;
+  background: #1E3320;
   flex-shrink: 0;
 }
 .ann-label {
@@ -214,12 +214,12 @@ const step = computed(() => props.step ?? 0)
 .ann-code {
   font-size: 12px;
   font-weight: bold;
-  color: #FE4A49;
+  color: #FF4A4A;
   white-space: nowrap;
 }
 .ann-desc {
   font-size: 11px;
-  color: #6E7681;
+  color: #3D5940;
   text-align: center;
   line-height: 1.4;
   white-space: nowrap;
@@ -229,25 +229,25 @@ const step = computed(() => props.step ?? 0)
 .result-row {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   width: 100%;
   max-width: 820px;
 }
 .result-label {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
 }
 .result-box {
-  background: #0A1410;
-  border: 1.5px solid #00FF9C;
+  background: #0C150C;
+  border: 1.5px solid #3CFF7A;
   border-radius: 8px;
-  padding: 16px 24px;
+  padding: 12px 24px;
 }
 .result-text {
-  font-size: 26px;
+  font-size: 22px;
   font-weight: bold;
-  color: #00FF9C;
-  text-shadow: 0 0 20px rgba(0,255,156,0.5);
+  color: #3CFF7A;
+  text-shadow: 0 0 16px rgba(60,255,122,0.4);
 }
 
 /* ── Examples ──────────────────────────────────── */
@@ -261,17 +261,17 @@ const step = computed(() => props.step ?? 0)
   width: 100%;
 }
 .ex-code { font-weight: bold; }
-.ex-desc { color: #6E7681; }
-.ex-sep  { color: #3A4555; }
+.ex-desc { color: #3D5940; }
+.ex-sep  { color: #1E3320; }
 
 /* ── Footer badge ──────────────────────────────── */
 .footer-badge {
-  background: #0D2218;
-  border: 1px solid #00FF9C;
+  background: #0C150C;
+  border: 1px solid #3CFF7A;
   border-radius: 6px;
-  padding: 8px 20px;
+  padding: 6px 20px;
   font-size: 13px;
-  color: #00FF9C;
+  color: #3CFF7A;
 }
 
 /* ── Transitions ───────────────────────────────── */

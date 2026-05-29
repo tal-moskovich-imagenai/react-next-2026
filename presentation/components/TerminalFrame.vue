@@ -1,6 +1,6 @@
 <template>
-  <div class="terminal-frame">
-    <div class="terminal-titlebar">
+  <div class="terminal-frame" :style="borderColor ? { borderColor } : {}">
+    <div class="terminal-titlebar" :style="borderColor ? { borderBottomColor: borderColor } : {}">
       <div class="traffic-lights">
         <span class="dot red" />
         <span class="dot yellow" />
@@ -17,26 +17,27 @@
 <script setup lang="ts">
 defineProps<{
   title?: string
+  borderColor?: string
 }>()
 </script>
 
 <style scoped>
 .terminal-frame {
-  background: #0A0E17;
-  border: 1.5px solid #1E2733;
+  background: #0C0F0C;
+  border: 1.5px solid #1E3320;
   border-radius: 10px;
   overflow: hidden;
-  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.04);
+  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255,255,255,0.03);
 }
 
 .terminal-titlebar {
-  background: #161B22;
+  background: #0C130C;
   padding: 8px 14px;
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid #1E2733;
+  border-bottom: 1px solid #1E3320;
 }
 
 .traffic-lights {
@@ -50,15 +51,15 @@ defineProps<{
   border-radius: 50%;
   display: block;
 }
-.dot.red    { background: #FE4A49; }
+.dot.red    { background: #FF4A4A; }
 .dot.yellow { background: #FFBD2E; }
-.dot.green  { background: #27C93F; }
+.dot.green  { background: #3CFF7A; }
 
 .title {
   flex: 1;
   text-align: center;
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
   margin-right: 50px;
 }
 
@@ -66,7 +67,7 @@ defineProps<{
   padding: 16px 20px;
   font-size: 14px;
   line-height: 1.6;
-  color: #F3EFF5;
+  color: #C8DEC4;
   min-height: 60px;
 }
 </style>

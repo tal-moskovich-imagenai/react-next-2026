@@ -91,31 +91,31 @@ const steps = [
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 16px;
+  padding: 7px 16px;
   border-radius: 8px;
-  border: 1.5px solid #1E2733;
-  background: #0D1117;
+  border: 1.5px solid #1E3320;
+  background: #0C0F0C;
   width: 100%;
   transition: all 0.3s ease;
   opacity: 0.35;
 }
 .step-box.active {
   opacity: 1;
-  border-color: #2A3A4A;
-  background: #0F1822;
+  border-color: #1E3320;
+  background: #0C130C;
 }
 .step-box.current {
-  border-color: #00FF9C;
-  background: #0D2218;
-  box-shadow: 0 0 12px rgba(0,255,156,0.15);
+  border-color: #3CFF7A;
+  background: #0C150C;
+  box-shadow: 0 0 12px rgba(60,255,122,0.12);
 }
 
 .step-num {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #1E2733;
-  color: #6E7681;
+  background: #1E3320;
+  color: #3D5940;
   font-size: 11px;
   font-weight: bold;
   display: flex;
@@ -125,26 +125,26 @@ const steps = [
   transition: all 0.3s ease;
 }
 .step-box.current .step-num {
-  background: #00FF9C;
-  color: #0A0E17;
+  background: #3CFF7A;
+  color: #090B09;
 }
 .step-box.active:not(.current) .step-num {
-  background: #1A3020;
-  color: #00FF9C;
+  background: #0C1A10;
+  color: #3CFF7A;
 }
 
 .step-content { flex: 1; }
 .step-title {
   font-size: 14px;
   font-weight: bold;
-  color: #F3EFF5;
+  color: #C8DEC4;
 }
 .step-detail {
   font-size: 12px;
-  color: #6E7681;
+  color: #3D5940;
   margin-top: 1px;
 }
-.step-box.current .step-title { color: #00FF9C; }
+.step-box.current .step-title { color: #3CFF7A; }
 
 .step-icon {
   font-size: 18px;
@@ -153,7 +153,7 @@ const steps = [
 
 .connector {
   margin-left: 28px;
-  height: 16px;
+  height: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -162,21 +162,21 @@ const steps = [
 .connector-line {
   width: 2px;
   height: 100%;
-  background: #1E2733;
+  background: #1E3320;
   transition: background 0.3s ease;
 }
 .connector.active .connector-line {
-  background: #00FF9C;
+  background: #3CFF7A;
 }
 .connector-dot {
   position: absolute;
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: #00FF9C;
-  top: 4px;
+  background: #3CFF7A;
+  top: 2px;
   left: -3px;
-  box-shadow: 0 0 6px rgba(0,255,156,0.8);
+  box-shadow: 0 0 6px rgba(60,255,122,0.8);
   animation: flow-down 0.5s ease forwards;
 }
 
@@ -186,11 +186,11 @@ const steps = [
 }
 
 .output-callout {
-  margin-top: 8px;
+  margin-top: 6px;
   margin-left: 8px;
-  padding: 8px 16px;
-  background: #0A1410;
-  border: 1px solid #00FF9C;
+  padding: 6px 16px;
+  background: #0C0F0C;
+  border: 1px solid #3CFF7A;
   border-radius: 6px;
   font-size: 13px;
   animation: fade-in 0.4s ease;

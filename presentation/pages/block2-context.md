@@ -1,16 +1,4 @@
 ---
-layout: section
----
-
-# Block 2
-## How React Renderers Work
-
-<!--
-4 minutes. Keep it visual. Don't get lost in fiber internals.
-Goal: audience understands WHY this is possible, not HOW it works in detail.
--->
-
----
 layout: center
 clicks: 6
 ---
@@ -29,46 +17,163 @@ clicks: 6
 -->
 
 ---
-layout: two-cols
+layout: center
 ---
 
 ## The terminal has no DOM
 
-<v-clicks>
+<div class="stream-viz">
+  <!-- Stream diagram -->
+  <div class="stream-row">
+    <div class="stream-node">
+      <div class="node-icon">⌨</div>
+      <div class="node-label">keyboard</div>
+    </div>
+    <div class="stream-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">stdin</div>
+    </div>
+    <div class="stream-node node-center">
+      <div class="node-icon">⚙</div>
+      <div class="node-label">Node.js process</div>
+    </div>
+    <div class="stream-arrow">
+      <div class="arrow-line"></div>
+      <div class="arrow-label">stdout</div>
+    </div>
+    <div class="stream-node">
+      <div class="node-icon">▬</div>
+      <div class="node-label">terminal</div>
+    </div>
+  </div>
 
-- No retained-mode graphics pipeline
-- Just two streams:
-  - `stdin` — bytes coming in (keyboard)
-  - `stdout` — bytes going out (what you see)
-
-</v-clicks>
-
-<v-click>
-
-Everything in between — layout, colors, cursor movement — **has to be invented.**
-
-</v-click>
-
-<v-click>
-
-**Ink's solution:**
-
-1. Layout with **Yoga** — Meta's Flexbox engine (same one React Native uses)
-2. Convert positions → **ANSI escape sequences**
-3. Write to stdout
-
-</v-click>
-
-::right::
-
-<div class="flex items-center justify-center h-full">
-  <div class="font-mono text-center" style="color:#6E7681; font-size:13px; line-height:2.2">
-    <div style="font-size:32px; color:#FE4A49; margin-bottom:8px">\x1b[32m</div>
-    <div style="color:#00FF9C; font-size:18px; font-weight:bold">Hello, ReactNext!</div>
-    <div style="font-size:32px; color:#FE4A49; margin-top:8px">\x1b[0m</div>
-    <div style="margin-top:16px; font-size:12px">↓ next slide ↓</div>
+  <!-- Ink's solution callouts -->
+  <div class="ink-solution">
+    <v-click>
+      <div class="solution-item">
+        <span class="sol-num">1.</span>
+        <span class="sol-key">Yoga</span>
+        <span class="sol-desc">Flexbox algorithm → (row, col) per node</span>
+      </div>
+    </v-click>
+    <v-click>
+      <div class="solution-item">
+        <span class="sol-num">2.</span>
+        <span class="sol-key">ANSI</span>
+        <span class="sol-desc">positions → escape sequences</span>
+      </div>
+    </v-click>
+    <v-click>
+      <div class="solution-item">
+        <span class="sol-num">3.</span>
+        <span class="sol-key">stdout</span>
+        <span class="sol-desc">only changed cells written</span>
+      </div>
+    </v-click>
   </div>
 </div>
+
+<style scoped>
+.stream-viz {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 16px;
+}
+
+.stream-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  max-width: 700px;
+  justify-content: center;
+}
+
+.stream-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 20px;
+  border: 1px solid #1E3320;
+  background: #0C0F0C;
+  border-radius: 6px;
+  min-width: 120px;
+}
+.node-center {
+  border-color: #3CFF7A;
+  background: #0C150C;
+}
+.node-icon {
+  font-size: 22px;
+  color: #3D5940;
+}
+.node-center .node-icon { color: #3CFF7A; }
+.node-label {
+  font-size: 11px;
+  color: #3D5940;
+  text-align: center;
+}
+.node-center .node-label { color: #C8DEC4; }
+
+.stream-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  max-width: 100px;
+}
+.arrow-line {
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #1E3320, #3CFF7A, #1E3320);
+  position: relative;
+}
+.arrow-line::after {
+  content: '►';
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  color: #3CFF7A;
+  font-size: 10px;
+}
+.arrow-label {
+  font-size: 11px;
+  color: #3CFF7A;
+  font-weight: 600;
+}
+
+.ink-solution {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.solution-item {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 8px 16px;
+  border: 1px solid #1E3320;
+  background: #0C0F0C;
+  border-radius: 4px;
+  animation: fade-up 0.25s ease-out both;
+}
+.sol-num { color: #3D5940; font-size: 13px; min-width: 20px; }
+.sol-key { color: #3CFF7A; font-size: 14px; font-weight: 700; min-width: 70px; }
+.sol-desc { color: #C8DEC4; font-size: 13px; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
 
 <!--
 Yoga runs the full Flexbox algorithm — flex-direction, align-items, justify-content, gap — and returns pixel positions.
@@ -118,81 +223,88 @@ But the DOM is a 2D array of terminal cells."
 -->
 
 ---
-layout: two-cols
+layout: center
 ---
 
-## Why this matters for performance
+## Cell-level diffing
 
-<v-click>
+<div class="cell-diff-root">
+  <!-- Left: naive -->
+  <TerminalFrame title="naive approach" borderColor="#FF4A4A" class="diff-frame">
+    <div class="diff-body">
+      <div class="diff-line"><span class="ansi-red">\x1b[2J</span> <span class="diff-comment">← clear screen</span></div>
+      <div class="diff-line">[reprint 1,920 cells]</div>
+      <div class="diff-badge badge-red">~~~~ FLICKER ~~~~</div>
+    </div>
+  </TerminalFrame>
 
-**80×24 = 1,920 cells**
+  <!-- Right: ink -->
+  <TerminalFrame title="ink cell-diff" borderColor="#3CFF7A" class="diff-frame">
+    <div class="diff-body">
+      <div class="diff-line"><span class="ansi-green">\x1b[2;5H</span> <span class="diff-comment">← move cursor</span></div>
+      <div class="diff-line">Counter: 1</div>
+      <div class="diff-line diff-dim">[9 other cells unchanged]</div>
+      <div class="diff-badge badge-green">~10 bytes</div>
+    </div>
+  </TerminalFrame>
+</div>
 
-Only one word changed?
+<div class="diff-caption">
+  80 × 24 = 1,920 cells · one word changed · Ink writes <span style="color:#3CFF7A">10 bytes</span>
+</div>
 
-**Ink writes ~10 bytes.**
+<style scoped>
+.cell-diff-root {
+  display: flex;
+  gap: 24px;
+  justify-content: center;
+  margin-top: 16px;
+}
 
-</v-click>
+.diff-frame {
+  width: 340px;
+}
 
-<v-click>
+.diff-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+}
 
-Naive approach: clear screen (`\x1b[2J`) + reprint everything = **thousands of bytes + flicker**.
+.diff-line {
+  color: #C8DEC4;
+}
+.diff-dim { color: #3D5940; }
+.diff-comment { color: #3D5940; font-size: 11px; }
 
-</v-click>
+.ansi-red   { color: #FF4A4A; font-weight: 700; }
+.ansi-green { color: #3CFF7A; font-weight: 700; }
 
-<v-click>
+.diff-badge {
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  display: inline-block;
+  text-align: center;
+}
+.badge-red  { background: rgba(255,74,74,0.15); color: #FF4A4A; border: 1px solid #FF4A4A; }
+.badge-green { background: rgba(60,255,122,0.1); color: #3CFF7A; border: 1px solid #3CFF7A; }
 
-Ink's **cell-level diffing** is what makes smooth, flicker-free terminal UIs possible.
-
-Claude Code had to push this to **60fps**. More on that in Block 6.
-
-</v-click>
-
-::right::
-
-<v-click>
-
-<TerminalFrame title="the key insight">
-  <div style="font-size: 13px; line-height: 2; color: #F3EFF5">
-    <div>Every <span style="color:#00FF9C">&lt;Box&gt;</span> = flexbox container</div>
-    <div style="color:#6E7681; padding-left:16px">like &lt;div style="display:flex"&gt;</div>
-    <div style="margin-top:8px">Every <span style="color:#00FF9C">&lt;Text&gt;</span> = styled text node</div>
-    <div style="margin-top:8px">All React features work <span style="color:#00FF9C">exactly the same</span>:</div>
-    <div style="color:#5EADF2; padding-left:16px">useState · useEffect</div>
-    <div style="color:#5EADF2; padding-left:16px">useContext · useMemo</div>
-    <div style="color:#5EADF2; padding-left:16px">custom hooks</div>
-  </div>
-</TerminalFrame>
-
-</v-click>
+.diff-caption {
+  text-align: center;
+  margin-top: 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #3D5940;
+}
+</style>
 
 <!--
 "If your component renders 1,920 cells but only one word changed, Ink writes ~10 bytes."
 This is the same property Claude Code had to preserve when pushing to 60fps.
--->
-
----
-layout: quote
----
-
-> "With an off-distribution stack, the model can still learn it.
-> But you have to show it the ropes and put in the work.
-> **We wanted a tech stack which we didn't need to teach**:
-> one where Claude Code could build itself."
-
-<div class="mt-4 text-sm font-mono" style="color: #6E7681">
-  Boris Cherny, Pragmatic Engineer interview, Sep 2025
-</div>
-
-<v-click>
-
-<div class="mt-6 font-mono text-base" style="color: var(--slidev-theme-color)">
-  TypeScript + React = "on distribution" — Claude is genuinely fluent in both.<br/>
-  Choosing them means <span style="color: var(--slidev-theme-accents-teal)">Claude Code can write its own code from day one.</span>
-</div>
-
-</v-click>
-
-<!--
-"On distribution" = the model has seen so much of a technology that it's genuinely fluent.
-TypeScript and React are two of the most well-represented in Claude's training data.
 -->
