@@ -1907,31 +1907,130 @@ Ink does **not** run a fixed timer. It is event-driven by React's reconciler. Th
 ```
 setState() called (e.g. new streaming token arrives)
    ↓
-React reconciler runs your components → new virtual tree
+[PHASE 1 — REACT] Reconciler re-runs changed component functions only
    ↓
-Reconciler diffs virtual trees → commits changes to Ink's node tree
+[PHASE 1 — REACT] Diffs virtual trees → patches Ink's node tree (only changed nodes)
    ↓
-Ink's render callback fires ← this is what we're looking at
+[PHASE 2 — INK]   onRender callback fires
    ↓
-Ink walks the committed node tree, runs Yoga, builds a Screen, diffs, writes ANSI
+[PHASE 2 — INK]   Allocates fresh Screen (width × height OutputEntry objects)
+   ↓
+[PHASE 2 — INK]   Walks ENTIRE node tree unconditionally → fills every cell
+   ↓
+[PHASE 2 — INK]   Compares full output string to previous string
+   ↓
+[PHASE 2 — INK]   If changed: erase previous lines + write full new frame to stdout
 ```
 
-React handles the component-tree diff. Ink handles the screen-cell diff. Two separate diffing passes, one after the other, on every commit.
+---
 
-During heavy token streaming — one `setState` per token, tokens arriving at ~60 per second — this fires ~60 times per second and the 16ms budget becomes real. But the frequency is a consequence of how fast tokens arrive, not a built-in loop.
+**The critical distinction — two completely separate passes**
+
+This is the part that confuses almost everyone. Let's be precise.
+
+**Phase 1 is React's domain — component functions.**
+
+React's reconciler is smart. If `<Header />` received the same props and nothing in its subtree changed state, React bails out — it does **not** call your `Header()` function again. This is standard React reconciliation, the same as in a browser. `React.memo`, `useMemo`, stable keys — all of these work exactly as expected and reduce how many component functions run.
+
+After Phase 1, React has updated its fiber tree and **patched Ink's node tree** (a simple tree of `{nodeName, style, children, yogaNode, text}` objects). Only the nodes that actually changed got new values. Every other node in Ink's node tree is still pointing to the same old data from last frame.
+
+**Phase 2 is Ink's domain — screen cells.**
+
+Here is where the disconnect happens. After React commits, Ink runs `renderNodeToOutput`. Look at what it does:
+
+```ts
+// Simplified from Ink's actual src/render-node-to-output.ts
+
+const renderNodeToOutput = (node: DOMElement, output: Output, ...) => {
+  // The ONLY skip — Static-wrapped content
+  if (skipStaticElements && node.internal_static) {
+    return;
+  }
+
+  // Walk into every child, unconditionally
+  if (node.nodeName === 'ink-root' || node.nodeName === 'ink-box') {
+    for (const childNode of node.childNodes) {
+      renderNodeToOutput(childNode as DOMElement, output, {
+        offsetX: x,
+        offsetY: y,
+        ...
+      });
+    }
+  }
+};
+```
+
+There is **no dirty check** in this function. No "did this node change since last frame?" test. It recursively walks every node in the entire tree, calling `output.write(x, y, text, ...)` for each one to fill in the screen grid.
+
+**Why can't Ink just skip unchanged nodes?**
+
+Because Ink starts each frame from a blank canvas — all spaces:
+
+```ts
+// From Ink's actual src/output.ts — runs on every commit
+for (let y = 0; y < this.height; y++) {
+  const row: StyledChar[] = [];
+  for (let x = 0; x < this.width; x++) {
+    row.push({ type: 'char', value: ' ', fullWidth: false, styles: [] });
+  }
+  output.push(row);
+}
+```
+
+Every cell starts as a space. To produce a correct frame, *every* visible node must write its text into those cells. If Ink skipped `<Header />` because React didn't re-run it, the header's cells would be left as spaces — wrong output.
+
+Stock Ink has no memory of "what did `<Header />` paint last frame at cells (0,0)–(0,200)?" It only has the previous frame's final *string*, not a structured per-cell record it can borrow from. So it can't copy from the previous frame for unchanged nodes. It has to repaint from scratch.
+
+**The coarse early-exit that does exist:**
+
+After building the entire frame into a string, Ink does check:
+
+```ts
+// from ink.tsx — after renderNodeToOutput completes
+if (output === this.lastOutput && !hasStaticOutput) {
+  return; // same as last frame — skip stdout write
+}
+```
+
+If the complete output string is identical to last frame, it skips writing to stdout. That's real — you won't waste I/O on a truly static screen. But the `Output` object was already allocated, all `width × height` cells were already initialized, the entire tree was already walked. The early-exit only prevents the final write syscall. The allocation and traversal already happened.
+
+**Summary — what React saves vs. what Ink still does:**
+
+```
+React's Phase 1 bails out:
+  ✅ Does NOT re-run <Header />, <Sidebar />, <MessageList /> component functions
+  ✅ Does NOT re-diff unchanged virtual DOM subtrees
+  ✅ Ink's node tree nodes for unchanged components → unchanged (same objects, same data)
+
+Ink's Phase 2 does anyway:
+  ❌ Allocates 24,000 StyledChar objects (fresh blank canvas)
+  ❌ Calls renderNodeToOutput on EVERY node including <Header />, <Sidebar />, etc.
+  ❌ Reads <Header />'s node data and writes it into the Output grid
+     (same data as last frame → same result → but still computed and written)
+  ❌ Generates full frame string
+  ❌ In default mode: erases previous lines + writes full new frame to stdout
+```
+
+React's optimization operates at the **component function** level (Phase 1). Ink's cost operates at the **screen-painting** level (Phase 2). They are independent passes. A React bailout saves you component function execution time but does not save you the screen-painting work.
+
+This is what Claude Code's custom Ink replaces: it fuses the two phases. A React-level bailout (component didn't re-render) is propagated into Phase 2, so the blit optimization can skip the `renderNodeToOutput` walk for that subtree entirely and copy cells from the previous typed-array buffer instead.
+
+---
+
+During heavy token streaming — one `setState` per token, tokens arriving at ~60 per second — Phase 2 fires ~60 times per second and the 16ms budget becomes real. But the frequency is a consequence of how fast tokens arrive, not a built-in loop.
 
 On every commit, Ink rebuilds the full screen from scratch:
 
 ```ts
 // Stock Ink render callback — fires on every React commit
 function render(domTree: DOMNode): void {
-  // ❌ Allocates a fresh Screen object on every commit
+  // ❌ Allocates a fresh Screen object on every commit — regardless of what changed
   const newScreen: Screen = buildScreen(terminalRows, terminalCols);
 
-  // Walk the committed node tree, write OutputEntry objects into newScreen
+  // ❌ Walks the entire committed node tree — even nodes React didn't re-render
   renderNode(domTree, newScreen, (x = 0), (y = 0));
 
-  // Diff the new screen against the previous one
+  // Compares full output string — coarse but cheap
   const patches = diff(previousScreen, newScreen);
 
   // Write changed cells to stdout
