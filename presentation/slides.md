@@ -84,18 +84,6 @@ src: ./pages/block2-context.md
 ---
 
 ---
-src: ./pages/block3-api.md
----
-
----
-src: ./pages/block4-livebuild.md
----
-
----
-src: ./pages/block5-testing.md
----
-
----
 src: ./pages/block6-scale.md
 ---
 
