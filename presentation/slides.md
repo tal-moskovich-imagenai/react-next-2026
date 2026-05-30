@@ -84,11 +84,11 @@ src: ./pages/live-demo-bridge.md
 ---
 
 ---
-src: ./pages/block5-optimization.md
+src: ./pages/block6-patterns.md
 ---
 
 ---
-src: ./pages/block6-scale.md
+src: ./pages/block5-optimization.md
 ---
 
 ---

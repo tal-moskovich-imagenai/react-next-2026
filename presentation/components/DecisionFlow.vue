@@ -3,69 +3,67 @@
 
     <!-- Root question — always visible -->
     <div class="node node-root">
-      <div class="node-border">╔══════════════════════════════════╗</div>
-      <div class="node-body">║&nbsp;&nbsp;Should I use Ink?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;║</div>
-      <div class="node-border">╚══════════════╤═══════════════════╝</div>
+      <span class="nd-name">Should I use Ink?</span>
     </div>
 
-    <!-- Connector down -->
-    <div class="v-line" />
+    <div class="v-conn" />
 
     <!-- Question 1 -->
-    <Transition name="node-in">
-      <div v-if="step >= 1" class="node node-question">
-        <div class="node-border-q">┌────────────────────────────────┐</div>
-        <div class="node-body-q">│ Do users see state update      │</div>
-        <div class="node-body-q">│ in real time?                  │</div>
-        <div class="node-border-q">└────────┬──────────────┬─────────┘</div>
-      </div>
-    </Transition>
+    <div class="node node-question" :class="{ visible: step >= 1 }">
+      <span class="nd-name">Do users see state updates in real time?</span>
+    </div>
 
     <!-- Branch row -->
-    <Transition name="node-in">
-      <div v-if="step >= 2" class="branch-row">
-        <!-- YES branch -->
-        <div class="branch">
-          <div class="branch-label branch-yes">YES</div>
-          <div class="v-line short" />
-          <div class="node node-yes">
-            <div class="node-border-y">┌────────────┐</div>
-            <div class="node-body-y">│ Ink worth  │</div>
-            <div class="node-body-y">│ it &nbsp;✓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</div>
-            <div class="node-border-y">└─────┬──────┘</div>
-          </div>
-        </div>
+    <div class="branch-row" :class="{ visible: step >= 2 }">
 
-        <!-- NO branch -->
-        <Transition name="node-in">
-          <div v-if="step >= 3" class="branch">
-            <div class="branch-label branch-no">NO</div>
-            <div class="v-line short" />
-            <div class="node node-no">
-              <div class="node-border-n">┌───────────────┐</div>
-              <div class="node-body-n">│ console.log   │</div>
-              <div class="node-body-n">│ is fine       │</div>
-              <div class="node-border-n">└───────────────┘</div>
-            </div>
-          </div>
-        </Transition>
+      <!-- YES branch -->
+      <div class="branch">
+        <div class="branch-label branch-yes">YES</div>
+        <div class="v-conn short" />
+        <div class="node node-yes">
+          <span class="nd-name">Ink</span>
+          <span class="nd-badge badge-clean">worth it ✓</span>
+        </div>
       </div>
-    </Transition>
+
+      <!-- NO branch -->
+      <div class="branch" :class="{ visible: step >= 3 }">
+        <div class="branch-label branch-no">NO</div>
+        <div class="v-conn short" />
+        <div class="node node-no">
+          <span class="nd-name">console.log</span>
+          <span class="nd-badge badge-dim">is fine</span>
+        </div>
+      </div>
+
+    </div>
 
     <!-- Pattern picker — below YES branch -->
-    <Transition name="node-in">
-      <div v-if="step >= 4" class="pattern-picker">
-        <div class="v-line short" />
-        <div class="node node-patterns">
-          <div class="node-border-p">┌──────────────────────────────────────┐</div>
-          <div class="node-pat">│ One-shot?&nbsp;&nbsp;&nbsp;&nbsp;<span class="pat-arrow">→</span> <span class="pat-name">Wizard pattern</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</div>
-          <div class="node-pat">│ Progress?&nbsp;&nbsp;&nbsp;&nbsp;<span class="pat-arrow">→</span> <span class="pat-name">Static pattern</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│</div>
-          <div class="node-pat">│ Dashboard?&nbsp;&nbsp;&nbsp;<span class="pat-arrow">→</span> <span class="pat-name">WindowSize pattern</span>&nbsp;&nbsp;&nbsp;&nbsp;│</div>
-          <div class="node-pat">│ 60fps AI?&nbsp;&nbsp;&nbsp;&nbsp;<span class="pat-arrow">→</span> <span class="pat-warn">Claude Code terr.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>│</div>
-          <div class="node-border-p">└──────────────────────────────────────┘</div>
+    <div class="pattern-picker" :class="{ visible: step >= 4 }">
+      <div class="v-conn short" />
+      <div class="pattern-bar">
+        <div class="pat-row">
+          <span class="pat-q">One-shot?</span>
+          <span class="pat-sep">→</span>
+          <span class="pat-name">Wizard pattern</span>
+        </div>
+        <div class="pat-row">
+          <span class="pat-q">Progress?</span>
+          <span class="pat-sep">→</span>
+          <span class="pat-name">Static pattern</span>
+        </div>
+        <div class="pat-row">
+          <span class="pat-q">Dashboard?</span>
+          <span class="pat-sep">→</span>
+          <span class="pat-name">WindowSize pattern</span>
+        </div>
+        <div class="pat-row">
+          <span class="pat-q">60fps AI?</span>
+          <span class="pat-sep">→</span>
+          <span class="pat-warn">Claude Code territory</span>
         </div>
       </div>
-    </Transition>
+    </div>
 
   </div>
 </template>
@@ -82,77 +80,137 @@ const step = computed(() => props.step ?? 0)
   flex-direction: column;
   align-items: center;
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
   gap: 0;
-  /* fixed height = full expanded diagram — title stays put as nodes reveal */
   height: 360px;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
 }
 
-/* ── Connectors ─────────────────────────────── */
-.v-line {
-  width: 1.5px;
+/* ── Connectors ──────────────────────────────── */
+.v-conn {
+  width: 2px;
   height: 16px;
   background: #3D5940;
+  flex-shrink: 0;
 }
-.v-line.short { height: 10px; }
+.v-conn.short { height: 10px; }
 
-/* ── Root node ──────────────────────────────── */
-.node-root { text-align: center; }
-.node-border { color: #3CFF7A; white-space: pre; }
-.node-body   { color: #C8DEC4; white-space: pre; }
+/* ── Nodes ───────────────────────────────────── */
+.node {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1.5px solid;
+  transition: all 0.3s ease;
+}
 
-/* ── Question node ──────────────────────────── */
-.node-question { text-align: center; }
-.node-border-q { color: #6B9E6B; white-space: pre; }
-.node-body-q   { color: #C8DEC4; white-space: pre; }
+.node-root {
+  border-color: #3CFF7A;
+  background: #0C180C;
+  width: 260px;
+}
 
-/* ── Branch row ─────────────────────────────── */
+.node-question {
+  border-color: #3D5940;
+  background: #0C0F0C;
+  width: 340px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.node-question.visible { opacity: 1; transform: translateY(0); }
+
+.node-yes {
+  border-color: #3CFF7A;
+  background: #0C180C;
+  width: 190px;
+}
+
+.node-no {
+  border-color: #3D5940;
+  background: #0C0F0C;
+  width: 190px;
+}
+
+.nd-name {
+  font-size: 13px;
+  color: #C8DEC4;
+}
+
+.nd-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.badge-clean { color: #3CFF7A; background: rgba(60,255,122,0.08); border: 1px solid #3CFF7A; }
+.badge-dim   { color: #6B9E6B; background: transparent; border: 1px solid #3D5940; }
+
+/* ── Branch row ──────────────────────────────── */
 .branch-row {
   display: flex;
   gap: 48px;
   align-items: flex-start;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
+.branch-row.visible { opacity: 1; transform: translateY(0); }
 
 .branch {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 0;
+  opacity: 0;
+  transition: opacity 0.35s ease;
 }
+/* YES always visible once branch-row is visible */
+.branch-row.visible .branch:first-child { opacity: 1; }
+.branch.visible { opacity: 1 !important; }
 
 .branch-label {
   font-size: 11px;
   font-weight: 700;
-  padding: 0 4px;
+  padding: 2px 4px;
 }
 .branch-yes { color: #3CFF7A; }
 .branch-no  { color: #FF4A4A; }
 
-/* ── Yes node ───────────────────────────────── */
-.node-border-y { color: #3CFF7A; white-space: pre; }
-.node-body-y   { color: #C8DEC4; white-space: pre; }
-
-/* ── No node ────────────────────────────────── */
-.node-border-n { color: #6B9E6B; white-space: pre; }
-.node-body-n   { color: #6B9E6B; white-space: pre; }
-
-/* ── Pattern picker ─────────────────────────── */
+/* ── Pattern picker ──────────────────────────── */
 .pattern-picker {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-.node-border-p { color: #6B9E6B; white-space: pre; }
-.node-pat      { color: #C8DEC4; white-space: pre; }
-.pat-arrow     { color: #3CFF7A; }
-.pat-name      { color: #3CFF7A; }
-.pat-warn      { color: #FF4A4A; }
-
-/* ── Transitions ────────────────────────────── */
-.node-in-enter-active {
-  transition: opacity 0.35s ease-out, transform 0.35s ease-out;
-}
-.node-in-enter-from {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(6px);
+  transition: opacity 0.35s ease, transform 0.35s ease;
 }
+.pattern-picker.visible { opacity: 1; transform: translateY(0); }
+
+.pattern-bar {
+  padding: 10px 20px;
+  border: 1px solid #3D5940;
+  border-radius: 6px;
+  background: #0C0F0C;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pat-row {
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+  align-items: baseline;
+}
+.pat-q    { color: #6B9E6B; min-width: 100px; }
+.pat-sep  { color: #3CFF7A; }
+.pat-name { color: #C8DEC4; }
+.pat-warn { color: #FF4A4A; font-weight: 600; }
 </style>

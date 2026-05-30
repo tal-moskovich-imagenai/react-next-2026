@@ -20,7 +20,7 @@
             <div class="frame-sub">previous frame</div>
           </div>
         </div>
-        <div v-if="step >= 1" class="rb-note note-red">Every frame: allocate → render → discard → GC</div>
+        <div class="rb-note note-red" :style="{ opacity: step >= 1 ? 1 : 0 }">Every frame: allocate → render → discard → GC</div>
       </div>
 
       <!-- After: double buffer swap -->
@@ -46,7 +46,7 @@
             </div>
           </div>
         </div>
-        <div v-if="step >= 3" class="rb-note note-green">Two Int32Arrays — alive for the entire process. GC never sees them.</div>
+        <div class="rb-note note-green" :style="{ opacity: step >= 3 ? 1 : 0 }">Two Int32Arrays — alive for the entire process. GC never sees them.</div>
       </div>
 
     </div>
@@ -93,6 +93,7 @@ watch(step, (val) => {
   border-radius: 10px;
   border: 1.5px solid #3D5940;
   background: #0C0F0C;
+  min-height: 150px;
 }
 .renderer-before { border-color: #FF4A4A; background: #120808; }
 .renderer-after  {
@@ -198,7 +199,8 @@ watch(step, (val) => {
 .rb-note {
   margin-top: 10px;
   font-size: 12px;
-  animation: fade-up 0.3s ease-out both;
+  min-height: 18px;
+  transition: opacity 0.3s ease;
 }
 .note-red   { color: #FF4A4A; }
 .note-green { color: #3CFF7A; }

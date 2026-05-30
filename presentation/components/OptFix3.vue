@@ -25,7 +25,7 @@
                 {{ step >= 1 ? '✓ clean' : '—' }}
               </span>
             </div>
-            <div v-if="step >= 2" class="blit-label">
+            <div class="blit-label" :style="{ opacity: step >= 2 ? 1 : 0 }">
               <span class="blit-arrow">⤷</span> blit from front buffer
             </div>
           </div>
@@ -37,7 +37,7 @@
               <span class="nd-name">&lt;Counter /&gt;</span>
               <span class="nd-badge badge-dirty">dirty</span>
             </div>
-            <div v-if="step >= 3" class="render-label">
+            <div class="render-label" :style="{ opacity: step >= 3 ? 1 : 0 }">
               <span class="render-arrow">⤷</span> re-render → write cells
             </div>
           </div>
@@ -51,7 +51,7 @@
                 {{ step >= 1 ? '✓ clean' : '—' }}
               </span>
             </div>
-            <div v-if="step >= 2" class="blit-label">
+            <div class="blit-label" :style="{ opacity: step >= 2 ? 1 : 0 }">
               <span class="blit-arrow">⤷</span> blit from front buffer
             </div>
           </div>
@@ -61,7 +61,7 @@
     </div>
 
     <!-- Bottom result -->
-    <div v-if="step >= 3" class="result-bar">
+    <div class="result-bar" :style="{ opacity: step >= 3 ? 1 : 0 }">
       <span class="res-label">stdout writes:</span>
       <span class="res-val">only Counter's changed cells</span>
       <span class="res-sep"> · </span>
@@ -165,14 +165,16 @@ const step = computed(() => props.step ?? 0)
 .blit-label {
   font-size: 11px;
   color: #3CFF7A;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
+  min-height: 18px;
 }
 .blit-arrow { margin-right: 4px; }
 
 .render-label {
   font-size: 11px;
   color: #FF4A4A;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
+  min-height: 18px;
 }
 .render-arrow { margin-right: 4px; }
 
@@ -183,7 +185,12 @@ const step = computed(() => props.step ?? 0)
   border-radius: 6px;
   background: #0C150C;
   font-size: 13px;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
 }
 .res-label   { color: #6B9E6B; }
 .res-val     { color: #3CFF7A; font-weight: 700; }

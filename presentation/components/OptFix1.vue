@@ -18,7 +18,7 @@
           <div class="code-line"><span class="kw">const</span> screen = <span class="fn">buildScreen</span>(rows, cols);</div>
           <div class="code-line"><span class="cmt">// ❌ 24,000 objects, every frame</span></div>
         </div>
-        <div v-if="step >= 1" class="side-stat stat-bad">
+        <div class="side-stat stat-bad" :style="{ opacity: step >= 1 ? 1 : 0 }">
           <div class="stat-num">24,000</div>
           <div class="stat-label">JS objects / frame</div>
           <div class="stat-sub">→ 1.4M objects/sec → GC every ~10ms</div>
@@ -46,7 +46,7 @@
           <div class="code-line">  ); <span class="cmt">// ✅ ONE allocation, reused</span></div>
           <div class="code-line">}</div>
         </div>
-        <div v-if="step >= 3" class="side-stat stat-good">
+        <div class="side-stat stat-good" :style="{ opacity: step >= 3 ? 1 : 0 }">
           <div class="stat-num">0</div>
           <div class="stat-label">JS objects / frame</div>
           <div class="stat-sub">GC pressure: eliminated</div>
@@ -88,6 +88,7 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 320px;
 }
 
 .side-after {
@@ -132,7 +133,7 @@ const step = computed(() => props.step ?? 0)
 .side-stat {
   padding: 10px 14px;
   border-radius: 6px;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
 }
 .stat-bad  { background: rgba(255,74,74,0.08); border: 1px solid #FF4A4A; }
 .stat-good { background: rgba(60,255,122,0.08); border: 1px solid #3CFF7A; }

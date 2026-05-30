@@ -21,7 +21,7 @@
             <div class="pn-badge badge-run">re-render</div>
           </div>
         </div>
-        <div v-if="step >= 1" class="phase-note note-green">React bails out 2 of 3 components ✓</div>
+        <div class="phase-note note-green" :style="{ opacity: step >= 1 ? 1 : 0 }">React bails out 2 of 3 components ✓</div>
       </div>
 
       <!-- Arrow between phases -->
@@ -37,25 +37,34 @@
         <div class="phase-nodes">
           <div class="phase-node ink-node" :class="{ lit: step >= 2 }">
             <div class="pn-name">buildScreen()</div>
-            <div v-if="step >= 3" class="pn-badge badge-warn">24,000 objects</div>
+            <div class="pn-badge badge-warn" :style="{ opacity: step >= 3 ? 1 : 0 }">24,000 objects</div>
           </div>
           <div class="phase-node ink-node" :class="{ lit: step >= 2 }">
             <div class="pn-name">renderNodeToOutput()</div>
-            <div v-if="step >= 2" class="pn-badge badge-warn">ALL nodes</div>
+            <div class="pn-badge badge-warn" :style="{ opacity: step >= 2 ? 1 : 0 }">ALL nodes</div>
           </div>
           <div class="phase-node ink-node" :class="{ lit: step >= 2 }">
             <div class="pn-name">diff + stdout</div>
             <div class="pn-badge badge-ok">write</div>
           </div>
         </div>
-        <div v-if="step >= 4" class="phase-note note-red">GC fires every ~10ms → stutter 💥</div>
+        <div class="phase-note note-red" :style="{ opacity: step >= 4 ? 1 : 0 }">GC fires every ~10ms → stutter 💥</div>
       </div>
 
     </div>
 
-    <!-- Bottom label -->
-    <div v-if="step >= 2" class="bottom-note">
-      React bails out at component level. Ink still rebuilds the full screen.
+    <!-- Math callout + bottom label -->
+    <div class="bottom-area">
+      <div class="bottom-note" :style="{ opacity: step >= 2 ? 1 : 0 }">
+        React bails out at component level. Ink still rebuilds the full screen.
+      </div>
+      <div class="math-callout" :style="{ opacity: step >= 3 ? 1 : 0 }">
+        <span class="mc-eq">200×120 cells × 1 object × 60fps</span>
+        <span class="mc-sep"> = </span>
+        <span class="mc-val">1,440,000 objects/sec</span>
+        <span class="mc-sep"> → </span>
+        <span class="mc-warn">GC every ~10ms</span>
+      </div>
     </div>
 
   </div>
@@ -72,10 +81,10 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   font-family: 'JetBrains Mono', monospace;
   padding-top: 4px;
-  height: 340px;
+  height: 360px;
 }
 
 /* ── Phases row ──────────────────────────────────── */
@@ -94,6 +103,9 @@ const step = computed(() => props.step ?? 0)
   border: 1.5px solid #3D5940;
   background: #0C0F0C;
   transition: all 0.4s ease;
+  min-height: 210px;
+  display: flex;
+  flex-direction: column;
 }
 
 .phase-react { border-color: #3D5940; }
@@ -154,6 +166,9 @@ const step = computed(() => props.step ?? 0)
   font-weight: 700;
   padding: 2px 8px;
   border-radius: 4px;
+  transition: opacity 0.3s ease;
+  min-width: 60px;
+  text-align: center;
 }
 .badge-skip { color: #3CFF7A; background: rgba(60,255,122,0.1); border: 1px solid #3CFF7A; }
 .badge-run  { color: #3CFF7A; background: rgba(60,255,122,0.08); border: 1px solid #3CFF7A; }
@@ -164,7 +179,8 @@ const step = computed(() => props.step ?? 0)
   margin-top: 8px;
   font-size: 11px;
   font-weight: 600;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
+  min-height: 18px;
 }
 .note-green { color: #3CFF7A; }
 .note-red   { color: #FF4A4A; }
@@ -195,13 +211,33 @@ const step = computed(() => props.step ?? 0)
   white-space: nowrap;
 }
 
-/* ── Bottom label ────────────────────────────────── */
+/* ── Bottom area ─────────────────────────────────── */
+.bottom-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  width: 100%;
+}
+
 .bottom-note {
   font-size: 13px;
   color: #C8DEC4;
   text-align: center;
-  animation: fade-up 0.3s ease-out both;
+  transition: opacity 0.3s ease;
 }
+
+.math-callout {
+  font-size: 11.5px;
+  font-family: 'JetBrains Mono', monospace;
+  text-align: center;
+  transition: opacity 0.3s ease;
+}
+.mc-eq  { color: #6B9E6B; }
+.mc-sep { color: #3D5940; }
+.mc-val { color: #C8DEC4; }
+.mc-warn { color: #FF4A4A; font-weight: 700; }
 
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(6px); }

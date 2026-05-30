@@ -76,3 +76,16 @@ pre, code, kbd {
 .slidev-layout.cover {
   padding-bottom: 0 !important;
 }
+
+/* ── Title → content gap on all content slides ───────────── */
+/* Descendant (not >) — Slidev wraps content in inner divs.
+   Excludes cover/aboutme which manage their own spacing.      */
+.slidev-layout:not(.cover):not(.aboutme) h2 {
+  margin-top: -6px !important;
+  margin-bottom: 20px !important;
+}
+
+.slidev-layout:not(.cover):not(.aboutme) h1 {
+  margin-top: -6px !important;
+  margin-bottom: 20px !important;
+}
