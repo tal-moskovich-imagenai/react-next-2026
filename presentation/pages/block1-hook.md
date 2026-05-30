@@ -2,8 +2,9 @@
 layout: center
 ---
 
+## which framework?
+
 <div class="autocomplete-root">
-  <div class="prompt-line">❯ which framework?<span class="cursor-blink" style="color:#3CFF7A">█</span></div>
 
   <div class="dropdown">
     <div v-click class="dd-item">
@@ -43,13 +44,6 @@ layout: center
   align-items: center;
   gap: 20px;
   font-family: 'JetBrains Mono', monospace;
-}
-
-.prompt-line {
-  font-size: 18px;
-  color: #C8DEC4;
-  align-self: flex-start;
-  margin-left: 4px;
 }
 
 /* ── Dropdown ──────────────────────────────── */

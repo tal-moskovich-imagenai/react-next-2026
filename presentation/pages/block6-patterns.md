@@ -5,9 +5,7 @@ clicks: 4
 
 ## Ink in the wild — 4 patterns
 
-<div style="margin-top: 20px;">
-  <PatternStack :step="$clicks" />
-</div>
+<PatternStack :step="$clicks" />
 
 <!--
 After the live demo, audience just built a Wizard-pattern app.

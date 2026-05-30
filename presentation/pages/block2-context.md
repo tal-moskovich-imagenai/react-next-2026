@@ -58,7 +58,7 @@ clicks: 6
 
 ## The Full Render Cycle
 
-<div class="flex justify-center mt-4">
+<div class="flex justify-center">
   <PipelineFlow :currentStep="$clicks" />
 </div>
 
@@ -130,8 +130,6 @@ clicks: 4
   gap: 24px;
   justify-content: center;
   align-items: flex-start;
-  margin-top: 16px;
-  /* fixed height so title doesn't move when right frame appears */
   min-height: 210px;
 }
 
