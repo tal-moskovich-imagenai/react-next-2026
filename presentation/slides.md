@@ -54,6 +54,7 @@ info: |
 
 layout: cover
 class: p-0
+clicks: 1
 drawings:
   persist: false
 transition: slide-left
@@ -61,7 +62,7 @@ mdc: true
 lineNumbers: true
 ---
 
-<BootSequence />
+<BootSequence :started="$clicks >= 1" />
 
 <!--
 Cover: the presentation boots as a React terminal app. Don't say anything. Just let it run.

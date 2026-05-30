@@ -14,12 +14,10 @@
       </div>
     </div>
 
-    <!-- Phase 2+: TrollCode ASCII art -->
+    <!-- Phase 2: TrollCode ASCII art (exits when phase 3 arrives) -->
     <Transition name="ascii-in">
-      <div v-if="phase >= 2" class="ascii-wrapper">
-        <!-- Banner + doll side by side -->
+      <div v-if="phase === 2" class="ascii-wrapper">
         <div class="ascii-banner-row">
-          <!-- TROLL + CODE text -->
           <div class="ascii-text-block">
             <div class="ascii-troll">
               <div
@@ -38,32 +36,54 @@
               >{{ line }}</div>
             </div>
           </div>
-          <!-- Troll doll mascot -->
           <TrollDollFigure :delay="(trollLines.length + codeLines.length) * 0.06" :size="13" />
         </div>
-        <!-- Subtitle -->
         <div class="ascii-subtitle" :style="{ animationDelay: `${(trollLines.length + codeLines.length) * 0.06 + 0.4}s` }">
           React in your terminal · powered by Ink 🧌
         </div>
       </div>
     </Transition>
 
-    <!-- Phase 3: Talk title -->
+    <!-- Phase 3: Title card — logo mark + React atom + big talk title -->
     <Transition name="title-in">
-      <div v-if="phase >= 3" class="talk-title">
+      <div v-if="phase >= 3" class="title-card">
+
+        <!-- Top row: mini logo mark + React atom -->
+        <div class="title-brand">
+          <div class="brand-logo">
+            <div class="brand-troll">
+              <span v-for="(l, i) in trollLines" :key="i" class="brand-troll-line ascii-green">{{ l }}</span>
+            </div>
+            <div class="brand-code">
+              <span v-for="(l, i) in codeLines" :key="i" class="brand-troll-line ascii-cyan">{{ l }}</span>
+            </div>
+          </div>
+          <div class="brand-sep">×</div>
+          <div class="react-atom">⚛</div>
+        </div>
+
+        <!-- Divider -->
+        <div class="title-divider" />
+
+        <!-- Main talk title -->
         <div class="talk-main">React Runs Your Terminal</div>
         <div class="talk-sub">Let's Build One Live</div>
+
+        <!-- Meta / speaker info -->
         <div class="talk-meta">
           Tal Moskovich · ReactNext 2026 · June 23
           <span class="cursor-blink">█</span>
         </div>
+
       </div>
     </Transition>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
+
+const props = defineProps<{ started?: boolean }>()
 
 const phase = ref(0)
 const shownBootLines = ref(0)
@@ -102,8 +122,8 @@ const visibleBootLines = computed(() =>
   bootLines.slice(0, shownBootLines.value)
 )
 
-onMounted(() => {
-  // Phase 0 → 1: reveal boot lines one by one
+const startSequence = () => {
+  if (phase.value > 0) return   // already running — don't restart
   phase.value = 1
 
   const showNext = () => {
@@ -111,20 +131,23 @@ onMounted(() => {
       shownBootLines.value++
       setTimeout(showNext, shownBootLines.value <= 2 ? 600 : 200)
     } else {
-      // All boot lines shown → ASCII phase
       setTimeout(() => {
         phase.value = 2
-        // After ASCII finishes rendering → show title
-        const asciiDuration = (trollLines.length + codeLines.length) * 60 + 600
-        setTimeout(() => {
-          phase.value = 3
-        }, asciiDuration)
+        // Hold the big logo for 2s after it fully renders, then transition to title
+        const asciiDuration = (trollLines.length + codeLines.length) * 60 + 600 + 2000
+        setTimeout(() => { phase.value = 3 }, asciiDuration)
       }, 400)
     }
   }
 
   setTimeout(showNext, 200)
-})
+}
+
+// Start immediately if already started when mounted (e.g. navigating back)
+onMounted(() => { if (props.started) startSequence() })
+
+// Start when the prop flips to true (first click)
+watch(() => props.started, (val) => { if (val) startSequence() })
 </script>
 
 <style scoped>
@@ -227,31 +250,84 @@ onMounted(() => {
   animation: fade-in 0.4s ease-out both;
 }
 
-/* ── Talk title ───────────────────────────────────────────── */
-.talk-title {
-  text-align: center;
+/* ── Title card (phase 3) ─────────────────────────────────── */
+.title-card {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  width: 100%;
+  max-width: 700px;
 }
 
+/* Brand row: mini logo + × + React atom */
+.title-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+}
+
+.brand-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.brand-troll-line {
+  display: block;
+  font-size: 3px;   /* tiny — reads as a logo mark, not text */
+  white-space: pre;
+  letter-spacing: 0;
+}
+
+.brand-sep {
+  font-size: 14px;
+  color: #3D5940;
+}
+
+.react-atom {
+  font-size: 40px;
+  color: #61DAFB;
+  line-height: 1;
+  filter: drop-shadow(0 0 12px rgba(97,218,251,0.4));
+  animation: atom-spin 12s linear infinite;
+}
+
+/* Divider */
+.title-divider {
+  width: 280px;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #3D5940, transparent);
+  margin: 4px 0;
+}
+
+/* Talk text */
 .talk-main {
-  font-size: 22px;
+  font-size: 30px;
   font-weight: 700;
   color: #C8DEC4;
   letter-spacing: 0.01em;
+  line-height: 1.2;
 }
 
 .talk-sub {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 400;
-  color: #6B9E6B;
+  color: #3CFF7A;
 }
 
 .talk-meta {
-  margin-top: 8px;
-  font-size: 11px;
+  font-size: 12px;
   color: #6B9E6B;
+  margin-top: 4px;
+}
+
+@keyframes atom-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
 }
 
 .cursor-blink {
@@ -270,12 +346,20 @@ onMounted(() => {
 }
 
 .title-in-enter-active {
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-  transition-delay: 0.1s;
+  transition: opacity 0.7s ease-out, transform 0.7s ease-out;
 }
 .title-in-enter-from {
   opacity: 0;
-  transform: translateY(8px);
+  transform: translateY(16px);
+}
+
+/* ascii-in also handles the EXIT (logo fades out before title appears) */
+.ascii-in-leave-active {
+  transition: opacity 0.4s ease-in, transform 0.4s ease-in;
+}
+.ascii-in-leave-to {
+  opacity: 0;
+  transform: scale(0.92) translateY(-8px);
 }
 
 /* ── Keyframes ────────────────────────────────────────────── */
