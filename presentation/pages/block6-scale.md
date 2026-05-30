@@ -5,7 +5,9 @@ clicks: 4
 
 ## Ink in the wild — 4 patterns
 
-<PatternStack :step="$clicks" />
+<div style="margin-top: 20px;">
+  <PatternStack :step="$clicks" />
+</div>
 
 <!--
 After the live demo, audience just built a Wizard-pattern app.
@@ -102,13 +104,13 @@ Frame spike: 22.1ms
   animation: fade-up 0.25s ease-out both;
 }
 
-.math-eq      { color: #3D5940; min-width: 160px; }
-.math-eq-sep  { color: #3D5940; }
+.math-eq      { color: #6B9E6B; min-width: 160px; }
+.math-eq-sep  { color: #6B9E6B; }
 .math-val     { color: #C8DEC4; }
 .math-warn    { color: #FF4A4A; }
 
 .math-divider {
-  color: #1E3320;
+  color: #6B9E6B;
   font-size: 12px;
   margin: 4px 0;
 }
@@ -119,13 +121,13 @@ Frame spike: 22.1ms
   gap: 4px;
   padding: 8px 12px;
   background: #0C0F0C;
-  border: 1px solid #1E3320;
+  border: 1px solid #3D5940;
   border-radius: 4px;
 }
 
 .math-result-row {
   font-size: 13px;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .math-neutral { color: #C8DEC4; }
@@ -232,7 +234,7 @@ function renderNode(node, back, front) {
 <v-click>
 
 <div style="font-family:'JetBrains Mono',monospace; font-size:13px; margin-top:12px">
-  <div style="color:#3D5940">new token arrives ──►</div>
+  <div style="color:#6B9E6B">new token arrives ──►</div>
   <div style="color:#C8DEC4; padding-left:16px">dirty:&nbsp;&nbsp;&nbsp;<span style="color:#3CFF7A">5 cells</span> rendered</div>
   <div style="color:#C8DEC4; padding-left:16px">blitted: <span style="color:#3CFF7A">23,995 cells</span></div>
   <div style="color:#C8DEC4; padding-left:16px">written: <span style="color:#3CFF7A">~20 bytes</span> ANSI</div>
@@ -272,8 +274,8 @@ layout: two-cols
   flex-direction: column;
   margin-top: 8px;
 }
-.table-line { color: #3D5940; white-space: pre; line-height: 1.6; }
-.table-line.border { color: #1E3320; }
+.table-line { color: #6B9E6B; white-space: pre; line-height: 1.6; }
+.table-line.border { color: #6B9E6B; }
 .table-line.header { color: #C8DEC4; }
 .bad  { color: #FF4A4A; }
 .good { color: #3CFF7A; }
@@ -381,14 +383,14 @@ layout: center
 
 .stage-label {
   font-size: 10px;
-  color: #3D5940;
+  color: #6B9E6B;
   letter-spacing: 0.04em;
 }
 
 .stage-box {
   width: 120px;
   padding: 12px 8px;
-  border: 1px solid #1E3320;
+  border: 1px solid #3D5940;
   background: #0C0F0C;
   border-radius: 6px;
   text-align: center;
@@ -415,14 +417,14 @@ layout: center
 
 .stage-note {
   font-size: 10px;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .warn-text { color: #FF4A4A !important; }
 
 .stage-arrow {
   font-size: 18px;
-  color: #1E3320;
+  color: #6B9E6B;
   flex-shrink: 0;
   padding-top: 20px;
 }

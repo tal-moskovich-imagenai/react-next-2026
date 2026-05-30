@@ -104,7 +104,7 @@ const infoRows = [
 
 .avatar-sep {
   font-size: 10px;
-  color: #1E3320;
+  color: #6B9E6B;
 }
 
 /* ── Info rows ────────────────────────────────── */
@@ -129,7 +129,7 @@ const infoRows = [
 }
 
 .info-sep {
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .info-val {
@@ -137,7 +137,7 @@ const infoRows = [
 }
 
 .val-green { color: #3CFF7A; }
-.val-dim   { color: #3D5940; }
+.val-dim   { color: #6B9E6B; }
 
 .cursor-line {
   display: flex;
@@ -161,7 +161,7 @@ const infoRows = [
 .imagen-logo {
   height: 28px;
   width: auto;
-  opacity: 0.75;
+  opacity: 1;
 }
 
 /* ── Keyframes ────────────────────────────────── */

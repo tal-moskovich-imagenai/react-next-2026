@@ -80,7 +80,7 @@ onMounted(() => {
 .diff-counter {
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
   background: #0C0F0C;
-  border: 1.5px solid #1E3320;
+  border: 1.5px solid #3D5940;
   border-radius: 10px;
   padding: 20px 24px;
   display: flex;
@@ -96,7 +96,7 @@ onMounted(() => {
 }
 .label {
   font-size: 13px;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 .value {
   display: flex;
@@ -111,9 +111,9 @@ onMounted(() => {
   font-size: 12px;
 }
 .bad .number  { color: #FF4A4A; }
-.bad .unit    { color: #3D5940; }
+.bad .unit    { color: #6B9E6B; }
 .good .number { color: #3CFF7A; }
-.good .unit   { color: #3D5940; }
+.good .unit   { color: #6B9E6B; }
 
 .bar-comparison {
   display: flex;
@@ -128,7 +128,7 @@ onMounted(() => {
 .bar-label {
   width: 72px;
   font-size: 11px;
-  color: #3D5940;
+  color: #6B9E6B;
   text-align: right;
   flex-shrink: 0;
 }
@@ -172,7 +172,7 @@ onMounted(() => {
 }
 .reduction-badge .sub {
   font-size: 12px;
-  color: #3D5940;
+  color: #6B9E6B;
   font-weight: normal;
 }
 

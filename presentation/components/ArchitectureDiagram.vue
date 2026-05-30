@@ -70,16 +70,6 @@
         <div class="layer-badge" style="color: #3CFF7A">LAYER 2</div>
         <div class="layer-title">The Reconciler</div>
         <div class="layer-sub">react-reconciler &middot; virtual tree diff &middot; fiber</div>
-        <!-- Pluggable badge appears on click 3 -->
-        <Transition name="pop">
-          <div v-if="step >= 3" class="pluggable-badge">
-            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 6L6 18"/>
-              <path d="M8 6h10v10"/>
-            </svg>
-            pluggable
-          </div>
-        </Transition>
       </div>
     </Transition>
 
@@ -91,60 +81,38 @@
       </div>
     </Transition>
 
-    <!-- Layer 3: Renderers — each appears individually -->
-    <div v-if="step >= 4" class="renderers">
-      <!-- react-dom -->
-      <Transition name="layer">
-        <div v-if="step >= 4" class="renderer renderer-dom">
-          <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D5940" stroke-width="1.5" stroke-linecap="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <path d="M3 9h18M9 21V9"/>
-            </svg>
-          </div>
-          <div class="renderer-name">react-dom</div>
-          <div class="renderer-desc">Browser DOM</div>
-        </div>
+    <!-- Layer 3: Renderers + pluggable badge -->
+    <div class="renderers-wrapper">
+      <!-- Pluggable badge — click 3 -->
+      <Transition name="pop">
+        <div v-if="step >= 3" class="pluggable-badge">↗ pluggable</div>
       </Transition>
-
-      <!-- react-native -->
-      <Transition name="layer">
-        <div v-if="step >= 5" class="renderer renderer-native">
-          <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3D5940" stroke-width="1.5" stroke-linecap="round">
-              <rect x="7" y="2" width="10" height="20" rx="2"/>
-              <line x1="11" y1="18" x2="13" y2="18"/>
-            </svg>
+      <!-- Renderer boxes -->
+      <div class="renderers">
+        <Transition name="layer">
+          <div v-if="step >= 4" class="renderer renderer-dom">
+            <div class="renderer-icon">⬛</div>
+            <div class="renderer-name">react-dom</div>
+            <div class="renderer-desc">Browser DOM</div>
           </div>
-          <div class="renderer-name">react-native</div>
-          <div class="renderer-desc">iOS / Android</div>
-        </div>
-      </Transition>
-
-      <!-- ink — highlighted and bold -->
-      <Transition name="layer">
-        <div v-if="step >= 6" class="renderer renderer-ink highlight">
-          <div class="renderer-icon-wrap">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3CFF7A" stroke-width="1.5" stroke-linecap="round">
-              <rect x="2" y="4" width="20" height="16" rx="2"/>
-              <path d="M7 8l-2 4 2 4"/>
-              <path d="M17 8l2 4-2 4"/>
-              <line x1="12" y1="7" x2="12" y2="17"/>
-            </svg>
+        </Transition>
+        <Transition name="layer">
+          <div v-if="step >= 5" class="renderer renderer-native">
+            <div class="renderer-icon">📱</div>
+            <div class="renderer-name">react-native</div>
+            <div class="renderer-desc">iOS / Android</div>
           </div>
-          <div class="renderer-name">ink</div>
-          <div class="renderer-desc">Terminal / ANSI</div>
-          <div class="today-badge">TODAY</div>
-        </div>
-      </Transition>
-    </div>
-
-    <!-- Stats -->
-    <Transition name="fade">
-      <div v-if="step >= 6" class="stats">
-        38k stars &middot; 3.7M downloads/week &middot; Anthropic &middot; GitHub &middot; Shopify
+        </Transition>
+        <Transition name="layer">
+          <div v-if="step >= 6" class="renderer renderer-ink highlight">
+            <div class="renderer-icon">▶_</div>
+            <div class="renderer-name">ink</div>
+            <div class="renderer-desc">Terminal / ANSI</div>
+            <div class="today-badge">TODAY</div>
+          </div>
+        </Transition>
       </div>
-    </Transition>
+    </div>
 
   </div>
 </template>
@@ -161,17 +129,17 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
-  padding: 8px 0;
-  min-height: 360px;
+  padding: 0;
+  height: 350px;
 }
 
 /* ── Layer boxes ─────────────────────────────────── */
 .layer {
-  width: 540px;
-  padding: 14px 24px;
-  border-radius: 8px;
+  width: 500px;
+  padding: 7px 16px;
+  border-radius: 7px;
   text-align: center;
 }
 .layer-components {
@@ -185,20 +153,20 @@ const step = computed(() => props.step ?? 0)
 }
 
 .layer-badge {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
   letter-spacing: 0.08em;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 .layer-title {
-  font-size: 20px;
+  font-size: 17px;
   font-weight: bold;
   color: #C8DEC4;
-  margin-bottom: 8px;
+  margin-bottom: 5px;
 }
 .layer-sub {
-  font-size: 12px;
-  color: #3D5940;
+  font-size: 11px;
+  color: #6B9E6B;
 }
 
 /* ── Chips in Layer 1 ───────────────────────────── */
@@ -206,39 +174,42 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 4px;
+  gap: 4px;
+  margin-top: 3px;
 }
 .chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
+  gap: 4px;
+  padding: 2px 8px;
   border-radius: 999px;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
   border: 1px solid;
 }
 .chip-blue  { color: #3CFF7A; border-color: #3CFF7A; background: rgba(60,255,122,0.06); }
 .chip-teal  { color: #00C4C4; border-color: #00C4C4; background: rgba(0,196,196,0.06); }
-.chip-dim   { color: #3D5940; border-color: #1E3320; background: transparent; }
+.chip-dim   { color: #6B9E6B; border-color: #6B9E6B; background: transparent; }
+
+/* ── Renderers wrapper ────────────────────────────── */
+.renderers-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
 
 /* ── Pluggable badge ────────────────────────────── */
 .pluggable-badge {
-  position: absolute;
-  right: -130px;
-  top: 50%;
-  transform: translateY(-50%);
   background: #0C0F0C;
   border: 1px dashed #3CFF7A;
   color: #3CFF7A;
-  font-size: 11px;
-  padding: 5px 12px;
-  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 5px;
   white-space: nowrap;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  letter-spacing: 0.04em;
 }
 
 /* ── Arrows ──────────────────────────────────────── */
@@ -250,7 +221,7 @@ const step = computed(() => props.step ?? 0)
 }
 .arrow-line {
   width: 2px;
-  height: 24px;
+  height: 10px;
   background: #3CFF7A;
   position: relative;
 }
@@ -264,71 +235,65 @@ const step = computed(() => props.step ?? 0)
   border-top: 8px solid #3CFF7A;
 }
 .arrow-label {
-  font-size: 11px;
-  color: #3D5940;
-  margin-top: 8px;
+  font-size: 10px;
+  color: #6B9E6B;
+  margin-top: 5px;
 }
 
 /* ── Renderer boxes ──────────────────────────────── */
 .renderers {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: flex-start;
 }
 .renderer {
-  width: 158px;
-  padding: 14px 12px;
-  border-radius: 8px;
+  width: 140px;
+  padding: 8px 8px;
+  border-radius: 7px;
   text-align: center;
   background: #0C0F0C;
-  border: 1.5px solid #1E3320;
+  border: 1.5px solid #3D5940;
 }
 .renderer-ink.highlight {
-  border: 2.5px solid #3CFF7A;
+  border: 2px solid #3CFF7A;
   background: #0C150C;
-  box-shadow: 0 0 20px rgba(60,255,122,0.12);
+  box-shadow: 0 0 16px rgba(60,255,122,0.12);
 }
-.renderer-icon-wrap {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 6px;
+.renderer-icon {
+  font-size: 16px;
+  margin-bottom: 4px;
+  font-family: monospace;
+  color: #6B9E6B;
+}
+.renderer-ink.highlight .renderer-icon {
+  color: #3CFF7A;
 }
 .renderer-name {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: bold;
-  color: #3D5940;
-  margin-bottom: 3px;
+  color: #C8DEC4;
+  margin-bottom: 2px;
 }
 .renderer-ink.highlight .renderer-name {
   color: #3CFF7A;
-  font-size: 15px;
+  font-size: 14px;
 }
 .renderer-desc {
-  font-size: 11px;
-  color: #1E3320;
-}
-.renderer-ink.highlight .renderer-desc {
-  color: #3D5940;
+  font-size: 10px;
+  color: #6B9E6B;
 }
 .today-badge {
-  margin-top: 8px;
+  margin-top: 5px;
   background: #3CFF7A;
   color: #090B09;
-  font-size: 10px;
+  font-size: 9px;
   font-weight: bold;
-  padding: 2px 10px;
-  border-radius: 4px;
+  padding: 2px 8px;
+  border-radius: 3px;
   display: inline-block;
   letter-spacing: 0.05em;
 }
 
-/* ── Stats ───────────────────────────────────────── */
-.stats {
-  font-size: 12px;
-  color: #3D5940;
-  text-align: center;
-  margin-top: 4px;
-}
 
 /* ── Transitions ─────────────────────────────────── */
 .layer-enter-active { transition: opacity 0.4s ease, transform 0.4s ease; }

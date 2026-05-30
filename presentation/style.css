@@ -57,7 +57,7 @@ pre, code, kbd {
 /* ── Code blocks ─────────────────────────────────────────── */
 .slidev-layout .shiki {
   background: #0C0F0C !important;
-  border: 1px solid #1E3320;
+  border: 1px solid #3D5940;
   border-radius: 6px;
 }
 

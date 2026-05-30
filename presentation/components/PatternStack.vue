@@ -101,7 +101,7 @@ const patterns = [
 
 .pattern-tile {
   background: #0C0F0C;
-  border: 1px solid #1E3320;
+  border: 1px solid #3D5940;
   border-radius: 6px;
   padding: 12px;
   opacity: 0;
@@ -127,7 +127,7 @@ const patterns = [
   align-items: baseline;
   margin-bottom: 8px;
   padding-bottom: 6px;
-  border-bottom: 1px solid #1E3320;
+  border-bottom: 1px solid #3D5940;
 }
 
 .tile-label {
@@ -143,7 +143,7 @@ const patterns = [
 
 .tile-example {
   font-size: 10px;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .tile-body {
@@ -159,10 +159,10 @@ const patterns = [
 
 .bright     { color: #C8DEC4; }
 .green      { color: #3CFF7A; }
-.dim        { color: #3D5940; }
-.very-dim   { color: #1E3320; font-size: 10px; margin-top: 2px; }
+.dim        { color: #6B9E6B; }
+.very-dim   { color: #6B9E6B; font-size: 10px; margin-top: 2px; }
 .warn       { color: #FF4A4A; }
-.border     { color: #3D5940; font-size: 11px; }
+.border     { color: #6B9E6B; font-size: 11px; }
 
 .tile-badge {
   margin-top: 8px;
@@ -173,6 +173,6 @@ const patterns = [
   display: inline-block;
 }
 
-.badge-dim  { background: #0C150C; color: #3D5940; border: 1px solid #1E3320; }
+.badge-dim  { background: #0C150C; color: #6B9E6B; border: 1px solid #3D5940; }
 .badge-warn { background: rgba(255,74,74,0.1); color: #FF4A4A; border: 1px solid rgba(255,74,74,0.4); }
 </style>

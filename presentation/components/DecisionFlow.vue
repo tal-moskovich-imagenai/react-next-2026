@@ -84,6 +84,8 @@ const step = computed(() => props.step ?? 0)
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   gap: 0;
+  /* fixed height = full expanded diagram — title stays put as nodes reveal */
+  height: 360px;
 }
 
 /* ── Connectors ─────────────────────────────── */
@@ -101,7 +103,7 @@ const step = computed(() => props.step ?? 0)
 
 /* ── Question node ──────────────────────────── */
 .node-question { text-align: center; }
-.node-border-q { color: #3D5940; white-space: pre; }
+.node-border-q { color: #6B9E6B; white-space: pre; }
 .node-body-q   { color: #C8DEC4; white-space: pre; }
 
 /* ── Branch row ─────────────────────────────── */
@@ -130,8 +132,8 @@ const step = computed(() => props.step ?? 0)
 .node-body-y   { color: #C8DEC4; white-space: pre; }
 
 /* ── No node ────────────────────────────────── */
-.node-border-n { color: #3D5940; white-space: pre; }
-.node-body-n   { color: #3D5940; white-space: pre; }
+.node-border-n { color: #6B9E6B; white-space: pre; }
+.node-body-n   { color: #6B9E6B; white-space: pre; }
 
 /* ── Pattern picker ─────────────────────────── */
 .pattern-picker {
@@ -139,7 +141,7 @@ const step = computed(() => props.step ?? 0)
   flex-direction: column;
   align-items: center;
 }
-.node-border-p { color: #3D5940; white-space: pre; }
+.node-border-p { color: #6B9E6B; white-space: pre; }
 .node-pat      { color: #C8DEC4; white-space: pre; }
 .pat-arrow     { color: #3CFF7A; }
 .pat-name      { color: #3CFF7A; }

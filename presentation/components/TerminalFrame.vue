@@ -24,7 +24,7 @@ defineProps<{
 <style scoped>
 .terminal-frame {
   background: #0C0F0C;
-  border: 1.5px solid #1E3320;
+  border: 1.5px solid #3D5940;
   border-radius: 10px;
   overflow: hidden;
   font-family: 'JetBrains Mono', 'SF Mono', monospace;
@@ -37,7 +37,7 @@ defineProps<{
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid #1E3320;
+  border-bottom: 1px solid #3D5940;
 }
 
 .traffic-lights {
@@ -59,7 +59,7 @@ defineProps<{
   flex: 1;
   text-align: center;
   font-size: 12px;
-  color: #3D5940;
+  color: #6B9E6B;
   margin-right: 50px;
 }
 

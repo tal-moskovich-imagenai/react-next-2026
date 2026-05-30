@@ -13,15 +13,19 @@ clicks: 4
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   width: 100%;
+  /* fixed height = caption + max DecisionFlow height
+     prevents the caption from jumping as nodes reveal */
+  height: 400px;
 }
 
 .decision-caption {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
-  color: #3D5940;
+  color: #6B9E6B;
   font-style: italic;
+  flex-shrink: 0;
 }
 </style>
 
@@ -54,34 +58,34 @@ import { Select, TextInput,
   <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.9; padding: 4px 0">
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;TextInput&gt;</span>
-      <span style="color:#3D5940">  controlled input</span>
+      <span style="color:#6B9E6B">  controlled input</span>
     </div>
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;Select&gt;</span>
-      <span style="color:#3D5940">     arrow-key list</span>
+      <span style="color:#6B9E6B">     arrow-key list</span>
     </div>
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;Spinner&gt;</span>
-      <span style="color:#3D5940">    animated spinner</span>
+      <span style="color:#6B9E6B">    animated spinner</span>
     </div>
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;ProgressBar&gt;</span>
-      <span style="color:#3D5940"> horizontal bar</span>
+      <span style="color:#6B9E6B"> horizontal bar</span>
     </div>
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;Badge&gt;</span>
-      <span style="color:#3D5940">      coloured label</span>
+      <span style="color:#6B9E6B">      coloured label</span>
     </div>
     <div class="ui-row">
       <span style="color:#3CFF7A">&lt;StatusMessage&gt;</span>
-      <span style="color:#3D5940">info/warn/error/ok</span>
+      <span style="color:#6B9E6B">info/warn/error/ok</span>
     </div>
   </div>
 </TerminalFrame>
 
 <v-click>
 
-<div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #3D5940">
+<div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #6B9E6B">
   spend time on the product, not the widgets.
 </div>
 

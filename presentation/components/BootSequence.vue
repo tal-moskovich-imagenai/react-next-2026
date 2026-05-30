@@ -169,10 +169,10 @@ onMounted(() => {
   padding-left: 16px;
 }
 .boot-val.green  { color: #3CFF7A; }
-.boot-val.dim    { color: #3D5940; }
+.boot-val.dim    { color: #6B9E6B; }
 
 .boot-plain {
-  color: #3D5940;
+  color: #6B9E6B;
   font-size: 11px;
 }
 
@@ -205,7 +205,7 @@ onMounted(() => {
 .ascii-subtitle {
   margin-top: 10px;
   font-size: 12px;
-  color: #3D5940;
+  color: #6B9E6B;
   animation: fade-in 0.4s ease-out both;
 }
 
@@ -227,13 +227,13 @@ onMounted(() => {
 .talk-sub {
   font-size: 16px;
   font-weight: 400;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .talk-meta {
   margin-top: 8px;
   font-size: 11px;
-  color: #3D5940;
+  color: #6B9E6B;
 }
 
 .cursor-blink {

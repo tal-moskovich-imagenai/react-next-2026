@@ -84,6 +84,10 @@ src: ./pages/live-demo-bridge.md
 ---
 
 ---
+src: ./pages/block5-optimization.md
+---
+
+---
 src: ./pages/block6-scale.md
 ---
 

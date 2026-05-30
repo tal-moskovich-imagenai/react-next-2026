@@ -34,7 +34,7 @@ layout: center
 
 .thesis-dim {
   font-size: 17px;
-  color: #3D5940;
+  color: #6B9E6B;
   line-height: 1.6;
   animation: type-in 0.3s ease-out both;
 }
@@ -90,10 +90,10 @@ layout: center
         github.com/talmoskovich/react-next-2026
       </span>
     </div>
-    <div style="margin-top: 12px; color: #3D5940">· Working AI CLI — tests pass, runs out of the box</div>
-    <div style="color: #3D5940">· All React 19 patterns from this talk</div>
-    <div style="color: #3D5940">· .env.example included</div>
-    <div style="color: #3D5940">· Step-by-step code in /code folder</div>
+    <div style="margin-top: 12px; color: #6B9E6B">· Working AI CLI — tests pass, runs out of the box</div>
+    <div style="color: #6B9E6B">· All React 19 patterns from this talk</div>
+    <div style="color: #6B9E6B">· .env.example included</div>
+    <div style="color: #6B9E6B">· Step-by-step code in /code folder</div>
     <div style="margin-top: 12px">
       <span style="color: #3CFF7A">❯ </span>
       <span style="color: #C8DEC4">Add your API key. Run </span>
@@ -104,7 +104,7 @@ layout: center
   </div>
 </TerminalFrame>
 
-<div class="mt-6 flex gap-6 justify-center text-sm" style="font-family:'JetBrains Mono',monospace; color: #3D5940">
+<div class="mt-6 flex gap-6 justify-center text-sm" style="font-family:'JetBrains Mono',monospace; color: #6B9E6B">
   <span>Ink: github.com/vadimdemedes/ink</span>
   <span>·</span>
   <span>@inkjs/ui</span>
