@@ -1,22 +1,27 @@
 <template>
   <div class="logo-root">
 
-    <!-- ASCII art — same as cover BootSequence phase 2 -->
+    <!-- ASCII art + troll doll side by side -->
     <div class="ascii-wrapper">
-      <div class="ascii-troll">
-        <div v-for="(line, i) in trollLines" :key="'t' + i"
-          class="ascii-line ascii-green"
-          :style="{ animationDelay: `${i * 0.06}s` }"
-        >{{ line }}</div>
-      </div>
-      <div class="ascii-code">
-        <div v-for="(line, i) in codeLines" :key="'c' + i"
-          class="ascii-line ascii-cyan"
-          :style="{ animationDelay: `${(trollLines.length + i) * 0.06}s` }"
-        >{{ line }}</div>
+      <div class="ascii-banner-row">
+        <div class="ascii-text-block">
+          <div class="ascii-troll">
+            <div v-for="(line, i) in trollLines" :key="'t' + i"
+              class="ascii-line ascii-green"
+              :style="{ animationDelay: `${i * 0.06}s` }"
+            >{{ line }}</div>
+          </div>
+          <div class="ascii-code">
+            <div v-for="(line, i) in codeLines" :key="'c' + i"
+              class="ascii-line ascii-cyan"
+              :style="{ animationDelay: `${(trollLines.length + i) * 0.06}s` }"
+            >{{ line }}</div>
+          </div>
+        </div>
+        <TrollDollFigure :delay="(trollLines.length + codeLines.length) * 0.06" :size="12" />
       </div>
       <div class="ascii-subtitle"
-        :style="{ animationDelay: `${(trollLines.length + codeLines.length) * 0.06 + 0.1}s` }"
+        :style="{ animationDelay: `${(trollLines.length + codeLines.length) * 0.06 + 0.4}s` }"
       >
         React in your terminal · powered by Ink 🧌
       </div>
@@ -74,11 +79,23 @@ const codeLines = [
   gap: 0;
 }
 
+.ascii-banner-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.ascii-text-block {
+  display: flex;
+  flex-direction: column;
+}
+
 .ascii-troll,
 .ascii-code {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .ascii-line {

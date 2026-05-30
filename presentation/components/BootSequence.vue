@@ -17,26 +17,32 @@
     <!-- Phase 2+: TrollCode ASCII art -->
     <Transition name="ascii-in">
       <div v-if="phase >= 2" class="ascii-wrapper">
-        <!-- TROLL lines -->
-        <div class="ascii-troll">
-          <div
-            v-for="(line, i) in trollLines"
-            :key="'t' + i"
-            class="ascii-line ascii-green"
-            :style="{ animationDelay: `${i * 0.06}s` }"
-          >{{ line }}</div>
-        </div>
-        <!-- CODE lines -->
-        <div class="ascii-code">
-          <div
-            v-for="(line, i) in codeLines"
-            :key="'c' + i"
-            class="ascii-line ascii-cyan"
-            :style="{ animationDelay: `${(trollLines.length + i) * 0.06}s` }"
-          >{{ line }}</div>
+        <!-- Banner + doll side by side -->
+        <div class="ascii-banner-row">
+          <!-- TROLL + CODE text -->
+          <div class="ascii-text-block">
+            <div class="ascii-troll">
+              <div
+                v-for="(line, i) in trollLines"
+                :key="'t' + i"
+                class="ascii-line ascii-green"
+                :style="{ animationDelay: `${i * 0.06}s` }"
+              >{{ line }}</div>
+            </div>
+            <div class="ascii-code">
+              <div
+                v-for="(line, i) in codeLines"
+                :key="'c' + i"
+                class="ascii-line ascii-cyan"
+                :style="{ animationDelay: `${(trollLines.length + i) * 0.06}s` }"
+              >{{ line }}</div>
+            </div>
+          </div>
+          <!-- Troll doll mascot -->
+          <TrollDollFigure :delay="(trollLines.length + codeLines.length) * 0.06" :size="13" />
         </div>
         <!-- Subtitle -->
-        <div class="ascii-subtitle" :style="{ animationDelay: `${(trollLines.length + codeLines.length) * 0.06 + 0.1}s` }">
+        <div class="ascii-subtitle" :style="{ animationDelay: `${(trollLines.length + codeLines.length) * 0.06 + 0.4}s` }">
           React in your terminal · powered by Ink 🧌
         </div>
       </div>
@@ -182,6 +188,18 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 0;
+}
+
+.ascii-banner-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.ascii-text-block {
+  display: flex;
+  flex-direction: column;
 }
 
 .ascii-troll,
