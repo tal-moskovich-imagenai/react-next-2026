@@ -69,6 +69,20 @@ Cover: the presentation boots as a React terminal app. Don't say anything. Just 
 -->
 
 ---
+layout: cover
+class: p-0
+---
+
+<VideoFullscreen :src="'/intro-video.mp4'" />
+
+---
+layout: cover
+class: p-0
+---
+
+<VideoFullscreen :src="'/intro-video-2.mp4'" />
+
+---
 src: ./pages/aboutme.md
 ---
 
