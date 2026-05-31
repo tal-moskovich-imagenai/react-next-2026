@@ -38,9 +38,13 @@ const TrollDoll: React.FC = () => (
     <Text color="green">{"╭────────╮"}</Text>
     <Box>
       <Text color="green">{"│ "}</Text>
-      <Text color="white" bold>{"●"}</Text>
+      <Text color="white" bold>
+        {"●"}
+      </Text>
       <Text color="green">{"    "}</Text>
-      <Text color="white" bold>{"●"}</Text>
+      <Text color="white" bold>
+        {"●"}
+      </Text>
       <Text color="green">{" │"}</Text>
     </Box>
     <Text color="green">{"│  ╰──╯  │"}</Text>
@@ -58,16 +62,20 @@ export const TrollCodeBanner: React.FC = () => (
     <Box flexDirection="row" alignItems="flex-start">
       <Box flexDirection="column">
         {TROLL.map((line, i) => (
-          <Text key={i} color="green">{line}</Text>
+          <Text key={i} color="green">
+            {line}
+          </Text>
         ))}
         {CODE.map((line, i) => (
-          <Text key={i} color="cyan">{line}</Text>
+          <Text key={i} color="cyan">
+            {line}
+          </Text>
         ))}
       </Box>
       <TrollDoll />
     </Box>
     <Box marginTop={1}>
-      <Text dimColor>React in your terminal · powered by Ink 🧌</Text>
+      <Text dimColor>React in your terminal</Text>
     </Box>
   </Box>
 );
