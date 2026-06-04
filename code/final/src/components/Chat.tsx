@@ -10,7 +10,7 @@ interface Message {
   displayText?: string;
 }
 
-type StaticItem = { kind: "header" } | { kind: "message"; msg: Message };
+type StaticItem = { type: "header" } | { type: "message"; msg: Message };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -80,13 +80,13 @@ export const Chat = ({ model }: Props) => {
       <Static
         items={
           [
-            { kind: "header" },
-            ...messages.map((msg) => ({ kind: "message" as const, msg })),
+            { type: "header" },
+            ...messages.map((msg) => ({ type: "message" as const, msg })),
           ] satisfies StaticItem[]
         }
       >
         {(item, i) => {
-          if (item.kind === "header") return <Header key={i} model={model} />;
+          if (item.type === "header") return <Header key={i} model={model} />;
           return <MessageRow key={i} msg={item.msg} />;
         }}
       </Static>

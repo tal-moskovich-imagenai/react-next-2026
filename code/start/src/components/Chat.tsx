@@ -9,7 +9,7 @@ interface Message {
   displayText?: string;
 }
 
-type StaticItem = { kind: "header" } | { kind: "message"; msg: Message };
+type StaticItem = { type: "header" } | { type: "message"; msg: Message };
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
