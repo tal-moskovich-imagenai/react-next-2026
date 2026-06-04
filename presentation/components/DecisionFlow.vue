@@ -1,6 +1,5 @@
 <template>
   <div class="decision-root">
-
     <!-- Root question — always visible -->
     <div class="node node-root">
       <span class="nd-name">Should I use Ink?</span>
@@ -15,7 +14,6 @@
 
     <!-- Branch row -->
     <div class="branch-row" :class="{ visible: step >= 2 }">
-
       <!-- YES branch -->
       <div class="branch">
         <div class="branch-label branch-yes">YES</div>
@@ -35,10 +33,9 @@
           <span class="nd-badge badge-dim">is fine</span>
         </div>
       </div>
-
     </div>
 
-    <!-- Pattern picker — below YES branch -->
+    <!-- Pattern picker — below YES branch
     <div class="pattern-picker" :class="{ visible: step >= 4 }">
       <div class="v-conn short" />
       <div class="pattern-bar">
@@ -63,15 +60,14 @@
           <span class="pat-warn">Claude Code territory</span>
         </div>
       </div>
-    </div>
-
+    </div> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-const props = defineProps<{ step?: number }>()
-const step = computed(() => props.step ?? 0)
+import { computed } from "vue";
+const props = defineProps<{ step?: number }>();
+const step = computed(() => props.step ?? 0);
 </script>
 
 <style scoped>
@@ -79,7 +75,7 @@ const step = computed(() => props.step ?? 0)
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   gap: 0;
   height: 360px;
   width: 100%;
@@ -91,10 +87,12 @@ const step = computed(() => props.step ?? 0)
 .v-conn {
   width: 2px;
   height: 16px;
-  background: #3D5940;
+  background: #3d5940;
   flex-shrink: 0;
 }
-.v-conn.short { height: 10px; }
+.v-conn.short {
+  height: 10px;
+}
 
 /* ── Nodes ───────────────────────────────────── */
 .node {
@@ -109,36 +107,41 @@ const step = computed(() => props.step ?? 0)
 }
 
 .node-root {
-  border-color: #3CFF7A;
-  background: #0C180C;
+  border-color: #3cff7a;
+  background: #0c180c;
   width: 260px;
 }
 
 .node-question {
-  border-color: #3D5940;
-  background: #0C0F0C;
+  border-color: #3d5940;
+  background: #0c0f0c;
   width: 340px;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
-.node-question.visible { opacity: 1; transform: translateY(0); }
+.node-question.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .node-yes {
-  border-color: #3CFF7A;
-  background: #0C180C;
+  border-color: #3cff7a;
+  background: #0c180c;
   width: 190px;
 }
 
 .node-no {
-  border-color: #3D5940;
-  background: #0C0F0C;
+  border-color: #3d5940;
+  background: #0c0f0c;
   width: 190px;
 }
 
 .nd-name {
   font-size: 13px;
-  color: #C8DEC4;
+  color: #c8dec4;
 }
 
 .nd-badge {
@@ -148,8 +151,16 @@ const step = computed(() => props.step ?? 0)
   border-radius: 4px;
   white-space: nowrap;
 }
-.badge-clean { color: #3CFF7A; background: rgba(60,255,122,0.08); border: 1px solid #3CFF7A; }
-.badge-dim   { color: #6B9E6B; background: transparent; border: 1px solid #3D5940; }
+.badge-clean {
+  color: #3cff7a;
+  background: rgba(60, 255, 122, 0.08);
+  border: 1px solid #3cff7a;
+}
+.badge-dim {
+  color: #6b9e6b;
+  background: transparent;
+  border: 1px solid #3d5940;
+}
 
 /* ── Branch row ──────────────────────────────── */
 .branch-row {
@@ -158,9 +169,14 @@ const step = computed(() => props.step ?? 0)
   align-items: flex-start;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
-.branch-row.visible { opacity: 1; transform: translateY(0); }
+.branch-row.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .branch {
   display: flex;
@@ -171,16 +187,24 @@ const step = computed(() => props.step ?? 0)
   transition: opacity 0.35s ease;
 }
 /* YES always visible once branch-row is visible */
-.branch-row.visible .branch:first-child { opacity: 1; }
-.branch.visible { opacity: 1 !important; }
+.branch-row.visible .branch:first-child {
+  opacity: 1;
+}
+.branch.visible {
+  opacity: 1 !important;
+}
 
 .branch-label {
   font-size: 11px;
   font-weight: 700;
   padding: 2px 4px;
 }
-.branch-yes { color: #3CFF7A; }
-.branch-no  { color: #FF4A4A; }
+.branch-yes {
+  color: #3cff7a;
+}
+.branch-no {
+  color: #ff4a4a;
+}
 
 /* ── Pattern picker ──────────────────────────── */
 .pattern-picker {
@@ -189,15 +213,20 @@ const step = computed(() => props.step ?? 0)
   align-items: center;
   opacity: 0;
   transform: translateY(6px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
-.pattern-picker.visible { opacity: 1; transform: translateY(0); }
+.pattern-picker.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 .pattern-bar {
   padding: 10px 20px;
-  border: 1px solid #3D5940;
+  border: 1px solid #3d5940;
   border-radius: 6px;
-  background: #0C0F0C;
+  background: #0c0f0c;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -209,8 +238,18 @@ const step = computed(() => props.step ?? 0)
   font-size: 12px;
   align-items: baseline;
 }
-.pat-q    { color: #6B9E6B; min-width: 100px; }
-.pat-sep  { color: #3CFF7A; }
-.pat-name { color: #C8DEC4; }
-.pat-warn { color: #FF4A4A; font-weight: 600; }
+.pat-q {
+  color: #6b9e6b;
+  min-width: 100px;
+}
+.pat-sep {
+  color: #3cff7a;
+}
+.pat-name {
+  color: #c8dec4;
+}
+.pat-warn {
+  color: #ff4a4a;
+  font-weight: 600;
+}
 </style>

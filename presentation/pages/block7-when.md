@@ -36,7 +36,7 @@ Be honest about trade-offs. Not the answer to every CLI need.
 [click 3] Show NO branch — console.log is fine
 [click 4] Show pattern picker below YES
 -->
-
+<!-- 
 ---
 layout: two-cols
 ---
@@ -100,4 +100,4 @@ import { Select, TextInput,
 
 <!--
 Natural closer after "when to reach for it" — save the audience some work.
--->
+--> -->

@@ -98,9 +98,9 @@ src: ./pages/block2-context.md
 src: ./pages/live-demo-bridge.md
 ---
 
----
+<!-- ---
 src: ./pages/block6-patterns.md
----
+--- -->
 
 ---
 src: ./pages/block5-optimization.md
