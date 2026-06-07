@@ -5,7 +5,9 @@
         <!-- Left: TM initials block -->
         <div class="neofetch-avatar">
           <div class="avatar-box">
-            <div class="avatar-inner">TM</div>
+            <div class="avatar-inner">
+              <img src="/images/tal.png" alt="TM" class="avatar-photo" />
+            </div>
           </div>
           <div class="avatar-label">tal@reactnext</div>
           <div class="avatar-sep">──────────────</div>
@@ -17,10 +19,10 @@
             v-for="(row, i) in infoRows"
             :key="i"
             class="info-row"
-            :style="{ animationDelay: (i * 0.1) + 's' }"
+            :style="{ animationDelay: i * 0.1 + 's' }"
           >
             <span class="info-key">{{ row.key }}</span>
-            <span class="info-sep">  </span>
+            <span class="info-sep"> </span>
             <span class="info-val" :class="row.cls || ''">{{ row.val }}</span>
           </div>
           <div class="cursor-line">
@@ -40,14 +42,16 @@
 
 <script setup lang="ts">
 const infoRows = [
-  { key: 'OS      ', val: 'macOS Sequoia 15' },
-  { key: 'host    ', val: 'ImagenAI' },
-  { key: 'name    ', val: 'Tal Moskovich', cls: 'val-green' },
-  { key: 'role    ', val: 'Senior Frontend Engineer' },
-  { key: 'podcast ', val: 'Lo-Techi 🎧' },
-  { key: 'social  ', val: '@talmosko · lotechni.dev', cls: 'val-dim' },
-  { key: 'conf    ', val: 'ReactNext 2026 · Hall A · June 23', cls: 'val-dim' },
-]
+  { key: "name      ", val: "Tal Moskovich", cls: "val-green" },
+  {
+    key: "loves to  ",
+    val: "Empower people & build products",
+    cls: "val-blue",
+  },
+  { key: "role      ", val: "Senior Frontend Engineer @ ImagenAI" },
+  { key: "host      ", val: "Lo-Techi 🎧 w/ Adir Kandel" },
+  { key: "style     ", val: "Black & White always" },
+];
 </script>
 
 <style scoped>
@@ -60,7 +64,7 @@ const infoRows = [
 }
 
 .neofetch-frame {
-  width: 620px;
+  width: 800px;
 }
 
 .neofetch-body {
@@ -80,31 +84,39 @@ const infoRows = [
 }
 
 .avatar-box {
-  width: 96px;
-  height: 96px;
-  border: 2px solid #3CFF7A;
+  width: 200px;
+  height: 200px;
+  border: 2px solid #3cff7a;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #090B09;
+  background: #090b09;
 }
 
 .avatar-inner {
-  font-size: 32px;
-  font-weight: 800;
-  color: #3CFF7A;
-  font-family: 'JetBrains Mono', monospace;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.avatar-photo {
+  width: 200%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+  display: block;
 }
 
 .avatar-label {
   font-size: 10px;
-  color: #3CFF7A;
-  font-family: 'JetBrains Mono', monospace;
+  color: #3cff7a;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .avatar-sep {
   font-size: 10px;
-  color: #6B9E6B;
+  color: #6b9e6b;
 }
 
 /* ── Info rows ────────────────────────────────── */
@@ -117,28 +129,35 @@ const infoRows = [
 
 .info-row {
   display: flex;
-  font-size: 13px;
-  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-family: "JetBrains Mono", monospace;
   animation: fade-up 0.25s ease-out both;
 }
 
 .info-key {
-  color: #3CFF7A;
+  color: #3cff7a;
   min-width: 80px;
   white-space: pre;
 }
 
 .info-sep {
-  color: #6B9E6B;
+  color: #6b9e6b;
 }
 
 .info-val {
-  color: #C8DEC4;
+  color: #c8dec4;
 }
 
-.val-green { color: #3CFF7A; }
-.val-dim   { color: #6B9E6B; }
+.val-green {
+  color: #3cff7a;
+}
+.val-dim {
+  color: #6b9e6b;
+}
 
+.val-blue {
+  color: #0db7dd;
+}
 .cursor-line {
   display: flex;
   align-items: center;
@@ -146,7 +165,7 @@ const infoRows = [
 }
 
 .cursor-blink-span {
-  color: #3CFF7A;
+  color: #3cff7a;
   animation: cursor-blink 1s step-end infinite;
   display: inline-block;
 }
@@ -154,8 +173,8 @@ const infoRows = [
 /* ── Logo ─────────────────────────────────────── */
 .logo-overlay {
   position: absolute;
-  bottom: -8px;
-  right: -8px;
+  bottom: 5px;
+  left: 80px;
 }
 
 .imagen-logo {
@@ -166,12 +185,23 @@ const infoRows = [
 
 /* ── Keyframes ────────────────────────────────── */
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(4px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 </style>

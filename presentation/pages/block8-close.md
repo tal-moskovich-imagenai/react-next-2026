@@ -82,37 +82,77 @@ The final line is the call to action.
 layout: center
 ---
 
-<TerminalFrame title="github.com/talmoskovich/react-next-2026">
-  <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; padding: 8px 4px">
-    <div style="color: #C8DEC4">Everything built today is in this repo. Fork it.</div>
-    <div style="margin-top: 8px">
-      <span style="color: #3CFF7A; font-size: 15px; font-weight: bold">
-        github.com/talmoskovich/react-next-2026
-      </span>
-    </div>
-    <div style="margin-top: 12px; color: #6B9E6B">· Working AI CLI — tests pass, runs out of the box</div>
-    <div style="color: #6B9E6B">· All React 19 patterns from this talk</div>
-    <div style="color: #6B9E6B">· .env.example included</div>
-    <div style="color: #6B9E6B">· Step-by-step code in /code folder</div>
-    <div style="margin-top: 12px">
-      <span style="color: #3CFF7A">❯ </span>
-      <span style="color: #C8DEC4">Add your API key. Run </span>
-      <span style="color: #3CFF7A">npm run dev</span>
-      <span style="color: #C8DEC4">. Done.</span>
-      <span class="final-cursor">█</span>
-    </div>
-  </div>
-</TerminalFrame>
+<div class="close-layout">
 
-<div class="mt-6 flex gap-6 justify-center text-sm" style="font-family:'JetBrains Mono',monospace; color: #6B9E6B">
-  <span>Ink: github.com/vadimdemedes/ink</span>
-  <span>·</span>
-  <span>@inkjs/ui</span>
-  <span>·</span>
-  <span>Vercel AI SDK: sdk.vercel.ai</span>
+  <!-- Left: QR code -->
+  <div class="qr-side">
+    <QrCode url="https://rn26.tmosko.com/" />
+    <div class="qr-label">rn26.tmosko.com</div>
+  </div>
+
+  <!-- Right: terminal links -->
+  <TerminalFrame title="rn26.tmosko.com" class="close-frame">
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; padding: 8px 4px">
+      <div style="color: #C8DEC4">Live presentation</div>
+      <div style="margin-top: 8px">
+        <span style="color: #3CFF7A; font-size: 15px; font-weight: bold">
+          <a href="https://rn26.tmosko.com" target="_blank">rn26.tmosko.com</a>
+        </span>
+      </div>
+    </div>
+    <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; padding: 8px 4px">
+      <div style="color: #C8DEC4">Everything built today is in this repo. Fork it.</div>
+      <div style="margin-top: 8px">
+        <span style="color: #3CFF7A; font-size: 15px; font-weight: bold">
+          <a href="https://github.com/tal-moskovich-imagenai/react-next-2026" target="_blank">github.com/tal-moskovich-imagenai/react-next-2026</a>
+        </span>
+      </div>
+      <div style="margin-top: 12px">
+        <span style="color: #3CFF7A">❯ </span>
+        <span style="color: #C8DEC4">Add your API key. Run </span>
+        <span style="color: #3CFF7A">npm run dev</span>
+        <span style="color: #C8DEC4">. Done.</span>
+        <span class="final-cursor">█</span>
+      </div>
+    </div>
+  </TerminalFrame>
+
 </div>
 
 <style scoped>
+.close-layout {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+}
+
+.qr-side {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.qr-side :deep(.qr-wrap) {
+  width: 160px;
+  height: 160px;
+  padding: 10px;
+  border: 1px solid #1E3320;
+  border-radius: 6px;
+  background: #090B09;
+}
+
+.qr-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: #3CFF7A;
+}
+
+.close-frame {
+  flex: 1;
+}
+
 .final-cursor {
   color: #3CFF7A;
   animation: cursor-blink 1s step-end infinite;

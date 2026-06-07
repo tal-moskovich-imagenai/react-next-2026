@@ -1,9 +1,7 @@
 <template>
   <div class="nodom-root">
-
     <!-- ── Main flow row ─────────────────────────── -->
     <div class="flow-row">
-
       <!-- keyboard -->
       <div class="flow-node" :class="{ visible: step >= 1 }">
         <div class="node-icon">⌨</div>
@@ -39,7 +37,6 @@
         <div class="node-icon">▬</div>
         <div class="node-label">terminal</div>
       </div>
-
     </div>
 
     <!-- ── What Ink does inside ─────────────────── -->
@@ -71,14 +68,13 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-const props = defineProps<{ step?: number }>()
-const step = computed(() => props.step ?? 0)
+import { computed } from "vue";
+const props = defineProps<{ step?: number }>();
+const step = computed(() => props.step ?? 0);
 </script>
 
 <style scoped>
@@ -87,7 +83,7 @@ const step = computed(() => props.step ?? 0)
   flex-direction: column;
   align-items: center;
   gap: 32px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   padding-top: 8px;
   height: 310px;
 }
@@ -105,13 +101,15 @@ const step = computed(() => props.step ?? 0)
   align-items: center;
   gap: 8px;
   padding: 14px 22px;
-  border: 1px solid #3D5940;
-  background: #0C0F0C;
+  border: 1px solid #3d5940;
+  background: #0c0f0c;
   border-radius: 8px;
   min-width: 120px;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease;
 }
 .flow-node.visible {
   opacity: 1;
@@ -119,15 +117,28 @@ const step = computed(() => props.step ?? 0)
 }
 
 .node-center {
-  border-color: #3CFF7A;
-  background: #0C150C;
-  box-shadow: 0 0 20px rgba(60,255,122,0.1);
+  border-color: #3cff7a;
+  background: #0c150c;
+  box-shadow: 0 0 20px rgba(60, 255, 122, 0.1);
 }
 
-.node-icon        { font-size: 24px; color: #6B9E6B; }
-.node-icon-center { color: #3CFF7A; }
-.node-label       { font-size: 12px; color: #C8DEC4; text-align: center; white-space: nowrap; }
-.node-label-center { color: #3CFF7A; font-weight: 600; }
+.node-icon {
+  font-size: 24px;
+  color: #6b9e6b;
+}
+.node-icon-center {
+  color: #3cff7a;
+}
+.node-label {
+  font-size: 12px;
+  color: #c8dec4;
+  text-align: center;
+  white-space: nowrap;
+}
+.node-label-center {
+  color: #3cff7a;
+  font-weight: 600;
+}
 
 /* ── Arrows ────────────────────────────────────── */
 .flow-arrow {
@@ -140,7 +151,9 @@ const step = computed(() => props.step ?? 0)
   opacity: 0;
   transition: opacity 0.25s ease;
 }
-.flow-arrow.visible { opacity: 1; }
+.flow-arrow.visible {
+  opacity: 1;
+}
 
 /* line + arrowhead share a horizontal row */
 .arrow-track {
@@ -152,17 +165,19 @@ const step = computed(() => props.step ?? 0)
 .arrow-line {
   flex: 1;
   height: 2px;
-  background: linear-gradient(90deg, #3D5940, #3CFF7A);
+  background: linear-gradient(90deg, #3d5940, #3cff7a);
 }
 .arrow-head {
   font-size: 15px;
-  color: #3CFF7A;
-  line-height: 1;
+  color: #3cff7a;
+  line-height: 1.5;
   margin-left: -1px;
+  padding-bottom: 1.8px;
+  transform: scale(1.5) translateX(-5px);
 }
 .arrow-label {
   font-size: 11px;
-  color: #3CFF7A;
+  color: #3cff7a;
   font-weight: 600;
 }
 
@@ -174,7 +189,9 @@ const step = computed(() => props.step ?? 0)
   gap: 12px;
   opacity: 0;
   transform: translateY(10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 .ink-section.visible {
   opacity: 1;
@@ -183,7 +200,7 @@ const step = computed(() => props.step ?? 0)
 
 .section-label {
   font-size: 11px;
-  color: #6B9E6B;
+  color: #6b9e6b;
   letter-spacing: 0.05em;
 }
 
@@ -198,12 +215,14 @@ const step = computed(() => props.step ?? 0)
   align-items: center;
   gap: 10px;
   padding: 10px 16px;
-  border: 1px solid #3D5940;
-  background: #0C0F0C;
+  border: 1px solid #3d5940;
+  background: #0c0f0c;
   border-radius: 6px;
   opacity: 0;
   transform: translateX(8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
 }
 .ink-step.visible {
   opacity: 1;
@@ -214,8 +233,8 @@ const step = computed(() => props.step ?? 0)
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: #3CFF7A;
-  color: #090B09;
+  background: #3cff7a;
+  color: #090b09;
   font-size: 11px;
   font-weight: bold;
   display: flex;
@@ -224,15 +243,29 @@ const step = computed(() => props.step ?? 0)
   flex-shrink: 0;
 }
 
-.step-body { display: flex; flex-direction: column; gap: 2px; }
-.step-key  { font-size: 13px; font-weight: 700; color: #3CFF7A; }
-.step-desc { font-size: 11px; color: #C8DEC4; white-space: nowrap; }
+.step-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.step-key {
+  font-size: 13px;
+  font-weight: 700;
+  color: #3cff7a;
+}
+.step-desc {
+  font-size: 11px;
+  color: #c8dec4;
+  white-space: nowrap;
+}
 
 .step-connector {
   font-size: 18px;
-  color: #3CFF7A;
+  color: #3cff7a;
   opacity: 0;
   transition: opacity 0.25s ease;
 }
-.step-connector.visible { opacity: 1; }
+.step-connector.visible {
+  opacity: 1;
+}
 </style>

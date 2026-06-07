@@ -77,7 +77,7 @@ const step = computed(() => props.step ?? 0)
 /* ── Before / After layout ──────────────────────── */
 .before-after {
   display: flex;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 0;
   width: 100%;
   max-width: 760px;
@@ -87,6 +87,7 @@ const step = computed(() => props.step ?? 0)
   flex: 1;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 10px;
   min-height: 320px;
 }
@@ -113,6 +114,7 @@ const step = computed(() => props.step ?? 0)
 
 /* ── Code blocks ─────────────────────────────────── */
 .code-block {
+  flex: 1;
   background: #0A0D0A;
   border: 1px solid #1E3320;
   border-radius: 6px;

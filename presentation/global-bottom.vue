@@ -7,6 +7,9 @@
     <div class="status-center">
       <span class="status-branch">ReactNext 2026 · Jun 23</span>
     </div>
+    <div class="status-branch">
+      <a href="https://rn26.tmosko.com" target="_blank">rn26.tmosko.com</a>
+    </div>
     <div class="status-right">
       <span class="status-slide">{{ nav.currentPage }} / {{ nav.total }}</span>
     </div>
@@ -14,8 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { useNav } from '@slidev/client'
-const nav = useNav()
+import { useNav } from "@slidev/client";
+const nav = useNav();
 </script>
 
 <style scoped>
@@ -25,13 +28,13 @@ const nav = useNav()
   left: 0;
   right: 0;
   height: 28px;
-  background: #0C0F0C;
-  border-top: 1px solid #1E3320;
+  background: #0c0f0c;
+  border-top: 1px solid #1e3320;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
   font-size: 11px;
   z-index: 200;
   user-select: none;
@@ -46,21 +49,21 @@ const nav = useNav()
 }
 
 .status-icon {
-  color: #3CFF7A;
+  color: #3cff7a;
   font-size: 9px;
 }
 
 .status-session {
-  color: #3D5940;
+  color: #3d5940;
   letter-spacing: 0.02em;
 }
 
 .status-branch {
-  color: #3D5940;
+  color: #3d5940;
 }
 
 .status-slide {
-  color: #3CFF7A;
+  color: #3cff7a;
   font-weight: 500;
 }
 </style>
