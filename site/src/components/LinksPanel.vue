@@ -21,7 +21,7 @@
           <div class="link-title">{{ link.title }}</div>
           <div class="link-url">{{ link.url }}</div>
         </div>
-        <span class="link-arrow">{{ link.href === '#' ? '·' : '→' }}</span>
+        <span class="link-arrow">{{ link.href === "#" ? "·" : "→" }}</span>
       </a>
     </div>
   </div>
@@ -30,34 +30,34 @@
 <script setup lang="ts">
 const links = [
   {
-    id: 'slides',
-    icon: '⚛',
-    title: 'Presentation Slides',
-    url: '/presentation',
-    href: '/presentation',
+    id: "slides",
+    icon: "⚛",
+    title: "Presentation Slides",
+    url: "/presentation",
+    href: "/presentation",
   },
   {
-    id: 'podcast',
-    icon: '🎧',
-    title: 'Lo-Techi Podcast',
-    url: 'lotechni.dev',
-    href: 'https://lotechni.dev',
+    id: "podcast",
+    icon: "🎧",
+    title: "Lo-Techi Podcast",
+    url: "lotechni.dev",
+    href: "https://lotechni.dev",
   },
   {
-    id: 'linkedin',
-    icon: 'in',
-    title: 'LinkedIn',
-    url: 'linkedin.com/in/tmosko',
-    href: 'https://www.linkedin.com/in/tmosko/',
+    id: "linkedin",
+    icon: "in",
+    title: "LinkedIn",
+    url: "linkedin.com/in/tmosko",
+    href: "https://www.linkedin.com/in/tmosko/",
   },
   {
-    id: 'github',
-    icon: '⭐',
-    title: 'GitHub Repo',
-    url: 'github.com/tal-moskovich-imagenai/react-next-2026',
-    href: 'https://github.com/tal-moskovich-imagenai/react-next-2026',
+    id: "github",
+    icon: "⭐",
+    title: "GitHub Repo",
+    url: "github.com/tal-moskovich-imagenai/react-next-2026",
+    href: "https://github.com/tal-moskovich-imagenai/react-next-2026",
   },
-]
+];
 </script>
 
 <style scoped>
@@ -75,13 +75,17 @@ const links = [
   align-items: center;
   gap: 8px;
   font-size: 11px;
-  color: #6B9E6B;
+  color: #6b9e6b;
   padding: 0 2px;
 }
-.prompt { color: #3CFF7A; }
-.header-text { color: #6B9E6B; }
+.prompt {
+  color: #3cff7a;
+}
+.header-text {
+  color: #6b9e6b;
+}
 .cursor-blink {
-  color: #3CFF7A;
+  color: #3cff7a;
   animation: cursor-blink 1s step-end infinite;
   display: inline-block;
   font-size: 10px;
@@ -98,18 +102,21 @@ const links = [
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  border: 1px solid #1E3320;
+  border: 1px solid #1e3320;
   border-radius: 6px;
-  background: #0C0F0C;
+  background: #0c0f0c;
   color: inherit;
   text-decoration: none;
-  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
   cursor: pointer;
 }
 .link-btn:hover:not(.disabled) {
-  border-color: #3CFF7A;
-  background: #0C150C;
-  box-shadow: 0 0 14px rgba(60,255,122,0.08);
+  border-color: #3cff7a;
+  background: #0c150c;
+  box-shadow: 0 0 14px rgba(60, 255, 122, 0.08);
 }
 .link-btn.disabled {
   opacity: 0.4;
@@ -122,8 +129,8 @@ const links = [
   text-align: center;
   flex-shrink: 0;
   font-style: normal;
-  font-family: 'JetBrains Mono', monospace;
-  color: #3CFF7A;
+  font-family: "JetBrains Mono", monospace;
+  color: #3cff7a;
   font-size: 13px;
   font-weight: 700;
 }
@@ -135,14 +142,14 @@ const links = [
 .link-title {
   font-size: 12px;
   font-weight: 700;
-  color: #C8DEC4;
+  color: #c8dec4;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 .link-url {
   font-size: 10px;
-  color: #6B9E6B;
+  color: #6b9e6b;
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -151,21 +158,34 @@ const links = [
 
 .link-arrow {
   font-size: 14px;
-  color: #3D5940;
+  color: #3d5940;
   flex-shrink: 0;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 .link-btn:hover:not(.disabled) .link-arrow {
-  color: #3CFF7A;
+  color: #3cff7a;
   transform: translateX(3px);
 }
 
 @keyframes panel-in {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 @keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
 }
 </style>
