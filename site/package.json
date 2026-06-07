@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
+    "build:slides": "cd ../presentation && npm run build && rm -rf ../site/public/slides && cp -r dist ../site/public/slides",
+    "build:full": "npm run build:slides && npm run build",
     "preview": "astro preview"
   },
   "dependencies": {

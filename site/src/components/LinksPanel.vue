@@ -30,6 +30,13 @@
 <script setup lang="ts">
 const links = [
   {
+    id: 'slides',
+    icon: '⚛',
+    title: 'Presentation Slides',
+    url: '/presentation',
+    href: '/presentation',
+  },
+  {
     id: 'podcast',
     icon: '🎧',
     title: 'Lo-Techi Podcast',
