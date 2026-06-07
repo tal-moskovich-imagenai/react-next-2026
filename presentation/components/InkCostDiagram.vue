@@ -26,8 +26,10 @@
 
       <!-- Arrow between phases -->
       <div class="phase-arrow">
-        <div class="pa-line" />
-        <div class="pa-head">→</div>
+        <div class="pa-arrow-row">
+          <div class="pa-line" />
+          <div class="pa-head">▶</div>
+        </div>
         <div class="pa-label">onRender</div>
       </div>
 
@@ -194,16 +196,21 @@ const step = computed(() => props.step ?? 0)
   width: 60px;
   flex-shrink: 0;
 }
+.pa-arrow-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
 .pa-line {
-  width: 36px;
+  flex: 1;
   height: 2px;
   background: #3D5940;
 }
 .pa-head {
-  font-size: 18px;
+  font-size: 11px;
   color: #3D5940;
-  margin-top: -12px;
-  margin-left: 24px;
+  line-height: 1;
+  flex-shrink: 0;
 }
 .pa-label {
   font-size: 10px;
