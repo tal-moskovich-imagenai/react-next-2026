@@ -6,7 +6,7 @@
         <div class="neofetch-avatar">
           <div class="avatar-box">
             <div class="avatar-inner">
-              <img src="/images/tal.png" alt="TM" class="avatar-photo" />
+              <img src="/images/tal.webp" alt="TM" class="avatar-photo" />
             </div>
           </div>
           <div class="avatar-label">tal@reactnext</div>

@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <div class="avatar-box">
-      <img src="/images/tal.png" alt="Tal Moskovich" class="avatar-photo" />
+      <img src="/images/tal.webp" alt="Tal Moskovich" class="avatar-photo" />
     </div>
     <div class="profile-info">
       <div class="profile-name">Tal Moskovich</div>

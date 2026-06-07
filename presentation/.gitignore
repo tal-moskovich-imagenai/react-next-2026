@@ -9,6 +9,7 @@ dist/
 
 # ── Source assets in public/ are not generated ───
 !public/**/*.png
+!public/**/*.webp
 
 # ── Node ──────────────────────────────────────────
 node_modules/
