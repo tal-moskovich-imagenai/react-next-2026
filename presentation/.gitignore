@@ -7,6 +7,9 @@ dist/
 *.png
 *.pptx
 
+# ── Source assets in public/ are not generated ───
+!public/**/*.png
+
 # ── Node ──────────────────────────────────────────
 node_modules/
 npm-debug.log*
