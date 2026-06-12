@@ -48,7 +48,7 @@ const infoRows = [
     val: "Empower people & build products",
     cls: "val-blue",
   },
-  { key: "role      ", val: "Senior Frontend Engineer @ ImagenAI" },
+  { key: "role      ", val: "Senior Fullstack Engineer @ ImagenAI" },
   { key: "host      ", val: "Lo-Techi 🎧 w/ Adir Kandel" },
   { key: "style     ", val: "Black & White always" },
 ];
