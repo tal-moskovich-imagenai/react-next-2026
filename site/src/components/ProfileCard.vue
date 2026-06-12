@@ -1,7 +1,7 @@
 <template>
   <div class="profile">
     <div class="avatar-box">
-      <img src="/images/tal.webp" alt="Tal Moskovich" class="avatar-photo" />
+      <HairSlideshow />
     </div>
     <div class="profile-info">
       <div class="profile-name">Tal Moskovich</div>
@@ -12,6 +12,10 @@
     </div>
   </div>
 </template>
+
+<script setup lang="ts">
+import HairSlideshow from "./HairSlideshow.vue";
+</script>
 
 <style scoped>
 .profile {
@@ -35,13 +39,6 @@
   flex-shrink: 0;
 }
 
-.avatar-photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  display: block;
-}
 
 .profile-info {
   display: flex;

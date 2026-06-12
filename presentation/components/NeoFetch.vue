@@ -6,7 +6,7 @@
         <div class="neofetch-avatar">
           <div class="avatar-box">
             <div class="avatar-inner">
-              <img src="/images/tal.webp" alt="TM" class="avatar-photo" />
+              <HairSlideshow />
             </div>
           </div>
           <div class="avatar-label">tal@reactnext</div>
@@ -41,6 +41,8 @@
 </template>
 
 <script setup lang="ts">
+import HairSlideshow from "./HairSlideshow.vue";
+
 const infoRows = [
   { key: "name      ", val: "Tal Moskovich", cls: "val-green" },
   {
@@ -100,13 +102,6 @@ const infoRows = [
   overflow: hidden;
 }
 
-.avatar-photo {
-  width: 200%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-  display: block;
-}
 
 .avatar-label {
   font-size: 10px;
