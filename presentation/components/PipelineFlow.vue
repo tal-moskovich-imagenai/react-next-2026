@@ -1,10 +1,6 @@
 <template>
   <div class="pipeline">
-    <div
-      v-for="(step, i) in steps"
-      :key="i"
-      class="step-row"
-    >
+    <div v-for="(step, i) in steps" :key="i" class="step-row">
       <!-- React → Ink boundary — appears when Ink's first step activates -->
       <div
         v-if="i === INK_START"
@@ -31,67 +27,73 @@
         </div>
         <span class="step-icon">{{ step.icon }}</span>
       </div>
-      <div v-if="i < steps.length - 1" class="connector" :class="{ active: currentStep > i, ink: i >= INK_START }">
+      <div
+        v-if="i < steps.length - 1"
+        class="connector"
+        :class="{ active: currentStep > i, ink: i >= INK_START }"
+      >
         <div class="connector-line" />
         <div class="connector-dot" v-if="currentStep > i" />
       </div>
     </div>
 
     <!-- Output callout — always in DOM to keep height constant, fades in at last step -->
-    <div class="output-callout" :class="{ visible: currentStep >= steps.length - 1 }">
+    <div
+      class="output-callout"
+      :class="{ visible: currentStep >= steps.length - 1 }"
+    >
       <span style="color: #0db7dd">stdout</span>
-      <span style="color: #C8DEC4"> ← Ink writes only the changed cells</span>
+      <span style="color: #c8dec4"> ← Ink writes only the changed cells</span>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed } from "vue";
 
-const props = defineProps<{ currentStep?: number }>()
-const currentStep = computed(() => props.currentStep ?? 0)
+const props = defineProps<{ currentStep?: number }>();
+const currentStep = computed(() => props.currentStep ?? 0);
 
-const INK_START = 3
+const INK_START = 3;
 
 const steps = [
   {
-    title: 'setState() called',
-    detail: 'React schedules a re-render',
-    icon: '⚡',
-    owner: 'react',
+    title: "setState() called",
+    detail: "React schedules a re-render",
+    icon: "⚡",
+    owner: "react",
   },
   {
-    title: 'React runs components',
-    detail: 'Only changed components re-execute',
-    icon: '🌲',
-    owner: 'react',
+    title: "React runs components",
+    detail: "Only changed components re-execute",
+    icon: "🌲",
+    owner: "react",
   },
   {
-    title: 'Reconciler diffs',
-    detail: 'Patches Ink\'s node tree — changed nodes only',
-    icon: '🔍',
-    owner: 'react',
+    title: "Reconciler diffs",
+    detail: "Patches Ink's node tree — changed nodes only",
+    icon: "🔍",
+    owner: "react",
   },
   {
-    title: 'Yoga layout',
-    detail: 'Flexbox → (row, col) for every node',
-    icon: '📐',
-    owner: 'ink',
+    title: "Yoga layout",
+    detail: "Flexbox → (row, col) for every node",
+    icon: "📐",
+    owner: "ink",
   },
   {
-    title: 'Build Screen() + blit',
-    detail: 'Walk full tree → paint all cells (even unchanged)',
-    icon: '🖥',
-    owner: 'ink',
+    title: "Build Screen()",
+    detail: "Walk full tree → paint all cells (even unchanged)",
+    icon: "🖥",
+    owner: "ink",
   },
   {
-    title: 'Diff + write stdout',
-    detail: '\\x1b[2;5H Counter: 1  (changed cells only)',
-    icon: '📺',
-    owner: 'ink',
+    title: "Diff + write stdout",
+    detail: "\\x1b[2;5H Counter: 1  (changed cells only)",
+    icon: "📺",
+    owner: "ink",
   },
-]
-
+];
 </script>
 
 <style scoped>
@@ -99,7 +101,7 @@ const steps = [
   display: flex;
   flex-direction: column;
   gap: 0;
-  font-family: 'JetBrains Mono', 'SF Mono', monospace;
+  font-family: "JetBrains Mono", "SF Mono", monospace;
   max-width: 540px;
   /* fixed height prevents title from jumping; sized to fit all 6 steps + boundary + callout */
   height: 390px;
@@ -114,7 +116,9 @@ const steps = [
   opacity: 0;
   transition: opacity 0.4s ease;
 }
-.ink-boundary.visible { opacity: 1; }
+.ink-boundary.visible {
+  opacity: 1;
+}
 
 .boundary-line {
   flex: 1;
@@ -141,48 +145,54 @@ const steps = [
   gap: 10px;
   padding: 5px 12px;
   border-radius: 6px;
-  border: 1.5px solid #3D5940;
-  background: #0C0F0C;
+  border: 1.5px solid #3d5940;
+  background: #0c0f0c;
   width: 100%;
   /* start invisible — appear on v-click */
   opacity: 0;
   transform: translateX(-6px);
-  transition: opacity 0.35s ease, transform 0.35s ease,
-              border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  transition:
+    opacity 0.35s ease,
+    transform 0.35s ease,
+    border-color 0.3s ease,
+    background 0.3s ease,
+    box-shadow 0.3s ease;
 }
 .step-box.active {
   opacity: 1;
   transform: translateX(0);
-  border-color: #6B9E6B;
-  background: #0C130C;
+  border-color: #6b9e6b;
+  background: #0c130c;
 }
 .step-box.current {
-  border-color: #3CFF7A;
-  background: #0C150C;
-  box-shadow: 0 0 12px rgba(60,255,122,0.12);
+  border-color: #3cff7a;
+  background: #0c150c;
+  box-shadow: 0 0 12px rgba(60, 255, 122, 0.12);
 }
 
 .step-num {
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: #1E3320;
-  color: #C8DEC4;
+  background: #1e3320;
+  color: #c8dec4;
   font-size: 11px;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: background 0.3s ease, color 0.3s ease;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
 }
 .step-box.current .step-num {
-  background: #3CFF7A;
-  color: #090B09;
+  background: #3cff7a;
+  color: #090b09;
 }
 .step-box.active:not(.current) .step-num {
-  background: #0C1A10;
-  color: #3CFF7A;
+  background: #0c1a10;
+  color: #3cff7a;
 }
 
 /* Ink-owned steps use cyan accent */
@@ -193,34 +203,45 @@ const steps = [
 .step-box.ink.current {
   border-color: #0db7dd;
   background: #071014;
-  box-shadow: 0 0 12px rgba(13,183,221,0.15);
+  box-shadow: 0 0 12px rgba(13, 183, 221, 0.15);
 }
 .step-box.ink.current .step-num {
   background: #0db7dd;
-  color: #090B09;
+  color: #090b09;
 }
 .step-box.ink.active:not(.current) .step-num {
   background: #071218;
   color: #0db7dd;
 }
-.step-box.ink.current .step-title { color: #0db7dd; }
+.step-box.ink.current .step-title {
+  color: #0db7dd;
+}
 
-.connector.ink .connector-line { background: #0db7dd; }
-.connector.ink .connector-dot  { background: #0db7dd; box-shadow: 0 0 5px rgba(13,183,221,0.8); }
+.connector.ink .connector-line {
+  background: #0db7dd;
+}
+.connector.ink .connector-dot {
+  background: #0db7dd;
+  box-shadow: 0 0 5px rgba(13, 183, 221, 0.8);
+}
 
-.step-content { flex: 1; }
+.step-content {
+  flex: 1;
+}
 .step-title {
   font-size: 13px;
   font-weight: bold;
-  color: #C8DEC4;
+  color: #c8dec4;
   transition: color 0.3s ease;
 }
 .step-detail {
   font-size: 11px;
-  color: #6B9E6B;
+  color: #6b9e6b;
   margin-top: 1px;
 }
-.step-box.current .step-title { color: #3CFF7A; }
+.step-box.current .step-title {
+  color: #3cff7a;
+}
 
 .step-icon {
   font-size: 16px;
@@ -244,35 +265,43 @@ const steps = [
 .connector-line {
   width: 2px;
   height: 100%;
-  background: #3CFF7A;
+  background: #3cff7a;
 }
 .connector-dot {
   position: absolute;
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #3CFF7A;
+  background: #3cff7a;
   top: 0;
   left: -2px;
-  box-shadow: 0 0 5px rgba(60,255,122,0.8);
+  box-shadow: 0 0 5px rgba(60, 255, 122, 0.8);
   animation: flow-down 0.4s ease forwards;
 }
 
 @keyframes flow-down {
-  from { top: 0; opacity: 1; }
-  to   { top: 8px; opacity: 0; }
+  from {
+    top: 0;
+    opacity: 1;
+  }
+  to {
+    top: 8px;
+    opacity: 0;
+  }
 }
 
 .output-callout {
   margin-top: 4px;
   padding: 5px 12px;
-  background: #0C0F0C;
-  border: 1px solid #3CFF7A;
+  background: #0c0f0c;
+  border: 1px solid #3cff7a;
   border-radius: 6px;
   font-size: 12px;
   opacity: 0;
   transform: translateY(4px);
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
 }
 .output-callout.visible {
   opacity: 1;

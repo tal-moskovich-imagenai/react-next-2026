@@ -1,17 +1,20 @@
 <template>
   <div class="fix3-root">
-
     <!-- Component tree -->
     <div class="tree-section">
-      <div class="tree-label">React component tree after setState(&lt;Counter /&gt;)</div>
+      <div class="tree-label">
+        React component tree after setState(&lt;Counter /&gt;)
+      </div>
 
       <div class="tree">
-
         <!-- Root -->
         <div class="tree-node node-root">
           <span class="nd-name">&lt;App /&gt;</span>
-          <span class="nd-badge" :class="step >= 1 ? 'badge-dirty' : 'badge-neutral'">
-            {{ step >= 1 ? 'dirty ↑' : '—' }}
+          <span
+            class="nd-badge"
+            :class="step >= 1 ? 'badge-dirty' : 'badge-neutral'"
+          >
+            {{ step >= 1 ? "dirty ↑" : "—" }}
           </span>
         </div>
 
@@ -19,14 +22,20 @@
           <!-- Header subtree — clean -->
           <div class="subtree">
             <div class="tree-connector" />
-            <div class="tree-node" :class="step >= 1 ? 'node-clean' : 'node-neutral'">
+            <div
+              class="tree-node"
+              :class="step >= 1 ? 'node-clean' : 'node-neutral'"
+            >
               <span class="nd-name">&lt;Header /&gt;</span>
-              <span class="nd-badge" :class="step >= 1 ? 'badge-clean' : 'badge-neutral'">
-                {{ step >= 1 ? '✓ clean' : '—' }}
+              <span
+                class="nd-badge"
+                :class="step >= 1 ? 'badge-clean' : 'badge-neutral'"
+              >
+                {{ step >= 1 ? "✓ clean" : "—" }}
               </span>
             </div>
             <div class="blit-label" :style="{ opacity: step >= 2 ? 1 : 0 }">
-              <span class="blit-arrow">⤷</span> blit from front buffer
+              <span class="blit-arrow">⤷</span> copy from front buffer
             </div>
           </div>
 
@@ -45,18 +54,23 @@
           <!-- Sidebar subtree — clean -->
           <div class="subtree">
             <div class="tree-connector" />
-            <div class="tree-node" :class="step >= 1 ? 'node-clean' : 'node-neutral'">
+            <div
+              class="tree-node"
+              :class="step >= 1 ? 'node-clean' : 'node-neutral'"
+            >
               <span class="nd-name">&lt;Sidebar /&gt;</span>
-              <span class="nd-badge" :class="step >= 1 ? 'badge-clean' : 'badge-neutral'">
-                {{ step >= 1 ? '✓ clean' : '—' }}
+              <span
+                class="nd-badge"
+                :class="step >= 1 ? 'badge-clean' : 'badge-neutral'"
+              >
+                {{ step >= 1 ? "✓ clean" : "—" }}
               </span>
             </div>
             <div class="blit-label" :style="{ opacity: step >= 2 ? 1 : 0 }">
-              <span class="blit-arrow">⤷</span> blit from front buffer
+              <span class="blit-arrow">⤷</span> copy from front buffer
             </div>
           </div>
         </div>
-
       </div>
     </div>
 
@@ -67,19 +81,18 @@
       <span class="res-sep"> · </span>
       <span class="res-skipped">Header + Sidebar → zero bytes</span>
     </div>
-
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
-const props = defineProps<{ step?: number }>()
-const step = computed(() => props.step ?? 0)
+import { computed } from "vue";
+const props = defineProps<{ step?: number }>();
+const step = computed(() => props.step ?? 0);
 </script>
 
 <style scoped>
 .fix3-root {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
   padding-top: 4px;
   height: 360px;
   display: flex;
@@ -102,7 +115,7 @@ const step = computed(() => props.step ?? 0)
 
 .tree-label {
   font-size: 11px;
-  color: #6B9E6B;
+  color: #6b9e6b;
 }
 
 .tree {
@@ -124,12 +137,28 @@ const step = computed(() => props.step ?? 0)
   border: 1.5px solid;
   transition: all 0.3s ease;
 }
-.node-root    { border-color: #3CFF7A; background: #0C180C; width: 200px; }
-.node-neutral { border-color: #1E3320; background: #0C0F0C; }
-.node-clean   { border-color: #3D5940; background: #0A120A; }
-.node-dirty   { border-color: #FF4A4A; background: #150A0A; }
+.node-root {
+  border-color: #3cff7a;
+  background: #0c180c;
+  width: 200px;
+}
+.node-neutral {
+  border-color: #1e3320;
+  background: #0c0f0c;
+}
+.node-clean {
+  border-color: #3d5940;
+  background: #0a120a;
+}
+.node-dirty {
+  border-color: #ff4a4a;
+  background: #150a0a;
+}
 
-.nd-name { font-size: 13px; color: #C8DEC4; }
+.nd-name {
+  font-size: 13px;
+  color: #c8dec4;
+}
 
 .nd-badge {
   font-size: 10px;
@@ -137,9 +166,21 @@ const step = computed(() => props.step ?? 0)
   padding: 2px 8px;
   border-radius: 4px;
 }
-.badge-neutral { color: #3D5940; background: transparent; border: 1px solid #1E3320; }
-.badge-clean   { color: #3CFF7A; background: rgba(60,255,122,0.08); border: 1px solid #3CFF7A; }
-.badge-dirty   { color: #FF4A4A; background: rgba(255,74,74,0.1); border: 1px solid #FF4A4A; }
+.badge-neutral {
+  color: #3d5940;
+  background: transparent;
+  border: 1px solid #1e3320;
+}
+.badge-clean {
+  color: #3cff7a;
+  background: rgba(60, 255, 122, 0.08);
+  border: 1px solid #3cff7a;
+}
+.badge-dirty {
+  color: #ff4a4a;
+  background: rgba(255, 74, 74, 0.1);
+  border: 1px solid #ff4a4a;
+}
 
 /* ── Row of children ─────────────────────────────── */
 .tree-row {
@@ -158,32 +199,36 @@ const step = computed(() => props.step ?? 0)
 .tree-connector {
   width: 2px;
   height: 12px;
-  background: #3D5940;
+  background: #3d5940;
 }
 
 /* ── Blit / render labels ──────────────────────── */
 .blit-label {
   font-size: 11px;
-  color: #3CFF7A;
+  color: #3cff7a;
   transition: opacity 0.3s ease;
   min-height: 18px;
 }
-.blit-arrow { margin-right: 4px; }
+.blit-arrow {
+  margin-right: 4px;
+}
 
 .render-label {
   font-size: 11px;
-  color: #FF4A4A;
+  color: #ff4a4a;
   transition: opacity 0.3s ease;
   min-height: 18px;
 }
-.render-arrow { margin-right: 4px; }
+.render-arrow {
+  margin-right: 4px;
+}
 
 /* ── Result bar ──────────────────────────────────── */
 .result-bar {
   padding: 10px 20px;
-  border: 1px solid #3CFF7A;
+  border: 1px solid #3cff7a;
   border-radius: 6px;
-  background: #0C150C;
+  background: #0c150c;
   font-size: 13px;
   transition: opacity 0.3s ease;
   min-height: 44px;
@@ -192,13 +237,29 @@ const step = computed(() => props.step ?? 0)
   gap: 0;
   flex-wrap: wrap;
 }
-.res-label   { color: #6B9E6B; }
-.res-val     { color: #3CFF7A; font-weight: 700; }
-.res-sep     { color: #3D5940; }
-.res-skipped { color: #6B9E6B; font-style: italic; }
+.res-label {
+  color: #6b9e6b;
+}
+.res-val {
+  color: #3cff7a;
+  font-weight: 700;
+}
+.res-sep {
+  color: #3d5940;
+}
+.res-skipped {
+  color: #6b9e6b;
+  font-style: italic;
+}
 
 @keyframes fade-up {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>
