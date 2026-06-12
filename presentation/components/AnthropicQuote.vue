@@ -1,23 +1,11 @@
 <template>
   <div class="quote-root">
 
-    <!-- Quote 1: Boris -->
-    <div v-if="step >= 1" class="quote-card quote-1">
+    <!-- Quote: Thariq -->
+    <div v-if="step >= 1" class="quote-card quote-2">
       <div class="quote-marks">"</div>
       <div class="quote-text">
-        We started by using Ink, and at this point it's our own framework due to the number of changes we've made to it over the months.
-      </div>
-      <div class="quote-attr">
-        <span class="attr-name">Boris</span>
-        <span class="attr-role">Claude Code team · Hacker News · 2025</span>
-      </div>
-    </div>
-
-    <!-- Quote 2: Thariq -->
-    <div v-if="step >= 2" class="quote-card quote-2">
-      <div class="quote-marks">"</div>
-      <div class="quote-text">
-        Ink didn't support the kind of fine-grained incremental updates needed for a long-running interactive UI... so we rewrote the renderer from scratch — while still keeping React as the component model.
+        Ink didn't support fine-grained incremental updates… so we rewrote the renderer from scratch — while still keeping React.
       </div>
       <div class="quote-attr">
         <span class="attr-name">Thariq</span>
@@ -83,7 +71,7 @@ const step = computed(() => props.step ?? 0)
 .quote-2 .quote-marks { color: #00C4C4; }
 
 .quote-text {
-  font-size: 13px;
+  font-size: 17px;
   line-height: 1.65;
   color: #C8DEC4;
   font-style: italic;
