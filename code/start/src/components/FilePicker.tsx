@@ -1,7 +1,6 @@
 import React, { use, Suspense } from "react";
 import { Box, Text } from "ink";
 import { listFiles } from "../utils/fileList.js";
-import { Spinner } from "./Spinner.js";
 
 const FileList = ({ query, cursor }: { query: string; cursor: number }) => {
   const files = use(listFiles(query));

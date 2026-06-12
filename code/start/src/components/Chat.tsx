@@ -1,8 +1,7 @@
-import React, { useState, useTransition } from "react";
-import { Box, Static, Text, useApp, useInput } from "ink";
+import React, { useState } from "react";
+import { Box, Text, useApp } from "ink";
 import { useStream } from "../hooks/useStream.js";
 import { TextInput } from "./TextInput.js";
-import { Attachments } from "../hooks/useFilePicker.js";
 
 interface Message {
   role: "user" | "assistant";
@@ -44,60 +43,8 @@ export const Chat = ({ model }: Props) => {
   const { exit } = useApp();
   const [messages, setMessages] = useState<Message[]>([]);
   const { content, error, send } = useStream(model);
-  const [isPending, startTransition] = useTransition();
 
-  useInput((input, key) => {
-    if (input === "q" && !isPending) exit();
-  });
+  const handleSubmit = (value: string) => {};
 
-  const handleSubmit = (value: string, attachments: Attachments) => {
-    if (!value.trim()) return;
-
-    const fileContext = Object.entries(attachments)
-      .map(([name, content]) => `<file name="${name}">\n${content}\n</file>`)
-      .join("\n\n");
-
-    const userMsg: Message = {
-      role: "user",
-      content: fileContext ? `${fileContext}\n\n${value}` : value,
-      displayText: value,
-    };
-
-    const nextMessages = [...messages, userMsg];
-
-    setMessages(nextMessages);
-
-    startTransition(async () => {
-      const finalText = await send(nextMessages);
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: finalText },
-      ]);
-    });
-  };
-
-  return (
-    <>
-      <Static
-        items={
-          [
-            { type: "header" as const },
-            ...messages.map((msg) => ({ type: "message" as const, msg })),
-          ] satisfies StaticItem[]
-        }
-      >
-        {(item, i) => {
-          if (item.type === "header") return <Header model={model} />;
-          return <MessageRow key={i} msg={item.msg} />;
-        }}
-      </Static>
-
-      {!isPending && <TextInput onSubmit={handleSubmit} />}
-
-      {isPending && (
-        <MessageRow msg={{ role: "assistant", content: content ?? "" }} />
-      )}
-      {error && <Text color="red">Error: {error.message}</Text>}
-    </>
-  );
+  return <TextInput onSubmit={handleSubmit} />;
 };
