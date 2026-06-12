@@ -5,7 +5,22 @@ import { Spinner } from "./Spinner.js";
 
 const FileList = ({ query, cursor }: { query: string; cursor: number }) => {
   const files = use(listFiles(query));
-  return <Spinner label={` scanning…`} />;
+  if (files.length === 0) return <Text dimColor> no matches</Text>;
+  return (
+    <Box
+      flexDirection="column"
+      borderStyle="round"
+      borderColor="yellow"
+      paddingX={1}
+    >
+      {files.map((file, i) => (
+        <Text key={file} color={i === cursor ? "green" : undefined}>
+          {i === cursor ? "❯ " : "  "}
+          <Text color={file.endsWith("/") ? "cyan" : undefined}>{file}</Text>
+        </Text>
+      ))}
+    </Box>
+  );
 };
 
 interface Props {
