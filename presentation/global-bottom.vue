@@ -5,10 +5,7 @@
       <span class="status-session">react-runs-your-terminal</span>
     </div>
     <div class="status-center">
-      <span class="status-branch">ReactNext 2026 · Jun 23</span>
-    </div>
-    <div class="status-branch">
-      <a href="https://rn26.tmosko.com" target="_blank">rn26.tmosko.com</a>
+      <a href="https://rn26.tmosko.com" target="_blank" class="status-url">rn26.tmosko.com</a>
     </div>
     <div class="status-right">
       <span class="status-slide">{{ nav.currentPage }} / {{ nav.total }}</span>
@@ -30,9 +27,9 @@ const nav = useNav();
   height: 28px;
   background: #0c0f0c;
   border-top: 1px solid #1e3320;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
-  justify-content: space-between;
   padding: 0 16px;
   font-family: "JetBrains Mono", "SF Mono", monospace;
   font-size: 11px;
@@ -40,12 +37,24 @@ const nav = useNav();
   user-select: none;
 }
 
-.status-left,
-.status-center,
-.status-right {
+.status-left {
   display: flex;
   align-items: center;
   gap: 6px;
+  justify-content: flex-start;
+}
+
+.status-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
 }
 
 .status-icon {
@@ -60,6 +69,11 @@ const nav = useNav();
 
 .status-branch {
   color: #3d5940;
+}
+
+.status-url {
+  color: #3d5940;
+  text-decoration: none;
 }
 
 .status-slide {

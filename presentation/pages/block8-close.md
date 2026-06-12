@@ -82,90 +82,127 @@ The final line is the call to action.
 layout: center
 ---
 
-<div class="close-layout">
+<script setup>
+import HairSlideshow from "../components/HairSlideshow.vue";
+</script>
 
-  <!-- Left: QR code -->
-  <div class="qr-side">
-    <QrCode url="https://rn26.tmosko.com/" />
-    <div class="qr-label">rn26.tmosko.com</div>
+<div class="ty-root">
+
+  <div class="ty-heading">Thank You</div>
+
+  <div class="ty-identity">
+    <div class="ty-avatar-box">
+      <div class="ty-avatar-inner">
+        <HairSlideshow />
+      </div>
+    </div>
+    <div class="ty-info">
+      <div class="ty-name">Tal Moskovich</div>
+      <div class="ty-role">Senior Fullstack Engineer @ ImagenAI</div>
+    </div>
   </div>
 
-  <!-- Right: terminal links -->
-  <TerminalFrame title="rn26.tmosko.com" class="close-frame">
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; padding: 8px 4px">
-      <div style="color: #C8DEC4">Live presentation</div>
-      <div style="margin-top: 8px">
-        <span style="color: #3CFF7A; font-size: 15px; font-weight: bold">
-          <a href="https://rn26.tmosko.com" target="_blank">rn26.tmosko.com</a>
-        </span>
-      </div>
+  <div class="ty-links">
+    <div class="ty-link-item">
+      <QrCode url="https://rn26.tmosko.com/" />
+      <div class="ty-link-url">rn26.tmosko.com</div>
+      <div class="ty-link-desc">slides · repo · contact</div>
     </div>
-    <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 2; padding: 8px 4px">
-      <div style="color: #C8DEC4">Everything built today is in this repo. Fork it.</div>
-      <div style="margin-top: 8px">
-        <span style="color: #3CFF7A; font-size: 15px; font-weight: bold">
-          <a href="https://github.com/tal-moskovich-imagenai/react-next-2026" target="_blank">github.com/tal-moskovich-imagenai/react-next-2026</a>
-        </span>
-      </div>
-      <div style="margin-top: 12px">
-        <span style="color: #3CFF7A">❯ </span>
-        <span style="color: #C8DEC4">Add your API key. Run </span>
-        <span style="color: #3CFF7A">npm run dev</span>
-        <span style="color: #C8DEC4">. Done.</span>
-        <span class="final-cursor">█</span>
-      </div>
-    </div>
-  </TerminalFrame>
+  </div>
 
 </div>
 
 <style scoped>
-.close-layout {
-  display: flex;
-  align-items: center;
-  gap: 48px;
-}
-
-.qr-side {
+.ty-root {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
+  gap: 28px;
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.qr-side :deep(.qr-wrap) {
-  width: 160px;
-  height: 160px;
-  padding: 10px;
-  border: 1px solid #1E3320;
-  border-radius: 6px;
+.ty-heading {
+  font-size: 52px;
+  font-weight: 700;
+  color: #3CFF7A;
+  letter-spacing: -1px;
+}
+
+.ty-identity {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.ty-avatar-box {
+  width: 110px;
+  height: 110px;
+  border: 2px solid #3CFF7A;
+  overflow: hidden;
+  flex-shrink: 0;
   background: #090B09;
 }
 
-.qr-label {
-  font-family: 'JetBrains Mono', monospace;
+.ty-avatar-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.ty-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ty-name {
+  font-size: 26px;
+  font-weight: 700;
+  color: #C8DEC4;
+}
+
+.ty-role {
+  font-size: 14px;
+  color: #6B9E6B;
+}
+
+.ty-links {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  margin-top: 4px;
+}
+
+.ty-link-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ty-link-item :deep(.qr-wrap) {
+  width: 120px;
+  height: 120px;
+  padding: 8px;
+  border: 1px solid #1E3320;
+  background: #090B09;
+}
+
+.ty-link-url {
   font-size: 11px;
   color: #3CFF7A;
 }
 
-.close-frame {
-  flex: 1;
+.ty-link-desc {
+  font-size: 10px;
+  color: #6B9E6B;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.final-cursor {
-  color: #3CFF7A;
-  animation: cursor-blink 1s step-end infinite;
-  display: inline-block;
-}
-
-@keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50%       { opacity: 0; }
-}
 </style>
 
 <!--
-"The tests pass. It runs out of the box. Add your API key and you have a working AI CLI in two minutes. Fork it."
-Then close the laptop.
+Thank you slide. Keep it brief — photo, name, two QR codes.
 -->
