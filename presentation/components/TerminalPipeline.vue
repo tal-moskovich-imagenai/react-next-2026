@@ -11,7 +11,7 @@
       <div class="ctx-arrow">
         <div class="ctx-arrow-track">
           <div class="ctx-arrow-line" />
-          <div class="ctx-arrow-head">→</div>
+          <div class="ctx-arrow-head" />
         </div>
         <div class="ctx-arrow-label">stdin</div>
       </div>
@@ -24,7 +24,7 @@
       <div class="ctx-arrow" :class="{ lit: step >= 6 }">
         <div class="ctx-arrow-track">
           <div class="ctx-arrow-line" />
-          <div class="ctx-arrow-head">→</div>
+          <div class="ctx-arrow-head" />
         </div>
         <div class="ctx-arrow-label">stdout</div>
       </div>
@@ -153,41 +153,49 @@ const steps = [
   font-weight: 600;
 }
 
+/* Arrow: only 18px tall so the parent align-items:center positions the
+   line at the true midpoint of the node boxes. The text label floats
+   below via absolute positioning and doesn't affect row centering. */
 .ctx-arrow {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
+  position: relative;
   width: 64px;
+  height: 18px;
   flex-shrink: 0;
 }
 .ctx-arrow-track {
   position: relative;
   width: 100%;
-  height: 18px;
+  height: 100%;
 }
-/* line stretches across but leaves room for the arrowhead character */
 .ctx-arrow-line {
   position: absolute;
   left: 0;
-  right: 9px;
+  right: 5px; /* leaves room for the CSS triangle */
   top: 50%;
   transform: translateY(-50%);
   height: 1.5px;
   background: linear-gradient(90deg, #3d5940, #3cff7a);
   transition: box-shadow 0.4s ease, background 0.4s ease;
 }
-/* arrowhead pinned to right edge, centered on the line */
+/* CSS border triangle — no font baseline issues */
 .ctx-arrow-head {
   position: absolute;
   right: 0;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 13px;
-  line-height: 0; /* removes ascender/descender space so translateY centers the glyph */
-  color: #3cff7a;
+  width: 0;
+  height: 0;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  border-left: 5px solid #3cff7a;
+  transition: border-left-color 0.4s ease, filter 0.4s ease;
 }
 .ctx-arrow-label {
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
   font-size: 9px;
   color: #3cff7a;
   font-weight: 600;
@@ -198,6 +206,10 @@ const steps = [
 .ctx-arrow.lit .ctx-arrow-line {
   background: linear-gradient(90deg, #3cff7a, #3cff7a);
   box-shadow: 0 0 6px rgba(60, 255, 122, 0.8);
+}
+.ctx-arrow.lit .ctx-arrow-head {
+  border-left-color: #fff;
+  filter: drop-shadow(0 0 4px rgba(60, 255, 122, 1));
 }
 .ctx-arrow.lit .ctx-arrow-label {
   color: #fff;
