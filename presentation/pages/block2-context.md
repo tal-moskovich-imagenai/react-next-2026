@@ -23,15 +23,18 @@ clicks: 6
 
 ## The terminal has no DOM
 
-<NodomFlow :step="$clicks" />
+<TerminalPipeline :step="$clicks" />
 
 <!--
-[click 1] keyboard appears
-[click 2] stdin arrow + Node.js process appears
-[click 3] stdout arrow + terminal appears
-[click 4] Ink's pipeline: Yoga — "Flexbox gives every node a (row, col)"
-[click 5] ANSI — "converts positions → escape codes"
-[click 6] stdout — "writes only changed cells — zero flicker"
+[step 0] Terminal streams row is visible. "The terminal is just two byte streams — stdin in, stdout out. No DOM. No retained-mode graphics. Ink has to invent everything in between."
+[click 1] setState() — "Your component calls setState"
+[click 2] React runs — "React re-runs only changed components"
+[click 3] Reconciler — "Patches Ink's node tree — changed nodes only"
+[click 4] Ink boundary + Yoga — "Ink takes over: Yoga runs Flexbox → row/col positions for every node"
+[click 5] Build Screen — "Ink walks the full tree and paints every cell"
+[click 6] Diff + stdout — "Writes only changed cells as ANSI escape sequences to that stdout arrow you see up top"
+
+"Same mental model as React's DOM reconciliation. Produce a diff. Apply only what changed. But the DOM is a 2D cell grid, and patching it means writing ANSI bytes."
 -->
 
 ---
@@ -49,28 +52,4 @@ clicks: 5
 [click 3] m = end of sequence
 [click 4] 0 = reset — token lights up cyan
 [click 5] Terminal renders "Hello, ReactNext!" + footer badge
--->
-
----
-layout: center
-clicks: 6
----
-
-## The Full Render Cycle
-
-<div class="flex justify-center">
-  <PipelineFlow :currentStep="$clicks" />
-</div>
-
-<!--
-[click 0] Shows step 1 lit — setState()
-[click 1] Step 2 — React runs components
-[click 2] Step 3 — Reconciler diffs
-[click 3] Step 4 — Yoga layout
-[click 4] Step 5 — Cell diff
-[click 5] Step 6 — Write ANSI
-
-"Same mental model as React's DOM reconciliation.
-Produce a diff. Apply only what changed.
-But the DOM is a 2D array of terminal cells."
 -->
