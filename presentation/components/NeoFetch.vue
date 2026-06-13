@@ -9,8 +9,6 @@
               <HairSlideshow />
             </div>
           </div>
-          <div class="avatar-label">tal@reactnext</div>
-          <div class="avatar-sep">──────────────</div>
         </div>
 
         <!-- Right: system info rows -->
@@ -31,12 +29,17 @@
           </div>
         </div>
       </div>
-    </TerminalFrame>
 
-    <!-- Imagen logo -->
-    <div class="logo-overlay">
-      <img src="/images/imagen-logo.svg" alt="Imagen" class="imagen-logo" />
-    </div>
+      <!-- Logos — centered below avatar + info -->
+      <div class="logos-row">
+        <img src="/images/imagen-logo.svg" alt="Imagen" class="logo-img" />
+        <img
+          src="/images/lotechi-logo.webp"
+          alt="Lo-Techi"
+          class="logo-img lotechi-logo"
+        />
+      </div>
+    </TerminalFrame>
   </div>
 </template>
 
@@ -102,7 +105,6 @@ const infoRows = [
   overflow: hidden;
 }
 
-
 .avatar-label {
   font-size: 10px;
   color: #3cff7a;
@@ -165,17 +167,25 @@ const infoRows = [
   display: inline-block;
 }
 
-/* ── Logo ─────────────────────────────────────── */
-.logo-overlay {
-  position: absolute;
-  bottom: 5px;
-  left: 80px;
+/* ── Logos row ────────────────────────────────── */
+.logos-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  padding: 10px 8px 14px;
+  margin-top: 20px;
+  border-top: 1px solid #1e2e1e;
 }
 
-.imagen-logo {
+.logo-img {
   height: 28px;
   width: auto;
-  opacity: 1;
+  opacity: 0.9;
+}
+
+.lotechi-logo {
+  height: 22px;
 }
 
 /* ── Keyframes ────────────────────────────────── */
