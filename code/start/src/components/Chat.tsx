@@ -3,7 +3,7 @@ import { Box, Text, useApp } from "ink";
 import { useStream } from "../hooks/useStream.js";
 import { TextInput } from "./TextInput.js";
 
-interface Message {
+export interface Message {
   role: "user" | "assistant";
   content: string;
   displayText?: string;

@@ -4,7 +4,7 @@ import { TextInput } from "./TextInput.js";
 import { Spinner } from "./Spinner.js";
 import { useStream } from "../hooks/useStream.js";
 
-interface Message {
+export interface Message {
   role: "user" | "assistant";
   content: string;
   displayText?: string;

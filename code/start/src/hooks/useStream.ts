@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { streamText } from "ai";
 import { openai } from "@ai-sdk/openai";
-
-interface Message {
-  role: "user" | "assistant";
-  content: string;
-}
+import { Message } from "../components/Chat.js";
 
 export const useStream = (model = "gpt-4o-mini") => {
   const [content, setContent] = useState("");
