@@ -18,22 +18,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import BootSequence from './BootSequence.vue'
-import ProfileCard from './ProfileCard.vue'
-import LinksPanel from './LinksPanel.vue'
+import { ref } from "vue";
+import BootSequence from "./BootSequence.vue";
+import ProfileCard from "./ProfileCard.vue";
+import LinksPanel from "./LinksPanel.vue";
 
-const showLinks = ref(false)
+const showLinks = ref(false);
 </script>
 
 <style scoped>
 .app {
   min-height: 100vh;
-  background: #090B09;
+  background: #090b09;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: "JetBrains Mono", monospace;
 }
 
 .app-main {
@@ -50,24 +50,26 @@ const showLinks = ref(false)
 .app-footer {
   width: 100%;
   padding: 16px 24px;
-  border-top: 1px solid #1E3320;
+  border-top: 1px solid #1e3320;
   text-align: center;
 }
 .footer-dim {
   font-size: 11px;
-  color: #3D5940;
+  color: #3d5940;
 }
 
 .after-boot {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 30px;
 }
 
 /* ── Links reveal transition ───────────────── */
 .links-reveal-enter-active {
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
 }
 .links-reveal-enter-from {
   opacity: 0;

@@ -88,10 +88,7 @@
         <div class="title-divider" />
         <div class="talk-main">React Runs Your Terminal</div>
         <div class="talk-sub">Let's Build One Live</div>
-        <div class="talk-meta">
-          Tal Moskovich · ReactNext 2026 · June 23
-          <span class="cursor-blink">█</span>
-        </div>
+        <div class="talk-meta">Tal Moskovich · ReactNext 2026 · June 23</div>
       </div>
     </Transition>
   </div>
@@ -180,7 +177,6 @@ watch(
 <style scoped>
 .boot-root {
   width: 100%;
-  min-height: 370px;
   background: #090b09;
   display: flex;
   flex-direction: column;

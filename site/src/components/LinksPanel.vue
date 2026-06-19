@@ -30,20 +30,6 @@
 <script setup lang="ts">
 const links = [
   {
-    id: "slides",
-    icon: "⚛",
-    title: "Presentation Slides",
-    url: "/slides",
-    href: "/slides",
-  },
-  {
-    id: "github",
-    icon: "⭐",
-    title: "GitHub Repo",
-    url: "github.com/tal-moskovich-imagenai/react-next-2026",
-    href: "https://github.com/tal-moskovich-imagenai/react-next-2026",
-  },
-  {
     id: "linkedin",
     icon: "in",
     title: "LinkedIn",
@@ -56,6 +42,20 @@ const links = [
     title: "Lo-Techi Podcast",
     url: "lotechni.dev",
     href: "https://lotechni.dev",
+  },
+  {
+    id: "slides",
+    icon: "⚛",
+    title: "Presentation Slides",
+    url: "/slides",
+    href: "/slides",
+  },
+  {
+    id: "github",
+    icon: "⭐",
+    title: "GitHub Repo",
+    url: "github.com/tal-moskovich-imagenai/react-next-2026",
+    href: "https://github.com/tal-moskovich-imagenai/react-next-2026",
   },
 ];
 </script>
