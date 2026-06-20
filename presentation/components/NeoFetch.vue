@@ -35,7 +35,7 @@
         <img src="/images/imagen-logo.svg" alt="Imagen" class="logo-img" />
         <img
           src="/images/lotechi-logo.webp"
-          alt="Lo-Techi"
+          alt="Lo-Techni"
           class="logo-img lotechi-logo"
         />
       </div>
@@ -54,7 +54,7 @@ const infoRows = [
     cls: "val-blue",
   },
   { key: "role      ", val: "Senior Fullstack Engineer @ ImagenAI" },
-  { key: "host      ", val: "Lo-Techi 🎧 w/ Adir Kandel" },
+  { key: "host      ", val: "לא טכני ולא במקרה 🎧 w/ Adir Kandel" },
   { key: "style     ", val: "Black & White always" },
 ];
 </script>
