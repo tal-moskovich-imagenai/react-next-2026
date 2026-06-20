@@ -29,7 +29,11 @@ const MessageRow = ({ msg }: { msg: Message }) => (
       {msg.role === "user" ? "You" : "AI"}
     </Text>
     <Box paddingLeft={2}>
-      <Text>{msg.displayText ?? msg.content}</Text>
+      {!msg.content ? (
+        <Spinner />
+      ) : (
+        <Text>{msg.displayText ?? msg.content}</Text>
+      )}
     </Box>
   </Box>
 );

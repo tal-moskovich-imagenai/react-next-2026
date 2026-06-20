@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Box, Text, useApp } from "ink";
 import { useStream } from "../hooks/useStream.js";
 import { TextInput } from "./TextInput.js";
+import { Spinner } from "./Spinner.js";
 
 export interface Message {
   role: "user" | "assistant";
@@ -28,7 +29,11 @@ const MessageRow = ({ msg }: { msg: Message }) => (
       {msg.role === "user" ? "You" : "AI"}
     </Text>
     <Box paddingLeft={2}>
-      <Text>{msg.displayText ?? msg.content}</Text>
+      {!msg.content ? (
+        <Spinner />
+      ) : (
+        <Text>{msg.displayText ?? msg.content}</Text>
+      )}
     </Box>
   </Box>
 );
