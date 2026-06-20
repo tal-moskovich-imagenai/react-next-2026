@@ -87,10 +87,6 @@ src: ./pages/aboutme.md
 ---
 
 ---
-src: ./pages/block1-hook.md
----
-
----
 src: ./pages/block2-context.md
 ---
 
