@@ -12,6 +12,7 @@
     "slidev-theme-the-unnamed": "latest"
   },
   "devDependencies": {
+    "@types/node": "26.6.5",
     "playwright-chromium": "^1.49.0"
   }
 }
