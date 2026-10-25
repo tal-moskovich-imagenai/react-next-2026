@@ -3,7 +3,7 @@ import { Text } from "ink";
 
 const FRAMES = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
 
-export const Spinner = ({ label }: { label?: string }) => {
+export const Spinner = ({ label = "Imagening..." }: { label?: string }) => {
   const [frame, setFrame] = useState(0);
 
   return <></>;
