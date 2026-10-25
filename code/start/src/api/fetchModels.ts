@@ -9,8 +9,10 @@ export async function fetchModelsFn(): Promise<Model[]> {
   });
   const data = await res.json();
 
-  return (data.data as { id: string }[])
-    .filter((m) => m.id.startsWith("gpt") || m.id.startsWith("o"))
+  return (data.data as { id: string; shutdown_date: string | null }[])
+    .filter((m) => /^(gpt-5|o[3-9])/.test(m.id))
+    .filter((m) => !m.shutdown_date)
+    .filter((m) => !/-pro|codex|realtime|audio|transcribe|tts|image|search|live/.test(m.id))
     .map((m) => ({ id: m.id, label: m.id }))
     .slice(0, 6);
 }
