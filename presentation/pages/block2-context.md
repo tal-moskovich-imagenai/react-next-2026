@@ -51,5 +51,5 @@ clicks: 5
 [click 2] 32 = green foreground — token lights up green
 [click 3] m = end of sequence
 [click 4] 0 = reset — token lights up cyan
-[click 5] Terminal renders "Hello, ReactNext!" + footer badge
+[click 5] Terminal renders "Hello, Imagen!" + footer badge
 -->

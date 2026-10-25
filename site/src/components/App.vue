@@ -12,7 +12,7 @@
     </main>
 
     <footer class="app-footer">
-      <span class="footer-dim">ReactNext 2026 · June 23 · Hall A</span>
+      <span class="footer-dim">Imagen Dev Meetup · Giv'atayim</span>
     </footer>
   </div>
 </template>

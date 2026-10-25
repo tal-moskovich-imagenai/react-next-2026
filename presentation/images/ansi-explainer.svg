@@ -37,11 +37,11 @@
     <!-- space -->
     <text x="248" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#F3EFF5"> </text>
     <!-- Hello -->
-    <text x="264" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#F3EFF5" font-weight="bold">Hello, ReactNext!</text>
+    <text x="264" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#F3EFF5" font-weight="bold">Hello, Imagen!</text>
     <!-- \x1b[0m -->
-    <text x="582" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#FE4A49" font-weight="bold">\x1b[</text>
-    <text x="660" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#B39DDB" font-weight="bold">0</text>
-    <text x="680" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#FE4A49" font-weight="bold">m</text>
+    <text x="546" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#FE4A49" font-weight="bold">\x1b[</text>
+    <text x="624" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#B39DDB" font-weight="bold">0</text>
+    <text x="644" y="38" font-family="'SF Mono', 'Fira Code', monospace" font-size="20" fill="#FE4A49" font-weight="bold">m</text>
   </g>
 
   <!-- Annotation arrows -->
@@ -63,15 +63,15 @@
   <text x="242" y="233" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">of sequence</text>
 
   <!-- reset -->
-  <line x1="660" y1="150" x2="660" y2="195" stroke="#B39DDB" stroke-width="1.5" marker-end="url(#arr-purple)"/>
-  <text x="620" y="215" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">0 = reset</text>
-  <text x="620" y="233" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">all styles</text>
+  <line x1="624" y1="150" x2="624" y2="195" stroke="#B39DDB" stroke-width="1.5" marker-end="url(#arr-purple)"/>
+  <text x="584" y="215" font-family="'SF Mono', 'Fira Code', monospace" font-size="12" fill="#B39DDB">0 = reset</text>
+  <text x="584" y="233" font-family="'SF Mono', 'Fira Code', monospace" font-size="11" fill="#6E7681">all styles</text>
 
   <!-- Rendered result -->
   <g transform="translate(50, 295)">
     <text x="0" y="0" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" fill="#6E7681">terminal renders:</text>
     <rect x="0" y="12" width="800" height="60" rx="8" fill="#0A1410" stroke="#00FF9C" stroke-width="1.5"/>
-    <text x="20" y="52" font-family="'SF Mono', 'Fira Code', monospace" font-size="24" fill="#00FF9C" font-weight="bold" filter="url(#glow)">Hello, ReactNext!</text>
+    <text x="20" y="52" font-family="'SF Mono', 'Fira Code', monospace" font-size="24" fill="#00FF9C" font-weight="bold" filter="url(#glow)">Hello, Imagen!</text>
   </g>
 
   <!-- More examples -->

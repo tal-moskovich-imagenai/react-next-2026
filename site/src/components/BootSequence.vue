@@ -88,7 +88,7 @@
         <div class="title-divider" />
         <div class="talk-main">React Runs Your Terminal</div>
         <div class="talk-sub">Let's Build One Live</div>
-        <div class="talk-meta">Tal Moskovich · ReactNext 2026 · June 23</div>
+        <div class="talk-meta">Tal Moskovich · Imagen Dev Meetup</div>
       </div>
     </Transition>
   </div>

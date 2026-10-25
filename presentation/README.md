@@ -1,6 +1,6 @@
 # Presentation — React Runs Your Terminal
 
-**ReactNext 2026 · June 23 · Hall A · 10:05–10:40**
+**Imagen Dev Meetup · Giv'atayim · 18:30–19:00**
 
 Slidev presentation using `slidev-theme-the-unnamed` (dark terminal aesthetic).
 

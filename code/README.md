@@ -1,6 +1,6 @@
 # Live Coding Guide — React Runs Your Terminal
 
-**ReactNext 2026 · June 23 · Block 4: 10:16–10:30 (14 min)**
+**Imagen Dev Meetup · Block 4: live coding (14 min)**
 
 Each `step-N/` folder is a complete, standalone snapshot of the code at that point in the talk. If something breaks live, you can `cd` into the next step and continue.
 

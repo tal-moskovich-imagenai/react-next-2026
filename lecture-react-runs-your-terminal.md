@@ -1,6 +1,6 @@
 # React Runs Your Terminal: Let's Build One Live
 
-**ReactNext 2026 — June 23, Hall A**
+**Imagen Dev Meetup — Giv'atayim**
 **Speaker: Tal Moskovich**
 **Duration: 35 minutes (10:05–10:40)**
 
@@ -196,7 +196,7 @@ npx create-ink-app --typescript my-cli
 import React from "react";
 import { render, Text } from "ink";
 
-const Hello = () => <Text color="green">Hello, ReactNext!</Text>;
+const Hello = () => <Text color="green">Hello, Imagen!</Text>;
 
 render(<Hello />);
 ```
@@ -2669,5 +2669,5 @@ expect(frames).toHaveLength(3);
 
 ---
 
-*Lecture written for ReactNext 2026 — June 23, Hall A*
+*Lecture written for Imagen Dev Meetup — Giv'atayim*
 *Total runtime: ~30 minutes including live coding*

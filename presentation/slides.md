@@ -49,7 +49,7 @@ themeConfig:
 title: "React Runs Your Terminal"
 info: |
   ## React Runs Your Terminal: Let's Build One Live
-  ReactNext 2026 — June 23, Hall A
+  Imagen Dev Meetup — Giv'atayim
   Tal Moskovich
 
 layout: cover

@@ -107,8 +107,8 @@
   <!-- Bottom: ANSI escape sequence hint -->
   <g transform="translate(0, 620)" font-family="'SF Mono', 'Fira Code', monospace" font-size="13" opacity="0.3">
     <text x="185" fill="#00FF9C">\x1b[32m</text>
-    <text x="280" fill="#F3EFF5">Hello, ReactNext</text>
-    <text x="430" fill="#00FF9C">\x1b[0m</text>
+    <text x="280" fill="#F3EFF5">Hello, Imagen</text>
+    <text x="407" fill="#00FF9C">\x1b[0m</text>
     <text x="490" fill="#6E7681">-&gt; React components become ANSI bytes</text>
   </g>
 </svg>

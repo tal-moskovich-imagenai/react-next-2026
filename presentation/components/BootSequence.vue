@@ -96,7 +96,7 @@
 
         <!-- Meta / speaker info -->
         <div class="talk-meta">
-          Tal Moskovich · ReactNext 2026 · June 23
+          Tal Moskovich · Imagen Dev Meetup
           <span class="cursor-blink">█</span>
         </div>
       </div>

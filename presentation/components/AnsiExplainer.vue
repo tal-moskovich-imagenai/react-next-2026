@@ -7,7 +7,7 @@
       <span class="token esc">\x1b[</span>
       <span class="token param" :class="{ lit: step >= 2 }">32</span>
       <span class="token esc">m</span>
-      <span class="token content">Hello, ReactNext!</span>
+      <span class="token content">Hello, Imagen!</span>
       <span class="token esc">\x1b[</span>
       <span class="token reset" :class="{ lit: step >= 4 }">0</span>
       <span class="token esc">m</span>
@@ -56,7 +56,7 @@
         <div class="result-row">
           <span class="result-label">terminal renders:</span>
           <div class="result-box">
-            <span class="result-text">Hello, ReactNext!</span>
+            <span class="result-text">Hello, Imagen!</span>
           </div>
         </div>
         <div class="footer-badge">
