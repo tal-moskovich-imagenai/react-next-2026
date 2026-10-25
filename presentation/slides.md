@@ -87,6 +87,10 @@ src: ./pages/aboutme.md
 ---
 
 ---
+src: ./pages/why-terminal.md
+---
+
+---
 src: ./pages/why-react.md
 ---
 
